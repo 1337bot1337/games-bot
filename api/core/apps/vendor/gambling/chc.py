@@ -67,7 +67,7 @@ class CHCAPIClient(CHCBlackPayloadMixin, SignBuilderMixin):
         }
         sign = self.build_sign(self.invoice_uri, sign_payload)
         response_data = self.create_request(
-            self.get_url(self.invoice_uri), {**self.get_base_payload(transaction_id), "sign": sign}
+            self.get_url(self.invoice_uri), {**sign_payload, "sign": sign}
         )
         return response_data["invoice"]
 
@@ -78,6 +78,6 @@ class CHCAPIClient(CHCBlackPayloadMixin, SignBuilderMixin):
         }
         sign = self.build_sign(self.last_jackpot_uri, sign_payload)
         response_data = self.create_request(
-            self.get_url(self.last_jackpot_uri), {**self.get_base_payload(transaction_id), "sign": sign}
+            self.get_url(self.last_jackpot_uri), {**sign_payload, "sign": sign}
         )
         return response_data
