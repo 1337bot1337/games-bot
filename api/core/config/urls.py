@@ -3,15 +3,17 @@ from django.contrib import admin
 from django.urls import include, path
 
 
-api_v1_urlpatterns = [
+internal_api_v1_urlpatterns = [
     path('accounts/', include('core.apps.account.api.v1.urls', namespace='account'), name='account'),
+    path('games/', include('core.apps.game.api.v1.urls', namespace='game'), name='game'),
 ]
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/v1/', include(api_v1_urlpatterns), name='api-v1'),
+    path('internal/api/v1/', include(internal_api_v1_urlpatterns), name='internal-api-v1'),
 ]
+
 
 if settings.DEBUG:
     if 'debug_toolbar' in settings.INSTALLED_APPS:

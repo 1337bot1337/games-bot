@@ -2,6 +2,7 @@
 Django==3.0.5
 psycopg2-binary
 djangorestframework
+requests
 
 # Dev requirements
 django-environ
@@ -9,3 +10,5 @@ django-debug-toolbar
 django_extensions
 invoke
 pip-tools
+ipython
+isort
