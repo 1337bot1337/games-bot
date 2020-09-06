@@ -1,0 +1,11 @@
+# Project requirements
+Django==3.0.5
+psycopg2-binary
+djangorestframework
+
+# Dev requirements
+django-environ
+django-debug-toolbar
+django_extensions
+invoke
+pip-tools
