@@ -2,10 +2,10 @@ from django.utils.translation import gettext_lazy as _
 
 
 class TransactionKind:
-    REPLENISHMENT = 'replenishment'
-    WITHDRAW = 'withdraw'
-    GAME_STARTED = 'game_started'
-    GAME_FINISHED = 'game_finished'
+    REPLENISHMENT = "replenishment"
+    WITHDRAW = "withdraw"
+    GAME_STARTED = "game_started"
+    GAME_FINISHED = "game_finished"
 
 
 TRANSACTION_KIND_CHOICES = (

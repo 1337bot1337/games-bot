@@ -7,5 +7,5 @@ app_name = 'core.apps.account'
 
 
 urlpatterns = [
-    path('user/', views.RegisterSourceAPIView.as_view(), name='register-source'),
+    path('user/', views.RegisterUserSourceAPIView.as_view(), name='register-source'),
 ]
