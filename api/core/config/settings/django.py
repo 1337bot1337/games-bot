@@ -1,11 +1,14 @@
-from core.env import env
+import os
+
+from core.env import ROOT, env
 
 
 SECRET_KEY = env.str('CORE_SECRET_KEY', default='secret')
 
 DEBUG = env.bool('CORE_DEBUG', default=False)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = env.list("CORE_ALLOWED_HOSTS", default=["*"])
+
 
 # Application definition
 INSTALLED_APPS = [
@@ -89,4 +92,16 @@ USE_L10N = True
 
 USE_TZ = True
 
-STATIC_URL = '/static/'
+PROJECT_ROOT = ROOT - 2
+DEFAULT_PUBLIC_ROOT = os.path.join(PROJECT_ROOT, "public/static")
+
+STATIC_URL = env.str("CORE_STATIC_URL", default="/static/")
+MEDIA_URL = env.str("CORE_MEDIA_URL", default="/media/")
+
+# production usage
+STATIC_ROOT = env.str("CORE_STATIC_ROOT", DEFAULT_PUBLIC_ROOT)
+
+# development usage
+STATICFILES_DIRS = (
+    ROOT("static"),
+)

@@ -257,7 +257,7 @@ typings/
 .yarn-integrity
 
 # dotenv environment variables file
-core/core/config/settings/.env
+.env
 
 .DS_Store
 
