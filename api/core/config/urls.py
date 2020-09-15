@@ -11,7 +11,7 @@ internal_api_v1_urlpatterns = [
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('internal/api/v1/', include(internal_api_v1_urlpatterns), name='internal-api-v1'),
+    path('api/v1/', include(internal_api_v1_urlpatterns), name='internal-api-v1'),
 ]
 
 

@@ -15,6 +15,6 @@
 - name: Start app
   docker_compose:
     project_src: "{{ docker_path }}"
-    pull: yes
+    build: yes
     scale:
       api: 2
