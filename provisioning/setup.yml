@@ -1,0 +1,9 @@
+---
+
+- name: Setup server
+  hosts: all
+  become: yes
+  become_user: root
+  roles:
+    - { role: common, task: setup }
+    - { role: docker, task: setup }

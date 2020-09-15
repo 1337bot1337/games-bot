@@ -14,7 +14,7 @@ RUN chmod +x /src/docker/docker-entrypoint.sh \
     && pip install --upgrade pip \
     && pip install -r /src/api/requirements.txt
 
-EXPOSE 8000
+EXPOSE 8080
 
 ENTRYPOINT ["/src/docker/docker-entrypoint.sh"]
 
@@ -26,4 +26,4 @@ RUN python manage.py collectstatic --noinput
 
 RUN mkdir -p /usr/local/public/media
 
-CMD ["gunicorn", "-b", "0.0.0.0:8000", "core.config.wsgi:application", "-w", "5", "-t", "300"]
+CMD ["gunicorn", "-b", "0.0.0.0:8080", "core.config.wsgi:application", "-w", "5", "-t", "300"]

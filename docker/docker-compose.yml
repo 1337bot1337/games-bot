@@ -16,7 +16,7 @@ services:
       context: ./../  # games-bot
       dockerfile: docker/images/api/Dockerfile
     expose:
-      - 8000
+      - 8080
     depends_on:
       - postgres
     volumes:
@@ -29,7 +29,7 @@ services:
       context: ./../  # games-bot
       dockerfile: docker/images/nginx/Dockerfile
     ports:
-      - 1337:80
+      - 80:80
     depends_on:
       - api
     volumes:

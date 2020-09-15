@@ -1,0 +1,31 @@
+---
+
+- name: Install Docker pre-requisites
+  apt:
+    name: ['apt-transport-https', 'ca-certificates', 'curl', 'software-properties-common']
+    state: latest
+    force: yes
+    update_cache: yes
+
+- name: Add signature for Docker repository
+  apt_key: url={{ docker_repository_key_url }} state=present
+
+- name: Add Docker repository
+  apt_repository: repo='deb [arch=amd64] {{ docker_repository_url }} {{ ansible_lsb.codename }} stable' state=present
+
+- name: Install Docker
+  apt: name=docker-ce state=present force=yes
+
+- name: Install docker-compose
+  pip:
+    name: ['docker-compose']
+    executable: pip3
+
+- name: Start Docker
+  service: name=docker state=started
+
+- name: Create the application group
+  group: name={{ user }} system=yes state=present
+
+- name: Add the application user to the application group
+  user: name={{ user }} home={{ user_path }} groups=docker shell=/bin/bash

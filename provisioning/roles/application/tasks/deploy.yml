@@ -1,0 +1,20 @@
+---
+
+- name: Setup git repo
+  become: yes
+  become_user: "{{ user }}"
+  git: repo={{ git_repo }}
+       version={{ git_branch }}
+       dest={{ project_src }}
+       accept_hostkey=yes
+       force=yes
+       recursive=no
+  tags: git
+  register: git_repo
+
+- name: Start app
+  docker_compose:
+    project_src: "{{ docker_path }}"
+    pull: yes
+    scale:
+      api: 2

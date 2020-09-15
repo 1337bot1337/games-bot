@@ -1,0 +1,12 @@
+---
+
+server_user: root
+
+git_repo: git@github.com:1337bot1337/games-bot.git
+
+project_name: gamesbot
+user: "{{ project_name }}"
+user_path: "/home/{{ user }}"
+user_group: "{{ project_name }}"
+project_src: "{{ user_path }}/src"
+docker_path: "{{ project_src}}/docker"

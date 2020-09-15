@@ -1,0 +1,23 @@
+---
+
+- name: Install system packages
+  apt:
+    name: ["ntp", "python3-pip", "python3-passlib"]
+    state: present
+    force: yes
+    update_cache: yes
+
+- name: Install additional packages
+  apt:
+    name: ["git"]
+    state: present
+    force: yes
+    update_cache: yes
+
+- name: Install Python packages
+  pip:
+    name: ["setuptools"]
+    executable: pip3
+
+- name: Create user
+  user: name={{ user }} group={{ user }} shell=/bin/bash generate_ssh_key=yes

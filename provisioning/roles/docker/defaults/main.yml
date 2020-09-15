@@ -1,0 +1,3 @@
+docker_repository_key_url: https://download.docker.com/linux/ubuntu/gpg
+docker_repository_url: https://download.docker.com/linux/ubuntu
+docker_package: docker-ce=5:19.03.12~3-0~ubuntu-focal

@@ -1,0 +1,5 @@
+[gamesbot:children]
+develop
+
+[develop]
+135.181.35.252 ansible_ssh_user='root' ansible_ssh_common_args='-o StrictHostKeyChecking=no'
