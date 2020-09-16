@@ -17,3 +17,16 @@ def withdraw_wallet(*, tg_account: "account_models.TelegramAccount", amount: Dec
         wallet_models.WithdrawRequest.objects.create(account=tg_account, amount=amount, card_number=card_number)
         tg_account.real_balance = F("real_balance") - amount
         tg_account.save(update_fields=("real_balance", "updated",))
+
+
+def refill_wallet(*, tg_account: "account_models.TelegramAccount", amount: Decimal, is_testing: bool = True) -> str:
+    if is_testing:
+        with transaction.atomic():
+            tg_account.real_balance = F("real_balance") + amount
+            tg_account.save(update_fields=("real_balance", "updated",))
+
+        url = "https://piastrix.docs.apiary.io/#introduction/pay"
+    else:
+        url = "https://piastrix.docs.apiary.io/#introduction/pay"
+
+    return url
