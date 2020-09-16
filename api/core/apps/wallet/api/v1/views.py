@@ -9,6 +9,7 @@ from . import serializers as wallet_serializers
 
 
 class RefillAPIView(GenericAPIView):
+    lookup_field = "tg_id"
     queryset = account_models.TelegramAccount.objects.all()
     serializer_class = wallet_serializers.RefillWalletSerializer
 
@@ -22,11 +23,13 @@ class RefillAPIView(GenericAPIView):
 
 
 class CheckAPIView(RetrieveAPIView):
+    lookup_field = "tg_id"
     queryset = account_models.TelegramAccount.objects.all()
     serializer_class = wallet_serializers.CheckWalletSerializer
 
 
 class WithdrawAPIView(ExceptionHandlerMixin, GenericAPIView):
+    lookup_field = "tg_id"
     queryset = account_models.TelegramAccount.objects.all()
     serializer_class = wallet_serializers.WithdrawWalletSerializer
 
