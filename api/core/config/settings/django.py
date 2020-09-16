@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     # Project apps
     'core.apps.account',
     'core.apps.common',
+    'core.apps.wallet',
 ]
 
 if DEBUG:

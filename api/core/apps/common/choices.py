@@ -25,3 +25,16 @@ TRANSACTION_STATUS_CHOICES = (
     (TransactionStatus.IN_PROGRESS, _("Transaction in progress")),
     (TransactionStatus.DONE, _("Transaction done")),
 )
+
+
+class WithdrawRequestStatus:
+    ACCEPTED = "accepted"
+    REJECTED = "rejected"
+    IN_PROGRESS = "in_progress"
+
+
+WITHDRAW_REQUEST_STATUS_CHOICES = (
+    (WithdrawRequestStatus.ACCEPTED, _("Withdraw request accepted")),
+    (WithdrawRequestStatus.REJECTED, _("Withdraw request rejected")),
+    (WithdrawRequestStatus.IN_PROGRESS, _("Withdraw request in progress")),
+)
