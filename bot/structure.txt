@@ -1,0 +1,13 @@
+Game -> 
+    <ListGames>
+    Back
+Balance -> 
+    Deposite ->
+        <linkToPaymentService>
+    Withdraw ->
+        >>>AskAmount
+        >>>AskCard
+        Back(Main)
+    Back
+InviteLink (forward message)
+Help - link to another bot
