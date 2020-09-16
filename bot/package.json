@@ -1,0 +1,19 @@
+{
+  "name": "games-bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node -r esm src/index.js",
+    "dev": "nodemon -r esm --ignore ./data/ src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Skrypchenko Mykhailo <skry.michael@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.19.2",
+    "dotenv": "8.2.0",
+    "esm": "^3.2.25",
+    "telegraf": "3.37.0"
+  }
+}
