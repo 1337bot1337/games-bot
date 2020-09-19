@@ -14,7 +14,8 @@
 
 - name: Start app
   docker_compose:
+    files:
+      - live.yml
     project_src: "{{ docker_path }}"
     build: yes
-    scale:
-      api: 2
+    remove_orphans: yes

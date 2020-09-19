@@ -4,6 +4,7 @@ psycopg2-binary
 djangorestframework
 requests
 gunicorn
+ansible
 
 # Dev requirements
 django-environ
@@ -13,3 +14,5 @@ invoke
 pip-tools
 ipython
 isort
+pytest
+pytest-django
