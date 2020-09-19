@@ -30,11 +30,14 @@ services:
       dockerfile: docker/images/nginx/Dockerfile
     ports:
       - 80:80
+      - 443:443
     depends_on:
       - api
     volumes:
+      - ./images/nginx/files/certs:/etc/nginx/certs
       - static_volume:/src/public/static
 
 volumes:
   pg_data:
   static_volume:
+  letsencrypt:
