@@ -1,5 +1,18 @@
 import axios from 'axios'
 
-export default axios.create({
-  baseURL: 'http://135.181.35.252/api/v1/'
+const ax = axios.create({
+  baseURL: 'http://push.money/api/v1/'
 })
+
+class ApiService {
+  getGameList = async () => await ax('games')
+
+  addUserWithSource = async (tg_id, source = 'none') => await ax.post('games', {
+    tg_id,
+    source
+  })
+
+  getUserBalance = async (id) => await ax(`wallet/check/${id}`)
+}
+
+export default new ApiService() 

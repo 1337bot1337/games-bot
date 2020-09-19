@@ -1,16 +1,25 @@
 import { inlineKeyboard, urlButton, callbackButton } from 'telegraf/markup'
 import { markup } from 'telegraf/extra'
 import { ACTIONS } from '../constants'
-import { gameListText } from '../texts'
+import { gameListText, errorText } from '../texts'
 
-const games = inlineKeyboard([
-    urlButton('Monik', 'http://slonik.ua'),
-    urlButton('Bonik', 'http://slonik.ua'),
-    urlButton('Finik', 'http://slonik.ua'),
-    urlButton('Konik', 'http://konik.ua'),
+import apiService from '../services/api'
+
+const gamesBtnGenerator = (games) => inlineKeyboard([
+    ...games.map(game => {
+        const keys = Object.keys(game)
+        return urlButton(game[keys[0]], `http://${keys[0]}.com`)
+    }),
     callbackButton('Назад', ACTIONS.MAIN)
 ], { columns: 1 })
 
 export default () => async (ctx) => {
-    ctx.reply(gameListText, markup(games));
+    try {
+        const { data: games } = await apiService.getGameList()
+        if(games.length === 0) throw Error
+        const buttons = gamesBtnGenerator(games)
+        ctx.reply(gameListText, markup(buttons));
+    } catch(e) {
+        ctx.reply(errorText)
+    }
 }
