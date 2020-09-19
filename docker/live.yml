@@ -1,0 +1,43 @@
+version: "3.5"
+
+services:
+  postgres:
+    image: postgres:11
+    volumes:
+      - pg_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=core_db
+    ports:
+      - "5432:5432"
+  api:
+    build:
+      context: ./../  # games-bot
+      dockerfile: docker/images/api/Dockerfile
+    expose:
+      - 8080
+    depends_on:
+      - postgres
+    volumes:
+      - static_volume:/src/public/static
+    environment:
+      - CORE_DATABASE_WAIT=1
+      - CORE_DATABASE_URL=psql://postgres:postgres@postgres:5432/core_db
+  nginx:
+    build:
+      context: ./../  # games-bot
+      dockerfile: docker/images/nginx/Dockerfile
+    ports:
+      - 80:80
+      - 443:443
+    depends_on:
+      - api
+    volumes:
+      - ./images/nginx/files/certs:/etc/nginx/certs
+      - static_volume:/src/public/static
+
+volumes:
+  pg_data:
+  static_volume:
+  letsencrypt:

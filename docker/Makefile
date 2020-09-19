@@ -11,7 +11,7 @@ init:
 	cp .env ../api/core/config/settings
 
 build:
-	docker-compose build
+	docker-compose -f local.yml build
 
 up:
-	docker-compose up
+	docker-compose -f local.yml up

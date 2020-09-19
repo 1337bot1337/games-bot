@@ -16,3 +16,8 @@ To run project:
 ```bash
 make up
 ```
+
+Note that on the production environment API is served via nginx:
+```bash
+docker-compose -f live.yml -d
+```
