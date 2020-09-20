@@ -6,8 +6,11 @@ import { startText } from '../texts'
 
 
 export default async (ctx) => {
-    console.log(ctx.from)
-    await apiService.addUserWithSource(ctx.from, ctx.startPayload)
+  try {
+    await apiService.postUserWithSource(ctx.from.id, ctx.startPayload || 'none')
     ctx.reply(startText)
     mainBlock()(ctx)
+  } catch (e) {
+    console.log(e)
+  }
 }

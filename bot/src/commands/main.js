@@ -18,9 +18,9 @@ const ButtonsGroup = {
 }
 
 export default (balance) => async (ctx) => {
+  console.log(ctx.from);
   try {
-    await apiService.addUserWithSource(ctx.from, ctx.startPayload)
-    ctx.reply(mainText(balance), ButtonsGroup)
+    ctx.reply(mainText, ButtonsGroup)
   } catch(e) {
     ctx.reply(errorText)
   }
