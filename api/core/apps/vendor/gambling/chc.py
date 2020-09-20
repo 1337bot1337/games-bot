@@ -161,7 +161,7 @@ def get_game_url(
     game_exit: str = "close",
     back_url: str = "https://push.money"
 ):
-    base_url = "https://chplay.net"
+    base_url = "https://chcplay.net"
     payload = {
         "login_code": f"[[{invoice_id}]]",
         "game_id": game_id,
