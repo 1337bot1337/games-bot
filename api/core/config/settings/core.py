@@ -1,5 +1,6 @@
 from core.env import env
 
+MAX_INT_VALUE = 2_147_483_647
 
 DEFAULT_USER_SOURCE = env.str("DEFAULT_USER_SOURCE", default="default")
 
