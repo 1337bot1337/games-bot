@@ -1,10 +1,5 @@
-require("dotenv").config();
-const { BOT_TOKEN } = process.env;
-
-import Telegraf from 'telegraf'
-// import apiService from './services/api'
-
-import mainView from './commands/main'
+import startBlock from './commands/start'
+import mainBlock from './commands/main'
 import helpCommand from './commands/help'
 
 import { withdrawStage } from './commands/Balance/withdraw'
@@ -15,26 +10,19 @@ import { ACTIONS, SCENE } from './constants'
 
 import session from 'telegraf/session'
 
-import Stage from 'telegraf/stage'
-const { enter, leave } = Stage
+import bot from './bot'
 
-const init = async (bot) => {
-    // Middleware
-    bot.use(session())
-    bot.use(withdrawStage.middleware())
-    // Commands
-    bot.start(mainView({ demo: 0, rub: 0, usd: 20 }));
-    bot.help(helpCommand());
-    // Actions
-    bot.action(ACTIONS.MAIN, mainView({ demo: 0, rub: 0, usd: 20 }));
-    bot.action(ACTIONS.WITHDRAW, (ctx) => ctx.scene.enter(SCENE.WITHDRAW_AMOUNT));
-    bot.action(ACTIONS.GAMES, gameList())
-    bot.action(ACTIONS.BALANCE, balance())
+// Middleware
+bot.use(session())
+bot.use(withdrawStage.middleware())
+// Commands
+bot.start(startBlock);
+bot.help(helpCommand());
+// Actions
+bot.action(ACTIONS.MAIN, mainBlock({ demo: 0, rub: 0, usd: 20 }));
+bot.action(ACTIONS.WITHDRAW, (ctx) => ctx.scene.enter(SCENE.WITHDRAW_AMOUNT));
+bot.action(ACTIONS.GAMES, gameList())
+bot.action(ACTIONS.BALANCE, balance())
+bot.action(ACTIONS.INVITE, ctx => ctx.forwardMessage('reddsdf'))
 
-    return bot;
-}
-
-init(new Telegraf(BOT_TOKEN)).then(async (bot) => {
-    await bot.launch();
-    console.log(`Launched ${new Date()}`);
-});
+bot.launch().then(() => console.log(`Launched ${new Date()}`))
