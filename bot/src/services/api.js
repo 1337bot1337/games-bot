@@ -1,24 +1,13 @@
-// import axios from 'axios'
-import fetch from 'node-fetch'
+import axios from 'axios'
 
-// const ax = axios.create({
-//   baseURL: 'https://push.money/api/v1/',
-//   headers: { 'content-type': 'application/json' }
-// })
+const ax = axios.create({
+  baseURL: 'https://push.money/api/v1/',
+  headers: { 'content-type': 'application/json' }
+})
 
-const baseURL = 'https://push.money/api/v1/'
-const headers = { 'Content-Type': 'application/json' }
-
-const makeRequest = async (route, method = 'GET', data) => {
-  const initObj = {
-    method,
-    headers
-  }
-  if(data) initObj.body = JSON.stringify(data)
-  console.log(initObj)
-  return fetch(`${baseURL}${route}`, initObj)
-    // .then(res => res.json())
-    .then(res => console.log(res))
+const makeRequest = async (url, method = 'GET', data) => {
+  const { data: responseData } = await ax({ url, method, data })
+  return responseData
 }
 
 class ApiService {
