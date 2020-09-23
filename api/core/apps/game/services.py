@@ -1,8 +1,35 @@
 from decimal import Decimal
 
+from django.conf import settings
 
-def start_game(*, tg_id: int, game_id: int, amount: Decimal):
-    return {
-        "id": 1,
-        "url": "http://chcplay.net?p=%7B%22login_code%22%3A%22%5B%5B00000000000000%5D%5D%22%2C%22game_id%22%3A1002%2C%22menu_exit%22%3A%22%5",
-    }
+from core.apps.vendor.gambling import chc
+
+
+AVAILABLE_GAMES = (
+    (1003, "Fire Rage +"),
+    (1018, "King of Jewels"),
+    (1019, "Gates of Avalon"),
+    (1024, "Dolphin''s Shell"),
+    (1027, "Lady Luck"),
+    (1028, "Pirates Fortune"),
+    (1031, "Bananas"),
+    (1056, "Extra Super 7"),
+    (1058, "Box of Ra"),
+    (1063, "Rise Of Imperium"),
+)
+
+
+def get_games():
+    client = chc.CHCAPIClient()
+    invoice_id, transaction_id = client.create_invoice(settings.DEFAULT_DEMO_AMOUNT)
+
+    result = []
+    for game_id, game_title in AVAILABLE_GAMES:
+        item = {
+            "demo_link": chc.get_game_url(invoice_id, game_id),
+            "real_link": None,  # TODO: update
+            "title": game_title,
+        }
+        result.append(item)
+
+    return result

@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from django.conf import settings
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
@@ -24,3 +26,25 @@ class WithdrawRequest(common_models.BaseModel):
         default=choices.WithdrawRequestStatus.IN_PROGRESS
     )
     is_active = models.BooleanField(_("Active"), default=True)
+
+
+class Refill(common_models.BaseModel):
+    account = models.ForeignKey(account_models.TelegramAccount, on_delete=models.CASCADE)
+    amount = models.DecimalField(
+        _("Refill amount"),
+        decimal_places=2,
+        max_digits=9,
+        validators=[MinValueValidator(0), MaxValueValidator(settings.MAX_REFILL_AMOUNT_PER_REQUEST)]
+    )
+    multiplier = models.DecimalField(
+        _("Multiplier snapshot"),
+        decimal_places=2,
+        max_digits=5,
+        default=Decimal(1.0)
+    )
+    status = models.CharField(
+        _("Status"),
+        choices=choices.REFILL_STATUS_CHOICES,
+        default=choices.RefillStatus.IN_PROGRESS,
+        max_length=50,
+    )

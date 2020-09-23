@@ -38,3 +38,16 @@ WITHDRAW_REQUEST_STATUS_CHOICES = (
     (WithdrawRequestStatus.REJECTED, _("Withdraw request rejected")),
     (WithdrawRequestStatus.IN_PROGRESS, _("Withdraw request in progress")),
 )
+
+
+class RefillStatus:
+    IN_PROGRESS = 'in_progress'
+    SUCCEED = 'succeed'
+    FAILED = 'failed'
+
+
+REFILL_STATUS_CHOICES = (
+    (RefillStatus.IN_PROGRESS, _("Refill in progress")),
+    (RefillStatus.SUCCEED, _("Refill succeed")),
+    (RefillStatus.FAILED, _("Refill failed")),
+)
