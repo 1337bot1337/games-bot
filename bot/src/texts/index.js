@@ -4,9 +4,9 @@ export const mainText = (`Выбирай игру. Играй. Выводи де
 
 export const balanceText = (balance) => (`
 💼Твой баланс:
-Монет: {balance.real_balance}
-Бонусных монет: {balance.virtual_balance}
-Ожидание на вывод: {balance.withdraw_in_progress_amount}`)
+Монет: ${balance.real_balance}
+Бонусных монет: ${balance.virtual_balance}
+Ожидание на вывод: ${balance.withdraw_in_progress_amount}`)
 
 export const gameListText = 'Список доступных игр. Нажми на выбранную, чтобы перейти'
 

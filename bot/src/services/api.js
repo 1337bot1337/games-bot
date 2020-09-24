@@ -16,16 +16,16 @@ class ApiService {
 
   postUserWithSource = async (tg_id, source) => 
     await makeRequest('accounts/user/', 'POST', {
-      tg_id: 10101010,
-      source: 'Space'
+      tg_id,
+      source
     })
 
   getUserBalance = async (id) => await makeRequest(`wallets/${id}/check/`)
 
   postWithdrawRequest = async (id, amount, card_number) =>
     await makeRequest(`wallets/${id}/withdraw/`, 'POST', {
-      amount: 0,
-      card_number: "1111 1111 1111 1111"
+      amount,
+      card_number
     })
 }
 

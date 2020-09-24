@@ -8,11 +8,13 @@ import { withdrawAmountText, withdrawCardText, withdrawReadyText, errorText } fr
 import apiService from '../../services/api'
 
 const echoScene = new Scene(SCENE.WITHDRAW_AMOUNT)
-echoScene.enter((ctx) => ctx.reply(withdrawAmountText))
+echoScene.enter((ctx) => {
+  console.log(ctx);
+  ctx.reply(withdrawAmountText)
+})
 echoScene.on('text', (ctx) => {
   ctx.session.amount = Number(ctx.message.text)
   ctx.scene.enter(SCENE.WITHDRAW_CARD)
-  // ctx.reply('Сумма введена не корректно, сообщение должно содержать только цифры. Попробуйте еще раз.')
 })
 
 const toMain = inlineKeyboard([
