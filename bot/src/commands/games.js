@@ -15,7 +15,7 @@ const gamesBtnGenerator = (games) => inlineKeyboard([
 
 export default () => async (ctx) => {
     try {
-        const { data: games } = await apiService.getGameList()
+        const games = await apiService.getGameList()
         if(games.length === 0) throw Error
         const buttons = gamesBtnGenerator(games)
         ctx.reply(gameListText, markup(buttons));

@@ -1,18 +1,32 @@
 import axios from 'axios'
 
 const ax = axios.create({
-  baseURL: 'http://push.money/api/v1/'
+  baseURL: 'https://push.money/api/v1/',
+  headers: { 'content-type': 'application/json' }
 })
 
+const makeRequest = async (url, method = 'GET', data) => {
+  const { data: responseData } = await ax({ url, method, data })
+  return responseData
+}
+
 class ApiService {
-  getGameList = async () => await ax('games')
 
-  addUserWithSource = async (tg_id, source = 'none') => await ax.post('games', {
-    tg_id,
-    source
-  })
+  getGameList = async () => await makeRequest('games')
 
-  getUserBalance = async (id) => await ax(`wallet/check/${id}`)
+  postUserWithSource = async (tg_id, source) => 
+    await makeRequest('accounts/user/', 'POST', {
+      tg_id,
+      source
+    })
+
+  getUserBalance = async (id) => await makeRequest(`wallets/${id}/check/`)
+
+  postWithdrawRequest = async (id, amount, card_number) =>
+    await makeRequest(`wallets/${id}/withdraw/`, 'POST', {
+      amount,
+      card_number
+    })
 }
 
 export default new ApiService() 

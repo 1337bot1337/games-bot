@@ -1,7 +1,5 @@
 import { urlButton, callbackButton, switchToChatButton } from 'telegraf/markup'
 
-import apiService from '../services/api'
-
 import { mainText, errorText, inviteText } from '../texts'
 import { ACTIONS } from '../constants'
 
@@ -17,10 +15,9 @@ const ButtonsGroup = {
   }
 }
 
-export default (balance) => async (ctx) => {
+export default () => async (ctx) => {
   try {
-    await apiService.addUserWithSource(ctx.from, ctx.startPayload)
-    ctx.reply(mainText(balance), ButtonsGroup)
+    ctx.reply(mainText, ButtonsGroup)
   } catch(e) {
     ctx.reply(errorText)
   }

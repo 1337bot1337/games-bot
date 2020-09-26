@@ -4,25 +4,33 @@ import { inlineKeyboard, callbackButton } from 'telegraf/markup'
 import { markup } from 'telegraf/extra'
 
 import { SCENE, ACTIONS } from '../../constants'
-import { withdrawAmountText, withdrawCardText, withdrawReadyText } from '../../texts'
+import { withdrawAmountText, withdrawCardText, withdrawReadyText, errorText } from '../../texts'
+import apiService from '../../services/api'
 
 const echoScene = new Scene(SCENE.WITHDRAW_AMOUNT)
-echoScene.enter((ctx) => ctx.reply(withdrawAmountText))
+echoScene.enter((ctx) => {
+  console.log(ctx);
+  ctx.reply(withdrawAmountText)
+})
 echoScene.on('text', (ctx) => {
-  ctx.session.amount = ctx.message.text
+  ctx.session.amount = Number(ctx.message.text)
   ctx.scene.enter(SCENE.WITHDRAW_CARD)
-  // ctx.reply('Сумма введена не корректно, сообщение должно содержать только цифры. Попробуйте еще раз.')
 })
 
 const toMain = inlineKeyboard([
-  callbackButton('В начало', ACTIONS.MAIN)
+  callbackButton('На главную', ACTIONS.MAIN)
 ])
 
 const withdrawScene = new Scene(SCENE.WITHDRAW_CARD)
 withdrawScene.enter((ctx) => ctx.reply(withdrawCardText))
-withdrawScene.leave((ctx) => {
-  console.log(ctx.session)
-  ctx.reply(withdrawReadyText, markup(toMain))
+withdrawScene.leave(async({from, session, reply}) => {
+  try {
+    await apiService.postWithdrawRequest(from.id, session.amount, session.card)
+    reply(withdrawReadyText, markup(toMain))
+  } catch(e) {
+    console.log(e)
+    reply(errorText)
+  }
 })
 withdrawScene.on('text', async (ctx) => {
   // [0-9]{16}
