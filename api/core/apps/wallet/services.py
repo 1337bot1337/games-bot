@@ -25,6 +25,7 @@ def withdraw_wallet(*, tg_account: "account_models.TelegramAccount", amount: Dec
         tg_account.save(update_fields=("real_balance", "updated",))
 
 
+# TODO: create refill object; create refill after status
 def refill_wallet(*, tg_account: "account_models.TelegramAccount", amount: Decimal, is_testing: bool = True) -> str:
     if is_testing:
         with transaction.atomic():
