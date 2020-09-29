@@ -1,0 +1,19 @@
+name: CI
+
+on:
+  push:
+    branches: master # change to [ $default-branch ]
+  pull_request:
+    branches: master # change to [ $default-branch ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Ansible dependency
+        run: pip install ansible
+      - name: Deploy application
+        run: |
+          cd provisioning && ansible-playbook deploy.yml -i inventory -l "develop"

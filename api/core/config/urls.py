@@ -1,6 +1,11 @@
 from django.conf import settings
 from django.contrib import admin
 from django.urls import include, path
+from django.views.generic import TemplateView
+
+
+class IndexView(TemplateView):
+    template_name = 'index.html'
 
 
 internal_api_v1_urlpatterns = [
@@ -11,6 +16,7 @@ internal_api_v1_urlpatterns = [
 
 
 urlpatterns = [
+    path('', IndexView.as_view(), name="index"),
     path('admin/', admin.site.urls),
     path('api/v1/', include(internal_api_v1_urlpatterns), name='internal-api-v1'),
 ]
