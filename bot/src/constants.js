@@ -1,6 +1,7 @@
 export const ACTIONS = {
   MAIN: 'MAIN',
   GAMES: 'GAMES',
+  GAME: 'GAME',
   BALANCE: 'BALANCE',
   DEPOSITE: 'DEPOSITE',
   WITHDRAW: 'WITHDRAW',

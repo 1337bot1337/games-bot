@@ -13,7 +13,7 @@ const BalanceButtons = {
   }
 }
 
-export default () => async (ctx) => {
+export default async (ctx) => {
   const balance = await apiService.getUserBalance(ctx.from.id)
   ctx.reply(balanceText(balance), BalanceButtons);
 }

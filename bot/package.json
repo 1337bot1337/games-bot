@@ -12,8 +12,11 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^0.19.2",
+    "cors": "^2.8.5",
     "dotenv": "8.2.0",
     "esm": "^3.2.25",
+    "express": "^4.17.1",
+    "kue": "^0.11.6",
     "node-fetch": "^2.6.1",
     "telegraf": "3.37.0"
   }

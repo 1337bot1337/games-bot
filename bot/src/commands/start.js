@@ -7,7 +7,7 @@ import { startText } from '../texts'
 
 export default async (ctx) => {
   try {
-    await apiService.postUserWithSource(ctx.from.id, ctx.startPayload || 'none')
+    await apiService.postUserWithSource(ctx.chat.id, ctx.startPayload || 'none').catch(() => console.log('e'))
     ctx.reply(startText)
     mainBlock()(ctx)
   } catch (e) {

@@ -6,14 +6,11 @@ import { gameListText, errorText } from '../texts'
 import apiService from '../services/api'
 
 const gamesBtnGenerator = (games) => inlineKeyboard([
-    ...games.map(game => {
-        const keys = Object.keys(game)
-        return urlButton(game[keys[0]], `http://${keys[0]}.com`)
-    }),
+    ...games.map(({ name, id }) => callbackButton(name, `${ACTIONS.GAME}_${id}`)),
     callbackButton('Назад', ACTIONS.MAIN)
 ], { columns: 1 })
 
-export default () => async (ctx) => {
+export default async (ctx) => {
     try {
         const games = await apiService.getGameList()
         if(games.length === 0) throw Error

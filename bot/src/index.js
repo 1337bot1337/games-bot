@@ -4,13 +4,15 @@ import helpCommand from './commands/help'
 
 import { withdrawStage } from './commands/Balance/withdraw'
 import balance from './commands/Balance/balance'
-import gameList from './commands/games'
+import gamesList from './commands/games'
+import gameInfo from './commands/gameInfo'
 
 import { ACTIONS, SCENE } from './constants'
 
 import session from 'telegraf/session'
 
 import bot from './bot'
+import './broadcast'
 
 // Middleware
 bot.use(session())
@@ -21,8 +23,9 @@ bot.help(helpCommand());
 // Actions
 bot.action(ACTIONS.MAIN, mainBlock({ demo: 0, rub: 0, usd: 20 }));
 bot.action(ACTIONS.WITHDRAW, (ctx) => ctx.scene.enter(SCENE.WITHDRAW_AMOUNT));
-bot.action(ACTIONS.GAMES, gameList())
-bot.action(ACTIONS.BALANCE, balance())
+bot.action(ACTIONS.GAMES, gamesList)
+bot.action(new RegExp(`${ACTIONS.GAME}`), gameInfo)
+bot.action(ACTIONS.BALANCE, balance)
 bot.action(ACTIONS.INVITE, ctx => ctx.forwardMessage('reddsdf'))
 
-bot.launch().then(() => console.log(`Launched ${new Date()}`))
+bot.launch().then(() => console.log(`BOT started`))
