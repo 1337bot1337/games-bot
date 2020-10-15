@@ -105,15 +105,18 @@ def create_game_session(tg_id, type_invoice):
 def get_game(game_id, tg_id, type_game):
     invoice, falied_invoice = create_game_session(tg_id, type_game)
 
-    if invoice:
-        link = chc.get_game_url(invoice, game_id)
-    else:
-        link = falied_invoice
-
     result = {
         "id": game_id,
-        "type": type_game,
-        "url": link,
+        "type": type_game
     }
+
+    if invoice:
+        link = chc.get_game_url(invoice, game_id)
+        result["url"] = link
+    else:
+        err_txt = falied_invoice
+        result["url"] = None
+        result["err_text"] = err_txt
+
     return result
 
