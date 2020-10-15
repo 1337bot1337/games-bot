@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const ax = axios.create({
-  baseURL: 'https://push.money/api/v1/',
+  baseURL: 'https://smarted.store/api/v1/',
   headers: { 'content-type': 'application/json' }
 })
 

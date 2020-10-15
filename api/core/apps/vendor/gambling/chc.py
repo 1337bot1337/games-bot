@@ -159,7 +159,7 @@ def get_game_url(
     game_id: int,
     menu_exit: str = "close",
     game_exit: str = "close",
-    back_url: str = "https://push.money"
+    back_url: str = "https://smarted.store"
 ):
     base_url = "https://chcplay.net"
     payload = {
