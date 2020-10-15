@@ -17,6 +17,8 @@ fi
 
 if [ "CORE_DATABASE_WAIT" ]; then
     python /src/api/manage.py migrate --noinput
+    python /src/api/manage.py makemigrations game
+    python /src/api/manage.py migrate game
 fi
 
 exec "$@"
