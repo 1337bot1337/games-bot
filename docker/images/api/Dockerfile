@@ -9,6 +9,8 @@ ENV PYTHONUNBUFFERED 1
 COPY api/requirements.txt /src/api/
 
 COPY ./docker/images/api/files/ /src/docker/
+RUN apt update && apt install dos2unix
+RUN dos2unix /src/docker/docker-entrypoint.sh
 
 RUN chmod +x /src/docker/docker-entrypoint.sh \
     && pip install --upgrade pip \

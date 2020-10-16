@@ -3,7 +3,8 @@ from decimal import Decimal
 from django.conf import settings
 
 from core.apps.vendor.gambling import chc
-
+from .models import InvoiceData
+from ..account.models import TelegramAccount
 
 AVAILABLE_GAMES = (
     (1003, "Fire Rage +"),
@@ -20,16 +21,102 @@ AVAILABLE_GAMES = (
 
 
 def get_games():
-    client = chc.CHCAPIClient()
-    invoice_id, transaction_id = client.create_invoice(settings.DEFAULT_DEMO_AMOUNT)
 
     result = []
     for game_id, game_title in AVAILABLE_GAMES:
         item = {
-            "demo_link": chc.get_game_url(invoice_id, game_id),
-            "real_link": None,  # TODO: update
+            "id": game_id,
             "title": game_title,
         }
         result.append(item)
 
     return result
+
+
+def update_balance_after_game(account, start_real_balance, start_virtual_balance, end_balance):
+    max_start_balance = start_real_balance + start_virtual_balance
+
+    # user in profit
+    if end_balance > max_start_balance:
+        profit = end_balance - max_start_balance
+        account.real_balance += profit
+        account.save()
+
+    elif end_balance < max_start_balance:  # user at a lose
+        loss = max_start_balance - end_balance
+
+        if loss > start_virtual_balance:
+            account.virtual_balance = 0
+            remainder_of_loss = loss - start_virtual_balance
+            account.real_balance -= remainder_of_loss
+        else:
+            account.virtual_balance -= loss
+
+        account.save()
+
+
+def create_game_session(tg_id, type_invoice):
+    try:
+        account = TelegramAccount.objects.get(tg_id=tg_id)
+    except:
+        return None, 'Telegram user does not exist'
+
+    client = chc.CHCAPIClient()
+    active_invoice = InvoiceData.objects.get_or_none(tg_id=tg_id, status='open', type_invoice=type_invoice)
+
+    if active_invoice:
+        try:
+            closed_invoice = client.close_invoice(active_invoice.invoice_id)
+            if type_invoice == 'real':
+                update_balance_after_game(account, active_invoice.start_real_amount, active_invoice.start_virtual_amount, closed_invoice[0])
+
+            active_invoice.status = 'closed'
+            active_invoice.save()
+        except:
+            return None, 'The previous session is not finished'
+
+    if type_invoice == "demo":
+
+        invoice_id, transaction_id = client.create_invoice(settings.DEFAULT_DEMO_AMOUNT)
+        InvoiceData.objects.create(
+            invoice_id=invoice_id,
+            tr_id=transaction_id,
+            tg_id=tg_id,
+            type_invoice="demo"
+        )
+        return invoice_id, None
+
+    if account.real_balance > Decimal(50):
+        invoice_id, transaction_id = client.create_invoice(Decimal(sum((account.real_balance, account.virtual_balance))))
+
+        InvoiceData.objects.create(
+            invoice_id=invoice_id,
+            tr_id=transaction_id,
+            tg_id=tg_id,
+            type_invoice='real',
+            start_real_amount=account.real_balance,
+            start_virtual_amount=account.virtual_balance
+        )
+        return invoice_id, None
+
+    return None, 'Insufficient funds'
+
+
+def get_game(game_id, tg_id, type_game):
+    invoice, falied_invoice = create_game_session(tg_id, type_game)
+
+    result = {
+        "id": game_id,
+        "type": type_game
+    }
+
+    if invoice:
+        link = chc.get_game_url(invoice, game_id)
+        result["url"] = link
+    else:
+        err_txt = falied_invoice
+        result["url"] = None
+        result["err_text"] = err_txt
+
+    return result
+

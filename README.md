@@ -71,11 +71,21 @@ curl -X GET https://push.money/api/v1/wallets/2147483647/check/
 ```
 
 ## Games list
-When the account is refilled and the invoice is created/updated, user can view the list of available games and play:
 ```bash
 curl -X GET https://push.money/api/v1/games/
 ```
 Each object returns URL for the game which contains the invoice ID (in any time invoice sum/balance can be checked)
+
+## Get demo game
+```bash
+curl -X GET https://push.money/api/v1/games/1003/demo/2147483647
+```
+
+## Get real game
+When the account is refilled and the invoice is created/updated, user can play:
+```bash
+curl -X GET https://push.money/api/v1/games/1003/real/2147483647
+```
 
 ## Withdraw
 ```bash

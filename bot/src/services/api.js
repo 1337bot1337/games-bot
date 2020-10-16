@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const ax = axios.create({
-  baseURL: 'https://push.money/api/v1/',
+  baseURL: 'https://smarted.store/api/v1/',
   headers: { 'content-type': 'application/json' }
 })
 
@@ -29,7 +29,8 @@ class ApiService {
   //   ],
   //   imageUrl: 'https://avatars.mds.yandex.net/get-zen_doc/198334/pub_5b51c25567efea00a91dfd06_5b51c2969b6e4000a9e46cb3/scale_1200'
   // })
-  getGameInfo = async (id) => await makeRequest(`games/${id}`)
+  // getGameInfo = async (id) => await makeRequest(`games/${id}`)
+  getGameInfo = async (id, type_game, tgId) => await makeRequest(`games/${id}/${type_game}/${tgId}/`)
 
   postUserWithSource = async (tg_id, source) => 
     await makeRequest('accounts/user/', 'POST', {

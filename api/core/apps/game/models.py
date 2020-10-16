@@ -1,0 +1,17 @@
+from django.db import models
+from django.utils.translation import ugettext_lazy as _
+from core.apps.common import models as common_models
+
+from ..common.models import GetOrNoneManager
+
+
+class InvoiceData(common_models.BaseModel):
+    objects = GetOrNoneManager()
+
+    tg_id = models.PositiveIntegerField(_("Telegram user ID"))
+    invoice_id = models.CharField(_("Invoice ID"), max_length=250)
+    tr_id = models.CharField(_("Transaction ID"), max_length=250)
+    type_invoice = models.CharField(_("Type invoice"), max_length=250)
+    start_real_amount = models.PositiveIntegerField(default=0)
+    start_virtual_amount = models.PositiveIntegerField(default=0)
+    status = models.CharField(_("Status"), max_length=250, default='open')
