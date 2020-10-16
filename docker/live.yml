@@ -10,7 +10,7 @@ services:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=core_db
     ports:
-      - "5432:5432"
+      - "5433:5432"
   api:
     build:
       context: ./../  # games-bot
@@ -42,8 +42,12 @@ services:
     depends_on:
       - api
     volumes:
-      - ./images/nginx/files/certs:/etc/nginx/certs
+      - ./letsencrypt:/etc/letsencrypt
       - static_volume:/src/public/static
+    environment:
+      - TOS=--agree-tos
+      - EMAIL=sergost1337@gmail.com
+      - DOMAINS=smarted.store  
 
 volumes:
   pg_data:

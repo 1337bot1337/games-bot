@@ -10,7 +10,7 @@ services:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=core_db
     ports:
-      - "5432:5432"
+      - "5433:5432"
   api:
     build:
       context: ./../  # games-bot
@@ -24,17 +24,32 @@ services:
     environment:
       - CORE_DATABASE_WAIT=1
       - CORE_DATABASE_URL=psql://postgres:postgres@postgres:5432/core_db
+  bot:
+    build:
+      context: ./../  # games-bot
+      dockerfile: docker/images/bot/Dockerfile
+    environment:
+      - BOT_TOKEN
+    depends_on:
+      - api
   nginx:
     build:
       context: ./../  # games-bot
       dockerfile: docker/images/nginx/Dockerfile
     ports:
       - 80:80
+      - 443:443
     depends_on:
       - api
     volumes:
+      - ./letsencrypt:/etc/letsencrypt
       - static_volume:/src/public/static
+    environment:
+      - TOS=--agree-tos
+      - EMAIL=sergost1337@gmail.com
+      - DOMAINS=smarted.store  
 
 volumes:
   pg_data:
   static_volume:
+  letsencrypt:
