@@ -6,6 +6,8 @@ import { withdrawStage } from './commands/Balance/withdraw'
 import balance from './commands/Balance/balance'
 import gamesList from './commands/games'
 import gameInfo from './commands/gameInfo'
+import demoGame from './commands/demoGame'
+import realGame from './commands/realGame'
 
 import { ACTIONS, SCENE } from './constants'
 
@@ -25,6 +27,8 @@ bot.action(ACTIONS.MAIN, mainBlock({ demo: 0, rub: 0, usd: 20 }));
 bot.action(ACTIONS.WITHDRAW, (ctx) => ctx.scene.enter(SCENE.WITHDRAW_AMOUNT));
 bot.action(ACTIONS.GAMES, gamesList)
 bot.action(new RegExp(`${ACTIONS.GAME}`), gameInfo)
+bot.action(new RegExp(`${ACTIONS.DEMO_GAME}`), demoGame)
+bot.action(new RegExp(`${ACTIONS.REAL_GAME}`), realGame)
 bot.action(ACTIONS.BALANCE, balance)
 bot.action(ACTIONS.INVITE, ctx => ctx.forwardMessage('reddsdf'))
 

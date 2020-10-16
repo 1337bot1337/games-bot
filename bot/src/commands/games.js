@@ -6,7 +6,7 @@ import { gameListText, errorText } from '../texts'
 import apiService from '../services/api'
 
 const gamesBtnGenerator = (games) => inlineKeyboard([
-    ...games.map(({ name, id }) => callbackButton(name, `${ACTIONS.GAME}_${id}`)),
+    ...games.map(({ title, id }) => callbackButton(title, `${ACTIONS.GAME}_${id}`)),
     callbackButton('Назад', ACTIONS.MAIN)
 ], { columns: 1 })
 

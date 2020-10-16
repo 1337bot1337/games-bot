@@ -10,6 +10,8 @@ export const balanceText = (balance) => (`
 
 export const gameListText = 'Список доступных игр. Нажми на выбранную, чтобы перейти'
 
+export const gameInfoText = 'Выбери за какие фантики хочешь играть?'
+
 export const withdrawAmountText = 'Введите сумму, которую хотите вывести'
 
 export const withdrawCardText = 'Введите номер карты (16 цифр на лицевой стороне вашей карты)'
