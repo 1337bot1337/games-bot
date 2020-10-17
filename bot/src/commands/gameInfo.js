@@ -23,16 +23,15 @@ import apiService from '../services/api'
 const gameBtnGenerator = (id) => inlineKeyboard([
     callbackButton(`Играть на демо фантики`, `${ACTIONS.DEMO_GAME}_${id}`),
     callbackButton(`Играть на реальные фантики`, `${ACTIONS.REAL_GAME}_${id}`),
-    callbackButton('Назад', ACTIONS.MAIN)
+    callbackButton('Назад', ACTIONS.GAMES)
 ],  { columns: 1 })
 
 
 export default async (ctx) => {
     try {
         const gameId = ctx.match.input.split('_')[1]
-        const tgId = ctx.from.id
         const buttons = gameBtnGenerator(gameId)
-        ctx.reply(gameInfoText, markup(buttons));
+        ctx.editMessageText(gameInfoText, markup(buttons));
     } catch(e) {
         ctx.reply(errorText)
     }

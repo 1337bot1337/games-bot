@@ -73,7 +73,7 @@ def create_game_session(tg_id, type_invoice):
             active_invoice.status = 'closed'
             active_invoice.save()
         except:
-            return None, 'The previous session is not finished'
+            return None, {'err_txt': 'The previous session is not finished', 'err_code': 2}
 
     if type_invoice == "demo":
 
@@ -99,7 +99,7 @@ def create_game_session(tg_id, type_invoice):
         )
         return invoice_id, None
 
-    return None, 'Insufficient funds'
+    return None, {"err_txt": "Insufficient funds", "err_code": 1}
 
 
 def get_game(game_id, tg_id, type_game):
@@ -114,9 +114,10 @@ def get_game(game_id, tg_id, type_game):
         link = chc.get_game_url(invoice, game_id)
         result["url"] = link
     else:
-        err_txt = falied_invoice
+        err = falied_invoice
         result["url"] = None
-        result["err_text"] = err_txt
+        result["err_text"] = err["err_txt"],
+        result["err_code"] = err["err_code"]
 
     return result
 

@@ -1,8 +1,7 @@
 import { inlineKeyboard, urlButton, callbackButton } from 'telegraf/markup'
 import { markup } from 'telegraf/extra'
-import { errorText } from '../texts'
+import {ApiGameErrors, errorText} from '../texts'
 import { ACTIONS } from '../constants'
-import { gameInfoText } from '../texts'
 import apiService from '../services/api'
 
 
@@ -17,16 +16,14 @@ export default async (ctx) => {
         const tgId = ctx.from.id
         const type_game = 'real'
         const gameInfo = await apiService.getGameInfo(gameId, type_game, tgId)
-        console.log(gameInfo)
         const url = gameInfo['url']
         if (url)  {
             const bt = realURLbutton(encodeURI(url))
             ctx.reply('Жми!', markup(bt));
         } else {
-            ctx.reply(gameInfo['err_text']);
+            ctx.reply(ApiGameErrors[gameInfo['err_code']]);
         }
     } catch(e) {
-        console.log(e)
         ctx.reply(errorText)
     }
 }
