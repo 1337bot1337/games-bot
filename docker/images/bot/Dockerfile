@@ -1,17 +1,13 @@
-FROM node:12
+FROM python:3.8.2
 
 RUN mkdir /src
 
 COPY ./bot /src/bot/
-RUN apt update
 
 WORKDIR /src/bot
 
-RUN npm install
-
-RUN npm install nodemon --save-dev
+RUN pip install -r requirements.txt
 
 EXPOSE 8081
 
-# set param on 'start' for prod start bot
-CMD ["npm", "run", "dev"]
+CMD ["python", "-u", "run.py"]
