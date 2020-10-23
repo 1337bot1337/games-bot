@@ -32,10 +32,10 @@ def select_type_game(cli, cb):
     game_id = int(data[2])
     game_title = games[game_id]
     game = GameAPI.get_game_url(game_id, type_game, tg_id)
-    game_url = urllib.parse.quote(game['url'], safe='https://chcplay.net?p=')
     if type_game == 'real':
         if game:
             if game['url']:
+                game_url = urllib.parse.quote(game['url'], safe='https://chcplay.net?p=')
                 return cb.message.edit('✅ Ваша игра готова!', reply_markup=kb.play_game(game_title, game_url))
 
             if game['err_code'] == 1:  # Нет денег на счёту
@@ -54,6 +54,7 @@ def select_type_game(cli, cb):
 
         if game:
             if game['url']:
+                game_url = urllib.parse.quote(game['url'], safe='https://chcplay.net?p=')
                 return cb.message.edit('✅ Ваша игра готова!', reply_markup=kb.play_game(game_title, game_url))
 
             if game['err_code'] == 2:  # Не закрыта сессия
