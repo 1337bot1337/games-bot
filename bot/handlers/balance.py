@@ -23,7 +23,7 @@ def balance_menu(cli, cb):
 
     if action == 'withdrawal':
 
-        cb.message.reply('Введите сумму для вывода')
+        cb.message.reply('Введите сумму для вывода', reply_markup=kb.cancel_withdrawal)
         app_amount = WithdrawalClient()
         _amount_withdrawal(app_amount)
 
@@ -31,7 +31,10 @@ def balance_menu(cli, cb):
         amount_done = app_amount.done.wait()
         app_amount.stop()
         if amount_done:
-            cb.message.reply('Введите карту')
+            if app_amount.withdrawal_canceled is True:
+                return cb.message.reply('❌ Вывод отменен')
+
+            cb.message.reply('Введите карту', reply_markup=kb.cancel_withdrawal)
 
             app_card = WithdrawalClient()
             _card_withdrawal(app_card)
@@ -40,6 +43,9 @@ def balance_menu(cli, cb):
             card_done = app_card.done.wait()
             app_card.stop()
             if card_done:
+                if app_amount.withdrawal_canceled is True:
+                    return cb.message.reply('❌ Вывод отменен')
+
                 card = app_card.value
                 amount = app_amount.value
                 withdrawal_request = GameAPI.withdrawal_request(tg_id, card, amount)
@@ -55,19 +61,25 @@ def _amount_withdrawal(client):
         try:
             value = Decimal(m.text.replace(',', '.'))
             if value == 0:
-                return m.reply('Вы не можете вывести 0')
+                return m.reply('Вы не можете вывести 0', reply_markup=kb.cancel_withdrawal)
 
             balance = GameAPI.get_balance(m.from_user.id)
 
             if value > balance['real_balance']:
-                return m.reply(f'Вы не можете вывести больше чем {balance["real_balance"]}')
+                return m.reply(f'Вы не можете вывести больше чем {balance["real_balance"]}', reply_markup=kb.cancel_withdrawal)
 
         except InvalidOperation:
-            return m.reply('Некорректное значение')
+            return m.reply('Некорректное значение', reply_markup=kb.cancel_withdrawal)
 
         cli.value = value
         cli.done.set()
         return m.text
+
+    @client.on_callback_query(Filters.callback_data('cancel_withdrawal'))
+    def cancel_withdrawal_cb(cli, cb):
+        cli.withdrawal_canceled = True
+        cb.message.edit(cb.message.text)
+        cli.done.set()
 
 
 def _card_withdrawal(client):
@@ -79,8 +91,14 @@ def _card_withdrawal(client):
                 raise ValueError
 
         except ValueError:
-            return m.reply('Некорректная карта')
+            return m.reply('Некорректная карта', reply_markup=kb.cancel_withdrawal)
 
         cli.value = card
         cli.done.set()
         return m.text
+
+    @client.on_callback_query(Filters.callback_data('cancel_withdrawal'))
+    def cancel_withdrawal_cb(cli, cb):
+        cli.withdrawal_canceled = True
+        cb.message.edit(cb.message.text)
+        cli.done.set()

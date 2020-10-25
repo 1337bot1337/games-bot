@@ -70,16 +70,11 @@ def play_game(tg_id, game_id):
     return kb
 
 
-# def select_type_game(game_id):
-#
-#     kb = InlineKeyboardMarkup(
-#         [
-#             [InlineKeyboardButton('Играть на Gambling Tokens', callback_data=f'play-real-{game_id}')],
-#             [InlineKeyboardButton('Играть на демо-счёт', callback_data=f'play-demo-{game_id}')]
-#         ]
-#     )
-#     return kb
-
+cancel_withdrawal = InlineKeyboardMarkup(
+    [
+        [InlineKeyboardButton('❌ Отменить вывод', callback_data='cancel_withdrawal')]
+    ]
+)
 
 balance_menu = InlineKeyboardMarkup(
         [
