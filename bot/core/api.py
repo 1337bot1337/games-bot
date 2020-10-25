@@ -2,8 +2,8 @@ import requests
 
 
 class GameAPI:
-    base_url = 'https://smarted.store/api/v1/'
-    #base_url = 'http://api:8080/api/v1/'
+    #base_url = 'https://smarted.store/api/v1/'
+    base_url = 'http://api:8080/api/v1/'
     @classmethod
     def get_games(cls):
         response = requests.get(cls.base_url+'games')
@@ -36,3 +36,11 @@ class GameAPI:
 
         if response.status_code == 200:
             return response.json()
+
+    @classmethod
+    def withdrawal_request(cls, tg_id, card, amount):
+        request_url = f'wallets/{tg_id}/withdraw/'
+        response = requests.post(cls.base_url + request_url, data={'card_number': card, 'amount': amount})
+
+        if response.status_code == 200:
+            return response.status_code

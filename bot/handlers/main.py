@@ -34,3 +34,11 @@ def accept_license_terms(cli, m):
 @Client.on_message(Filters.regex(r'^🔙 В главное меню$'))
 def main_menu(cli, m):
     cli.send_photo(m.chat.id, caption=texts.home_text, photo='media/hello.jpg', reply_markup=kb.menu)
+
+
+@Client.on_callback_query(Filters.callback_data('close'))
+def close_bot_window(cli, cb):
+    try:
+        cb.message.delete()
+    except:
+        pass

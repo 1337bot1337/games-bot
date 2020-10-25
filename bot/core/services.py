@@ -1,5 +1,7 @@
 from .api import GameAPI
-
+from pyrogram import Client
+from config.settings.bot import TG_API_ID, TG_API_HASH, TG_API_TOKEN
+from threading import Event
 
 games = {
     1003: "Fire Rage +",
@@ -27,3 +29,11 @@ game_dict = {
     "Rise Of Imperium": {"id": 1063, "emoji": "🏯", "image": 'media/1063.jpg'},
 }
 
+
+class WithdrawalClient(Client):
+
+    def __init__(self):
+
+        self.done = Event()
+        self.value = None
+        super().__init__(session_name='session_withdrawal', api_id=TG_API_ID, api_hash=TG_API_HASH, bot_token=TG_API_TOKEN)
