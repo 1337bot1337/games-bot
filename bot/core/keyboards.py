@@ -51,8 +51,8 @@ def game_list():
 
 def play_game(tg_id, game_id):
     #balance = GameAPI.get_balance(tg_id)
-    # base_url = 'https://smarted.store/api/v1/'
-    base_url = 'http://127.0.0.1:8000/api/v1/'
+    base_url = GameAPI.base_url
+    #base_url = 'http://127.0.0.1:8000/api/v1/'
     url = base_url+f'games/{game_id}/demo/{tg_id}/'
     # if balance['real_balance'] > 50:
     #     kb = InlineKeyboardMarkup(
