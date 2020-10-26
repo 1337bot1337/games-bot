@@ -5,6 +5,7 @@ from django.conf import settings
 from core.apps.vendor.gambling import chc
 from .models import InvoiceData
 from ..account.models import TelegramAccount
+from core.apps.vendor.exceptions import ThirdPartyVendorException, FailInvoiceVendorException
 
 AVAILABLE_GAMES = (
     (1003, "Fire Rage +"),
@@ -72,7 +73,10 @@ def create_game_session(tg_id, type_invoice):
 
             active_invoice.status = 'closed'
             active_invoice.save()
-        except:
+        except FailInvoiceVendorException:
+            active_invoice.status = 'closed'
+            active_invoice.save()
+        except ThirdPartyVendorException:
             return None, {'err_txt': 'The previous session is not finished', 'err_code': 2}
 
     if type_invoice == "demo":
