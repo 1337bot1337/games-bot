@@ -8,10 +8,12 @@ from ..common.models import GetOrNoneManager
 class InvoiceData(common_models.BaseModel):
     objects = GetOrNoneManager()
 
-    tg_id = models.PositiveIntegerField(_("Telegram user ID"))
+    account = models.ForeignKey('account.TelegramAccount', related_name='invoices', on_delete=models.CASCADE)
     invoice_id = models.CharField(_("Invoice ID"), max_length=250)
     tr_id = models.CharField(_("Transaction ID"), max_length=250)
     type_invoice = models.CharField(_("Type invoice"), max_length=250)
-    start_real_amount = models.PositiveIntegerField(default=0)
-    start_virtual_amount = models.PositiveIntegerField(default=0)
+    start_real_amount = models.DecimalField(decimal_places=2, max_digits=5, default=0)
+    start_virtual_amount = models.DecimalField(decimal_places=2, max_digits=5, default=0)
+    end_real_amount = models.DecimalField(decimal_places=2, max_digits=5, default=0)
+    end_virtual_amount = models.DecimalField(decimal_places=2, max_digits=5, default=0)
     status = models.CharField(_("Status"), max_length=250, default='open')

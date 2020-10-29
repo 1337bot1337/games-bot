@@ -22,7 +22,7 @@ class GameInfoAPIView(ListAPIView):
         tg_id = self.kwargs['tg_id']
 
         game_info = game_services.get_game(game_id, tg_id, type_game)
-        #return Response(data=game_info, status=status.HTTP_200_OK)
+
         if game_info['url']:
             url = urllib.parse.quote(game_info['url'], safe='https://chcplay.net?p=')
             return redirect(url)
