@@ -28,6 +28,7 @@ def start(cli, m):
 
 @Client.on_message(Filters.regex(r'^✅ Принимаю условия$'))
 def accept_license_terms(cli, m):
+    GameAPI.registration_user(tg_id=m.from_user.id, source='none')
     cli.send_photo(m.chat.id, caption=texts.home_text, photo='media/hello.jpg', reply_markup=kb.menu)
 
 
