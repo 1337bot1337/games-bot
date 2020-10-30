@@ -97,8 +97,7 @@ cancel_withdrawal = InlineKeyboardMarkup(
 balance_menu = InlineKeyboardMarkup(
         [
             [InlineKeyboardButton('📥 Пополнить баланс', callback_data='balance-buy_token'),
-             InlineKeyboardButton('📤 Вывести', callback_data='balance-withdrawal')],
-            [InlineKeyboardButton('« Закрыть »', callback_data='close')]
+             InlineKeyboardButton('📤 Вывести', callback_data='balance-withdrawal')]
         ]
 
     )
