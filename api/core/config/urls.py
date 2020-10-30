@@ -16,7 +16,7 @@ internal_api_v1_urlpatterns = [
 
 
 urlpatterns = [
-    path('', IndexView.as_view(), name="index"),
+    #path('', IndexView.as_view(), name="index"),
     path('admin/', admin.site.urls),
     path('api/v1/', include(internal_api_v1_urlpatterns), name='internal-api-v1'),
 ]
