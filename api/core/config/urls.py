@@ -12,6 +12,7 @@ internal_api_v1_urlpatterns = [
     path('accounts/', include('core.apps.account.api.v1.urls', namespace='account'), name='account'),
     path('games/', include('core.apps.game.api.v1.urls', namespace='game'), name='game'),
     path('wallets/', include('core.apps.wallet.api.v1.urls', namespace='wallet'), name='wallet'),
+    path('payment/', include('core.apps.payment.urls', namespace='payment'), name='payment'),
 ]
 
 
