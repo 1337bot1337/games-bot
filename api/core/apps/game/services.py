@@ -92,7 +92,7 @@ def create_game_session(tg_id, type_invoice):
         )
         return invoice_id, None
 
-    if account.real_balance > Decimal(50):
+    if account.real_balance > Decimal(10) or account.virtual_balance > Decimal(0):
         invoice_id, transaction_id = client.create_invoice(Decimal(sum((account.real_balance, account.virtual_balance))/Decimal(10)))
 
         InvoiceData.objects.create(

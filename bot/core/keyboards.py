@@ -41,7 +41,7 @@ tutor_2 = ReplyKeyboardMarkup(
 menu = ReplyKeyboardMarkup(
             [
                 ['🎰 Игры'],
-                ['💰 Баланс', '🤝 Партнёрская программа'],
+                ['💰 Баланс', '🤝 Пригласить друга'],
                 ['❓ Помощь']
             ],
             resize_keyboard=True,
@@ -103,3 +103,10 @@ balance_menu = InlineKeyboardMarkup(
         ]
 
     )
+
+
+support = InlineKeyboardMarkup(
+    [
+        [InlineKeyboardButton('🟢 Связаться с тех. поддержкой', url='https://t.me/GamblingGameSupport')]
+    ]
+)

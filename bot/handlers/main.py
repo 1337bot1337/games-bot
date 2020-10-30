@@ -63,3 +63,8 @@ def close_bot_window(cli, cb):
 
 # @Client.on_message(Filters.regex(r'^🤝 Партнёрская программа$'))
 # def affiliate_kb(cli, m):
+
+
+@Client.on_message(Filters.regex(r'^❓ Помощь$'))
+def help_kb(cli, m):
+    m.reply('Для того, чтобы связаться с технической поддержкой нажмите кнопку под этим сообщением', reply_markup=kb.support)
