@@ -17,6 +17,26 @@ accept_license_terms = ReplyKeyboardMarkup(
             resize_keyboard=True,
         )
 
+onboarding = ReplyKeyboardMarkup(
+    [
+        ['✅  Пройти обучение']
+    ],
+        resize_keyboard=True,
+)
+
+tutor_1 = ReplyKeyboardMarkup(
+    [
+        ['⏭ Cледующий шаг']
+    ],
+        resize_keyboard=True,
+)
+
+tutor_2 = ReplyKeyboardMarkup(
+    [
+        ['✔️ Понятно, спасибо!']
+    ],
+        resize_keyboard=True,
+)
 
 menu = ReplyKeyboardMarkup(
             [
@@ -50,7 +70,6 @@ def game_list():
 
 
 def play_game(tg_id, game_id):
-    #balance = GameAPI.get_balance(tg_id)
     base_url = GameAPI.base_url
     #base_url = 'http://127.0.0.1:8000/api/v1/'
     url = base_url+f'games/{game_id}/demo/{tg_id}/'
@@ -63,7 +82,7 @@ def play_game(tg_id, game_id):
     #     )
     kb = InlineKeyboardMarkup(
         [
-            [InlineKeyboardButton('Играть на Gambling Tokens', url=base_url+f'games/{game_id}/real/{tg_id}/')],
+            [InlineKeyboardButton('Играть', url=base_url+f'games/{game_id}/real/{tg_id}/')],
             [InlineKeyboardButton("Играть на демо-счёт", url=base_url+f'games/{game_id}/demo/{tg_id}/')]
         ]
     )
@@ -78,7 +97,7 @@ cancel_withdrawal = InlineKeyboardMarkup(
 
 balance_menu = InlineKeyboardMarkup(
         [
-            [InlineKeyboardButton('📥 Купить Gambling Tokens', callback_data='balance-buy_token'),
+            [InlineKeyboardButton('📥 Пополнить баланс', callback_data='balance-buy_token'),
              InlineKeyboardButton('📤 Вывести', callback_data='balance-withdrawal')],
             [InlineKeyboardButton('« Закрыть »', callback_data='close')]
         ]
