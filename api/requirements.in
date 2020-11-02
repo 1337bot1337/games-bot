@@ -16,3 +16,4 @@ ipython
 isort
 pytest
 pytest-django
+APScheduler

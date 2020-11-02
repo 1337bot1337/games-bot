@@ -94,6 +94,12 @@ cancel_withdrawal = InlineKeyboardMarkup(
     ]
 )
 
+cancel_deposit = InlineKeyboardMarkup(
+    [
+        [InlineKeyboardButton('❌ Отменить депозит', callback_data='cancel_deposit')]
+    ]
+)
+
 balance_menu = InlineKeyboardMarkup(
         [
             [InlineKeyboardButton('📥 Пополнить баланс', callback_data='balance-buy_token'),
@@ -106,5 +112,14 @@ balance_menu = InlineKeyboardMarkup(
 support = InlineKeyboardMarkup(
     [
         [InlineKeyboardButton('🟢 Связаться с тех. поддержкой', url='https://t.me/GamblingGameSupport')]
+    ]
+)
+
+
+def deposit_url(tg_id, amount):
+    url = GameAPI.deposit_user(tg_id, amount)
+    return InlineKeyboardMarkup(
+    [
+        [InlineKeyboardButton('Перейти к оплате', url=url)]
     ]
 )

@@ -30,11 +30,11 @@ game_dict = {
 }
 
 
-class WithdrawalClient(Client):
+class BalanceClient(Client):
 
     def __init__(self):
 
         self.done = Event()
         self.value = None
-        self.withdrawal_canceled = False
-        super().__init__(session_name='session_withdrawal', api_id=TG_API_ID, api_hash=TG_API_HASH, bot_token=TG_API_TOKEN)
+        self.event_canceled = False
+        super().__init__(session_name='session_balance', api_id=TG_API_ID, api_hash=TG_API_HASH, bot_token=TG_API_TOKEN)

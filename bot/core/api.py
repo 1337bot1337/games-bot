@@ -2,8 +2,8 @@ import requests
 
 
 class GameAPI:
-    base_url = 'https://smarted.store/api/v1/'
-    #base_url = 'http://api:8080/api/v1/'
+    #base_url = 'https://smarted.store/api/v1/'
+    base_url = 'http://api:8080/api/v1/'
     @classmethod
     def get_games(cls):
         response = requests.get(cls.base_url+'games')
@@ -44,3 +44,8 @@ class GameAPI:
 
         if response.status_code == 200:
             return response.status_code
+
+    @classmethod
+    def deposit_user(cls, tg_id, amount):
+
+        return cls.base_url+f'payment/generate/{tg_id}/{amount}/'

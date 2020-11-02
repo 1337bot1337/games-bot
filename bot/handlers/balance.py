@@ -3,7 +3,7 @@ from core import texts
 from core.api import GameAPI
 from core import keyboards as kb
 from threading import Event
-from core.services import WithdrawalClient
+from core.services import BalanceClient
 from decimal import Decimal, InvalidOperation
 
 
@@ -19,31 +19,38 @@ def balance_menu(cli, cb):
     action = cb.data.split('-')[1]
 
     if action == 'buy_token':
-        cli.answer_callback_query(cb.id, 'Скоро...')
+        cb.message.reply('Введите желаемую сумму пополнения\n'
+                         '**Минимальная сумма**: 100 руб.')
+        deposit_client = BalanceClient()
+        _deposit(deposit_client)
+        deposit_client.start()
+
+        deposit_client.done.wait()
+        deposit_client.stop()
 
     if action == 'withdrawal':
 
         cb.message.reply('Введите сумму для вывода', reply_markup=kb.cancel_withdrawal)
-        app_amount = WithdrawalClient()
+        app_amount = BalanceClient()
         _amount_withdrawal(app_amount)
 
         app_amount.start()
         amount_done = app_amount.done.wait()
         app_amount.stop()
         if amount_done:
-            if app_amount.withdrawal_canceled is True:
+            if app_amount.event_canceled is True:
                 return cb.message.reply('❌ Вывод отменен')
 
             cb.message.reply('Введите карту', reply_markup=kb.cancel_withdrawal)
 
-            app_card = WithdrawalClient()
+            app_card = BalanceClient()
             _card_withdrawal(app_card)
             app_card.start()
 
             card_done = app_card.done.wait()
             app_card.stop()
             if card_done:
-                if app_amount.withdrawal_canceled is True:
+                if app_amount.event_canceled is True:
                     return cb.message.reply('❌ Вывод отменен')
 
                 card = app_card.value
@@ -77,7 +84,7 @@ def _amount_withdrawal(client):
 
     @client.on_callback_query(Filters.callback_data('cancel_withdrawal'))
     def cancel_withdrawal_cb(cli, cb):
-        cli.withdrawal_canceled = True
+        cli.event_canceled = True
         cb.message.edit(cb.message.text)
         cli.done.set()
 
@@ -99,6 +106,28 @@ def _card_withdrawal(client):
 
     @client.on_callback_query(Filters.callback_data('cancel_withdrawal'))
     def cancel_withdrawal_cb(cli, cb):
-        cli.withdrawal_canceled = True
+        cli.event_canceled = True
         cb.message.edit(cb.message.text)
+        cli.done.set()
+
+
+def _deposit(client):
+
+    @client.on_message()
+    def deposit_amount(cli, m):
+        try:
+            amount = Decimal(m.text.replace(',', '.'))
+            if amount == 0:
+                return m.reply('Вы не можете пополнить на 0', reply_markup=kb.cancel_deposit)
+
+        except InvalidOperation:
+            return m.reply('Некорректное значение', reply_markup=kb.cancel_deposit)
+
+        m.reply(f'Перейдите по ссылке для пополнения счёта на {amount} руб.', reply_markup=kb.deposit_url(m.from_user.id, amount))
+        cli.done.set()
+
+    @client.on_callback_query(Filters.callback_data('cancel_deposit'))
+    def cancel_withdrawal_cb(cli, cb):
+        cb.message.edit(cb.message.text)
+        cb.message.repy('Пополнение баланса отменено.')
         cli.done.set()
