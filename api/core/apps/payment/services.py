@@ -6,6 +6,7 @@ from core.apps.wallet.services import refill_wallet
 from core.apps.statistic.services import create_record
 from decimal import Decimal
 
+
 def generate_order_id():
     while True:
         order_id = random.choice(range(10000, 99999999))

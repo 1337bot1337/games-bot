@@ -8,7 +8,7 @@ from core.apps.account.models import TelegramAccount
 from core.apps.payment.models import PaymentOrder
 from core.apps.payment.freekassa.api import FreeKassaApi
 
-from .services import generate_order_id, check_deposit
+from .services import generate_order_id, check_deposit, new_refill
 
 
 class CallbackPayment(ListAPIView):
@@ -17,10 +17,9 @@ class CallbackPayment(ListAPIView):
         valid_deposit = check_deposit(request)
 
         if valid_deposit:
+            print('VALID')
 
-            order_id = int(request.data['MERCHANT_ORDER_ID'])
-
-
+        new_refill(request)
 
 
 class GeneratePaymentLink(ListAPIView):
