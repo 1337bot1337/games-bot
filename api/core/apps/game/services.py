@@ -46,11 +46,11 @@ def update_balance_after_game(account, game_id, start_real_balance, start_virtua
         account.save()
 
         statistic_data = {
-            'game_id': game_id,
+            'game_id': str(game_id),
             'result': 'win',
-            'amount': profit,
-            'start_real_balance': start_real_balance,
-            'start_bonus_balance': start_virtual_balance,
+            'amount': str(profit),
+            'start_real_balance': str(start_real_balance),
+            'start_bonus_balance': str(start_virtual_balance)
         }
 
     elif end_balance < max_start_balance:  # user at a lose
@@ -66,19 +66,19 @@ def update_balance_after_game(account, game_id, start_real_balance, start_virtua
         account.save()
 
         statistic_data = {
-            'game_id': game_id,
+            'game_id': str(game_id),
             'result': 'lose',
-            'amount': loss,
-            'start_real_balance': start_real_balance,
-            'start_bonus_balance': start_virtual_balance,
+            'amount': str(loss),
+            'start_real_balance': str(start_real_balance),
+            'start_bonus_balance': str(start_virtual_balance)
         }
     else:  # draw
 
         statistic_data = {
-            'game_id': game_id,
+            'game_id': str(game_id),
             'result': 'draw',
-            'start_real_balance': start_real_balance,
-            'start_bonus_balance': start_virtual_balance,
+            'start_real_balance': str(start_real_balance),
+            'start_bonus_balance': str(start_virtual_balance)
         }
 
     create_record(account.tg_id, type_action='end_game', data=statistic_data)

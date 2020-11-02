@@ -15,3 +15,4 @@ class HelpBot(Client):
             app.send_message(tg_id, text)
         except:
             pass
+        app.stop()

@@ -41,7 +41,7 @@ def withdraw_wallet(*, tg_account: "account_models.TelegramAccount", amount: Dec
 
 
 def refill_wallet(tg_id, amount):
-    account = account_models.TelegramAccount.objects.get(tg_id)
+    account = account_models.TelegramAccount.objects.get(tg_id=tg_id)
 
     account.real_balance += Decimal(amount)
     bonus = apply_multiplier(amount=amount)
