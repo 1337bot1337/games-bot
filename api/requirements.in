@@ -17,3 +17,5 @@ isort
 pytest
 pytest-django
 APScheduler
+Pyrogram
+TgCrypto
