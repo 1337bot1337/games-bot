@@ -15,8 +15,8 @@ class TelegramAccount(common_models.BaseModel):
         return f"{self.tg_id} (registration date: {self.created})"
 
 
-class TelegramAccountStatistic(models.Model):
-    account = models.OneToOneField(TelegramAccount, related_name='statistic', on_delete=models.CASCADE)
-    total_deposit = models.DecimalField(decimal_places=2, max_digits=10, default=0)
-    amount_winning = models.DecimalField(decimal_places=2, max_digits=10, default=0)
-    amount_lost = models.DecimalField(decimal_places=2, max_digits=10, default=0)
+# class TelegramAccountStatistic(models.Model):
+#     account = models.OneToOneField(TelegramAccount, related_name='statistic', on_delete=models.CASCADE)
+#     total_deposit = models.DecimalField(decimal_places=2, max_digits=10, default=0)
+#     amount_winning = models.DecimalField(decimal_places=2, max_digits=10, default=0)
+#     amount_lost = models.DecimalField(decimal_places=2, max_digits=10, default=0)

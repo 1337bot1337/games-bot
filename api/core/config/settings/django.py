@@ -29,6 +29,8 @@ INSTALLED_APPS = [
     'core.apps.vendor',
     'core.apps.game',
     'core.apps.payment',
+    'core.apps.helpbot',
+    'core.apps.statistic',
 ]
 
 if DEBUG:

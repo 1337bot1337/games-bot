@@ -9,6 +9,7 @@ class InvoiceData(common_models.BaseModel):
     objects = GetOrNoneManager()
 
     account = models.ForeignKey('account.TelegramAccount', related_name='invoices', on_delete=models.CASCADE)
+    game_id = models.PositiveIntegerField(_("Game ID"), max_length=250)
     invoice_id = models.CharField(_("Invoice ID"), max_length=250)
     tr_id = models.CharField(_("Transaction ID"), max_length=250)
     type_invoice = models.CharField(_("Type invoice"), max_length=250)

@@ -2,6 +2,8 @@ from pyrogram import ReplyKeyboardMarkup, InlineKeyboardMarkup, InlineKeyboardBu
 from .services import game_dict as games
 from .api import GameAPI
 import urllib
+
+
 select_language = ReplyKeyboardMarkup(
             [
                 ['🇬🇧 English'],
@@ -102,8 +104,8 @@ cancel_deposit = InlineKeyboardMarkup(
 
 balance_menu = InlineKeyboardMarkup(
         [
-            [InlineKeyboardButton('📥 Пополнить баланс', callback_data='balance-buy_token'),
-             InlineKeyboardButton('📤 Вывести', callback_data='balance-withdrawal')]
+            [InlineKeyboardButton('📥 Пополнить баланс', callback_data='balance-buy_token')],
+            [InlineKeyboardButton('📤 Вывести', callback_data='balance-withdrawal')]
         ]
 
     )

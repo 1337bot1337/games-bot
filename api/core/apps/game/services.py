@@ -4,8 +4,10 @@ from django.conf import settings
 
 from core.apps.vendor.gambling import chc
 from .models import InvoiceData
-from ..account.models import TelegramAccount
+from core.apps.account.models import TelegramAccount
 from core.apps.vendor.exceptions import ThirdPartyVendorException, FailInvoiceVendorException
+
+from core.apps.statistic.services import create_record
 
 AVAILABLE_GAMES = (
     (1003, "Fire Rage +"),
@@ -34,15 +36,22 @@ def get_games():
     return result
 
 
-def update_balance_after_game(account, start_real_balance, start_virtual_balance, end_balance):
+def update_balance_after_game(account, game_id, start_real_balance, start_virtual_balance, end_balance):
     max_start_balance = start_real_balance + start_virtual_balance
 
     # user in profit
     if end_balance > max_start_balance:
         profit = end_balance - max_start_balance
         account.real_balance += profit
-        account.statistic.amount_winning += profit
         account.save()
+
+        statistic_data = {
+            'game_id': game_id,
+            'result': 'win',
+            'amount': profit,
+            'start_real_balance': start_real_balance,
+            'start_bonus_balance': start_virtual_balance,
+        }
 
     elif end_balance < max_start_balance:  # user at a lose
         loss = max_start_balance - end_balance
@@ -51,14 +60,31 @@ def update_balance_after_game(account, start_real_balance, start_virtual_balance
             account.virtual_balance = 0
             remainder_of_loss = loss - start_virtual_balance
             account.real_balance -= remainder_of_loss
-            account.statistic.amount_lost += remainder_of_loss
         else:
             account.virtual_balance -= loss
 
         account.save()
 
+        statistic_data = {
+            'game_id': game_id,
+            'result': 'lose',
+            'amount': loss,
+            'start_real_balance': start_real_balance,
+            'start_bonus_balance': start_virtual_balance,
+        }
+    else:  # draw
 
-def create_game_session(tg_id, type_invoice):
+        statistic_data = {
+            'game_id': game_id,
+            'result': 'draw',
+            'start_real_balance': start_real_balance,
+            'start_bonus_balance': start_virtual_balance,
+        }
+
+    create_record(account.tg_id, type_action='end_game', data=statistic_data)
+
+
+def create_game_session(tg_id, game_id, type_invoice):
     try:
         account = TelegramAccount.objects.get(tg_id=tg_id)
     except:
@@ -86,6 +112,7 @@ def create_game_session(tg_id, type_invoice):
         invoice_id, transaction_id = client.create_invoice(settings.DEFAULT_DEMO_AMOUNT/100)
         InvoiceData.objects.create(
             invoice_id=invoice_id,
+            game_id=game_id,
             tr_id=transaction_id,
             account=account,
             type_invoice="demo"
@@ -97,6 +124,7 @@ def create_game_session(tg_id, type_invoice):
 
         InvoiceData.objects.create(
             invoice_id=invoice_id,
+            game_id=game_id,
             tr_id=transaction_id,
             account=account,
             type_invoice='real',
@@ -109,7 +137,7 @@ def create_game_session(tg_id, type_invoice):
 
 
 def get_game(game_id, tg_id, type_game):
-    invoice, falied_invoice = create_game_session(tg_id, type_game)
+    invoice, falied_invoice = create_game_session(tg_id, game_id, type_game)
     result = {
         "id": game_id,
         "type": type_game

@@ -19,3 +19,8 @@ DEFAULT_DEMO_AMOUNT = env.int("DEFAULT_DEMO_AMOUNT", default=1_000)
 # FreeKassa
 MERCHANT_ID = env.str("MERCHANT_ID")
 FIRST_SECRET = env.str("FIRST_SECRET")
+
+# Telegram help bot
+TG_API_ID = env.str("TG_API_ID")
+TG_API_HASH = env.str("TG_API_HASH")
+TG_API_TOKEN = env.str("TG_API_TOKEN")
