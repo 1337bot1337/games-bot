@@ -55,7 +55,7 @@ toml==0.10.1              # via pytest
 traitlets==5.0.4          # via ipython
 urllib3==1.25.10          # via requests
 wcwidth==0.2.5            # via prompt-toolkit
-
+APScheduler==3.6.3
 # The following packages are considered to be unsafe in a requirements file:
 # pip
 # setuptools

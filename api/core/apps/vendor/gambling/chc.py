@@ -8,7 +8,7 @@ from django.conf import settings
 from django.utils.http import urlencode
 from rest_framework import status
 
-from core.apps.vendor.exceptions import ThirdPartyVendorException
+from core.apps.vendor.exceptions import ThirdPartyVendorException, FailInvoiceVendorException
 
 
 def append_transaction(func):
@@ -89,6 +89,8 @@ class CHCAPIClient(CHCBlackPayloadMixin, SignBuilderMixin):
     def create_request(url: str, params: dict = None):
         response = requests.get(url, params=params)
         if response.status_code != status.HTTP_200_OK or not response.json()["success"]:
+            if response.json()["code"] == 60:
+                raise FailInvoiceVendorException()
             raise ThirdPartyVendorException()
         return response.json()
 
@@ -159,7 +161,7 @@ def get_game_url(
     game_id: int,
     menu_exit: str = "close",
     game_exit: str = "close",
-    back_url: str = "https://smarted.store"
+    back_url: str = "https://t.me/GamblingGamesBot"
 ):
     base_url = "https://chcplay.net"
     payload = {

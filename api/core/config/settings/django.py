@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     'core.apps.wallet',
     'core.apps.vendor',
     'core.apps.game',
+    'core.apps.payment',
 ]
 
 if DEBUG:

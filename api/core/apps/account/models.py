@@ -7,9 +7,16 @@ from core.apps.common import models as common_models
 
 class TelegramAccount(common_models.BaseModel):
     tg_id = models.PositiveIntegerField(_("Telegram user ID"), unique=True)
-    real_balance = models.PositiveIntegerField(_("Real balance amount"), default=0)
-    virtual_balance = models.PositiveIntegerField(_("Virtual balance amount"), default=0)
+    real_balance = models.DecimalField(_("Real balance amount"), decimal_places=2, max_digits=10, default=0)
+    virtual_balance = models.DecimalField(_("Virtual balance amount"), decimal_places=2, max_digits=10, default=0)
     source = models.CharField(_("Source of user"), max_length=50, default=settings.DEFAULT_USER_SOURCE)
 
     def __str__(self):
         return f"{self.tg_id} (registration date: {self.created})"
+
+
+class TelegramAccountStatistic(models.Model):
+    account = models.OneToOneField(TelegramAccount, related_name='statistic', on_delete=models.CASCADE)
+    total_deposit = models.DecimalField(decimal_places=2, max_digits=10, default=0)
+    amount_winning = models.DecimalField(decimal_places=2, max_digits=10, default=0)
+    amount_lost = models.DecimalField(decimal_places=2, max_digits=10, default=0)
