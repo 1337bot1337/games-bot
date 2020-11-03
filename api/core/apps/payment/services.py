@@ -57,6 +57,7 @@ def new_refill(request):
     bonus = refill_wallet(order.tg_id, amount)
     order.status = 'payed'
     order.save()
-    create_record(order.tg_id, 'deposit', data={"amount": amount, "bonus": bonus})    send_successful_deposit(order.tg_id, amount, bonus)
+    register_statistic(order.tg_id, 'deposit', data={"amount": amount, "bonus": bonus})
+    send_successful_deposit(order.tg_id, amount, bonus)
 
 
