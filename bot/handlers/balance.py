@@ -11,6 +11,7 @@ from decimal import Decimal, InvalidOperation
 def balance_bt(cli, m):
     balances = GameAPI.get_balance(m.from_user.id)
     m.reply(texts.balance(balances), reply_markup=kb.balance_menu)
+    GameAPI.send_statistic(m.from_user.id, 'press_button', data={"button_name": "balance", "location": "main_menu"})
 
 
 @Client.on_callback_query(Filters.create(lambda _, cb: cb.data.startswith('balance')))
@@ -20,7 +21,8 @@ def balance_menu(cli, cb):
 
     if action == 'buy_token':
         cb.message.reply('Введите желаемую сумму пополнения\n'
-                         '**Минимальная сумма**: 100 руб.')
+                         '**Минимальная сумма**: 100 руб.',
+                         reply_markup=kb.cancel_deposit)
         deposit_client = BalanceClient()
         _deposit(deposit_client)
         deposit_client.start()
@@ -28,7 +30,11 @@ def balance_menu(cli, cb):
         deposit_client.done.wait()
         deposit_client.stop()
 
+        GameAPI.send_statistic(tg_id, 'press_button', data={"button_name": "deposit", "location": "main_menu/balance"})
+
     if action == 'withdrawal':
+        GameAPI.send_statistic(tg_id, 'press_button',
+                               data={"button_name": "withdrawal", "location": "main_menu/balance"})
 
         cb.message.reply('Введите сумму для вывода', reply_markup=kb.cancel_withdrawal)
         app_amount = BalanceClient()
@@ -51,6 +57,8 @@ def balance_menu(cli, cb):
             app_card.stop()
             if card_done:
                 if app_amount.event_canceled is True:
+                    GameAPI.send_statistic(tg_id, 'press_button', data={"button_name": "cancel_withdrawal",
+                                                                                 "location": "main_menu/balance/withdrawal"})
                     return cb.message.reply('❌ Вывод отменен')
 
                 card = app_card.value
@@ -86,6 +94,7 @@ def _amount_withdrawal(client):
     def cancel_withdrawal_cb(cli, cb):
         cli.event_canceled = True
         cb.message.edit(cb.message.text)
+
         cli.done.set()
 
 
@@ -130,4 +139,6 @@ def _deposit(client):
     def cancel_withdrawal_cb(cli, cb):
         cb.message.edit(cb.message.text)
         cb.message.repy('Пополнение баланса отменено.')
+        GameAPI.send_statistic(cb.from_user.id, 'press_button', data={"button_name": "cancel_deposit",
+                                                                     "location": "main_menu/balance/deposit"})
         cli.done.set()

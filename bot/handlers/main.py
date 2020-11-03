@@ -32,20 +32,22 @@ def start(cli, m):
 #     cli.send_photo(m.chat.id, caption=texts.home_text, photo='media/hello.jpg', reply_markup=kb.menu)
 
 
-@Client.on_message(Filters.regex(r'^✅  Пройти обучение$'))
+@Client.on_message(Filters.regex(r'^👩‍🎓 Пройти обучение$'))
 def accept_license_terms(cli, m):
     cli.send_photo(m.chat.id, caption=texts.tutor_1, photo='media/tutor_1.jpg', reply_markup=kb.tutor_1)
 
 
-@Client.on_message(Filters.regex(r'^⏭ Cледующий шаг$'))
+@Client.on_message(Filters.regex(r'^👉 Следующий шаг$'))
 def tutor1_kb(cli, m):
-    m.reply(texts.tutor_2, reply_markup=kb.tutor_2)
+    m.reply(texts.tutor_2)
+    m.reply(texts.tutor_3, reply_markup=kb.tutor_2)
 
 
-@Client.on_message(Filters.regex(r'^✔️ Понятно, спасибо!$'))
+@Client.on_message(Filters.regex(r'^Понятно, спасибо!$'))
 def tutor2_kb(cli, m):
     m.reply(texts.finish_tutor)
     cli.send_photo(m.chat.id, caption=texts.home_text, photo='media/hello.jpg', reply_markup=kb.menu)
+    GameAPI.send_statistic(m.from_user.id, 'finish_tutorial', data={})
 
 
 @Client.on_message(Filters.regex(r'^🔙 В главное меню$'))
@@ -68,3 +70,4 @@ def close_bot_window(cli, cb):
 @Client.on_message(Filters.regex(r'^❓ Помощь$'))
 def help_kb(cli, m):
     m.reply('Для того, чтобы связаться с технической поддержкой нажмите кнопку под этим сообщением', reply_markup=kb.support)
+    GameAPI.send_statistic(m.from_user.id, 'press_button', data={"button_name": "help", "location": "main_menu"})

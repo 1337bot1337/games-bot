@@ -2,8 +2,8 @@ import requests
 
 
 class GameAPI:
-    base_url = 'https://smarted.store/api/v1/'
-    #base_url = 'http://api:8080/api/v1/'
+    #base_url = 'https://smarted.store/api/v1/'
+    base_url = 'http://api:8080/api/v1/'
     @classmethod
     def get_games(cls):
         response = requests.get(cls.base_url+'games')
@@ -49,3 +49,11 @@ class GameAPI:
     def deposit_user(cls, tg_id, amount):
 
         return cls.base_url+f'payment/generate/{tg_id}/{amount}/'
+
+    @classmethod
+    def send_statistic(cls, tg_id, type_action, data):
+        request_url = 'http://api:8080/api/v1/statistic/register/'
+        r=requests.post(request_url, json={"tg_id": tg_id, "type_action": type_action, "data": data})
+
+
+

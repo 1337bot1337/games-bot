@@ -8,6 +8,7 @@ from django.utils.translation import gettext_lazy as _
 from core.apps.account import models as account_models
 from core.apps.common import selectors as common_selectors
 from core.apps.wallet import models as wallet_models
+from core.apps.statistic import services as statistic_services
 
 
 def apply_multiplier(*, amount: Decimal) -> int:
@@ -23,6 +24,7 @@ def withdraw_wallet(*, tg_account: "account_models.TelegramAccount", amount: Dec
         wallet_models.WithdrawRequest.objects.create(account=tg_account, amount=amount, card_number=card_number)
         tg_account.real_balance = F("real_balance") - amount
         tg_account.save(update_fields=("real_balance", "updated",))
+        statistic_services.register_statistic(tg_id=tg_account.tg_id, type_action='withdrawal_request', data={"amount": int(amount), "card": card_number})
 
 
 # # TODO: create refill object; create refill after status

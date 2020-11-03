@@ -7,7 +7,8 @@ from .models import InvoiceData
 from core.apps.account.models import TelegramAccount
 from core.apps.vendor.exceptions import ThirdPartyVendorException, FailInvoiceVendorException
 
-from core.apps.statistic.services import create_record
+from core.apps.statistic import services as statistic_services
+from core.apps.helpbot import services as helpbot_services
 
 AVAILABLE_GAMES = (
     (1003, "Fire Rage +"),
@@ -48,9 +49,9 @@ def update_balance_after_game(account, game_id, start_real_balance, start_virtua
         statistic_data = {
             'game_id': game_id,
             'result': 'win',
-            'amount': profit,
-            'start_real_balance': start_real_balance,
-            'start_bonus_balance': start_virtual_balance,
+            'amount': int(profit),
+            'start_real_balance': int(start_real_balance),
+            'start_bonus_balance': int(start_virtual_balance),
         }
 
     elif end_balance < max_start_balance:  # user at a lose
@@ -68,20 +69,20 @@ def update_balance_after_game(account, game_id, start_real_balance, start_virtua
         statistic_data = {
             'game_id': game_id,
             'result': 'lose',
-            'amount': loss,
-            'start_real_balance': start_real_balance,
-            'start_bonus_balance': start_virtual_balance,
+            'amount': int(loss),
+            'start_real_balance': int(start_real_balance),
+            'start_bonus_balance': int(start_virtual_balance),
         }
     else:  # draw
 
         statistic_data = {
             'game_id': game_id,
             'result': 'draw',
-            'start_real_balance': start_real_balance,
-            'start_bonus_balance': start_virtual_balance,
+            'start_real_balance': int(start_real_balance),
+            'start_bonus_balance': int(start_virtual_balance),
         }
 
-    create_record(account.tg_id, type_action='end_game', data=statistic_data)
+    statistic_services.register_statistic(account.tg_id, type_action='end_game', data=statistic_data)
 
 
 def create_game_session(tg_id, game_id, type_invoice):
@@ -97,7 +98,7 @@ def create_game_session(tg_id, game_id, type_invoice):
         try:
             closed_invoice = client.close_invoice(active_invoice.invoice_id)
             if type_invoice == 'real':
-                update_balance_after_game(account, active_invoice.start_real_amount, active_invoice.start_virtual_amount, Decimal(closed_invoice[0])*Decimal(10))
+                update_balance_after_game(account, game_id, active_invoice.start_real_amount, active_invoice.start_virtual_amount, Decimal(closed_invoice[0])*Decimal(10))
 
             active_invoice.status = 'closed'
             active_invoice.save()
@@ -105,6 +106,7 @@ def create_game_session(tg_id, game_id, type_invoice):
             active_invoice.status = 'closed'
             active_invoice.save()
         except ThirdPartyVendorException:
+            helpbot_services.send_msg(tg_id, '❌ Возникла неизвестная ошибка... Такое может произойти если Вы не завершили предыдущую игру, или завершили игру закрыв вкладку в браузере. Я рекомендую завершать игру нажатием на кнопку "Выход". Попробуйте начать игру заново, и после завершения, нажать на кнопку "Выход". Так же, рекомендую закрыть все остальные вкладки с другими играми и подождать несколько секунд.')
             return None, {'err_txt': 'The previous session is not finished', 'err_code': 2}
 
     if type_invoice == "demo":
@@ -119,7 +121,7 @@ def create_game_session(tg_id, game_id, type_invoice):
         )
         return invoice_id, None
 
-    if account.real_balance > Decimal(10) or account.virtual_balance > Decimal(0):
+    if account.real_balance > Decimal(0) or account.virtual_balance > Decimal(0):
         invoice_id, transaction_id = client.create_invoice(Decimal(sum((account.real_balance, account.virtual_balance))/Decimal(10)))
 
         InvoiceData.objects.create(
@@ -132,7 +134,7 @@ def create_game_session(tg_id, game_id, type_invoice):
             start_virtual_amount=account.virtual_balance
         )
         return invoice_id, None
-
+    helpbot_services.send_msg(tg_id, '❌ На Вашем балансе надостаточно средств. Чтобы пополнить счет, перейдите в меню "💰 Баланс" и следуйте моим простым подсказкам!')
     return None, {"err_txt": "Insufficient funds", "err_code": 1}
 
 

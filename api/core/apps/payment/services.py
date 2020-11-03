@@ -3,7 +3,7 @@ from .models import PaymentOrder
 from core.apps.helpbot.api.pyroAPI import HelpBot
 from core.apps.payment.freekassa.api import FreeKassaApi
 from core.apps.wallet.services import refill_wallet
-from core.apps.statistic.services import create_record
+from core.apps.statistic.services import register_statistic, get_user_source
 from decimal import Decimal
 
 
@@ -59,7 +59,7 @@ def new_refill(request):
     order.status = 'payed'
     order.save()
 
-    create_record(order.tg_id, 'deposit', data={"amount": amount})
+    register_statistic(order.tg_id, 'deposit', data={"amount": amount})
     send_successful_deposit(order.tg_id, amount, bonus)
 
 

@@ -21,21 +21,21 @@ accept_license_terms = ReplyKeyboardMarkup(
 
 onboarding = ReplyKeyboardMarkup(
     [
-        ['✅  Пройти обучение']
+        ['👩‍🎓 Пройти обучение']
     ],
         resize_keyboard=True,
 )
 
 tutor_1 = ReplyKeyboardMarkup(
     [
-        ['⏭ Cледующий шаг']
+        ['👉 Следующий шаг']
     ],
         resize_keyboard=True,
 )
 
 tutor_2 = ReplyKeyboardMarkup(
     [
-        ['✔️ Понятно, спасибо!']
+        ['Понятно, спасибо!']
     ],
         resize_keyboard=True,
 )
@@ -71,8 +71,8 @@ def game_list():
 
 
 def play_game(tg_id, game_id):
-    base_url = GameAPI.base_url
-    #base_url = 'http://127.0.0.1:8000/api/v1/'
+    #base_url = GameAPI.base_url
+    base_url = 'http://127.0.0.1:8000/api/v1/'
     url = base_url+f'games/{game_id}/demo/{tg_id}/'
     # if balance['real_balance'] > 50:
     #     kb = InlineKeyboardMarkup(
@@ -104,8 +104,8 @@ cancel_deposit = InlineKeyboardMarkup(
 
 balance_menu = InlineKeyboardMarkup(
         [
-            [InlineKeyboardButton('📥 Пополнить баланс', callback_data='balance-buy_token')],
-            [InlineKeyboardButton('📤 Вывести', callback_data='balance-withdrawal')]
+            [InlineKeyboardButton('Пополнить баланс 💳👉💰', callback_data='balance-buy_token')],
+            [InlineKeyboardButton('Вывести деньги на карту 💰👉💳', callback_data='balance-withdrawal')]
         ]
 
     )

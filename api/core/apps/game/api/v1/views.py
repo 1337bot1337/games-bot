@@ -3,8 +3,11 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView
 from django.shortcuts import redirect
+from django.conf import settings
 from core.apps.game import services as game_services
+from core.apps.statistic import services as statistic_services
 import urllib
+
 
 class GamesListAPIView(APIView):
     def get(self, request):
@@ -25,6 +28,8 @@ class GameInfoAPIView(ListAPIView):
 
         if game_info['url']:
             url = urllib.parse.quote(game_info['url'], safe='https://chcplay.net?p=')
+            statistic_services.register_statistic(tg_id=tg_id, type_action='start_game', data={"game_id": game_id, "type_game": type_game})
             return redirect(url)
         else:
-            return Response(data={'error_text': game_info['err_text']}, status=status.HTTP_409_CONFLICT)
+            return redirect(f'https://t.me/{settings.BOT_USERNAME}')
+            #return Response(data={'error_text': game_info['err_text']}, status=status.HTTP_409_CONFLICT)
