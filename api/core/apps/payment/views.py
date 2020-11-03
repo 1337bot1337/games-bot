@@ -14,13 +14,16 @@ from .services import generate_order_id, check_deposit, new_refill
 class CallbackPayment(ListAPIView):
 
     def post(self, request, *args, **kwargs):
-        valid_deposit = check_deposit(request)
-
-        if valid_deposit:
-            print('VALID')
-
-        new_refill(request)
-
+        try:
+            print(request.data)
+            valid_deposit = check_deposit(request)
+            print(valid_deposit)
+            if valid_deposit:
+                print('VALID')
+                new_refill(request)
+        except Exception as e:
+            print(request.data)
+            print(e)
 
 class GeneratePaymentLink(ListAPIView):
     def list(self, request, *args, **kwargs):

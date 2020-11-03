@@ -46,20 +46,16 @@ def send_successful_deposit(tg_id, amount, bonus: int = False):
     if bonus:
         text += f'\nЗа пополнение начислено {bonus} бонусных жетонов.'
 
-    client.start()
     client.send_msg(tg_id, text=text)
 
 
 def new_refill(request):
     order_id = int(request.data['MERCHANT_ORDER_ID'])
-    order = PaymentOrder.objects.get(order_id)
+    order = PaymentOrder.objects.get(order_id=order_id)
     amount = int(request.data['AMOUNT'])
     bonus = refill_wallet(order.tg_id, amount)
-
     order.status = 'payed'
     order.save()
-
-    register_statistic(order.tg_id, 'deposit', data={"amount": amount})
-    send_successful_deposit(order.tg_id, amount, bonus)
+    create_record(order.tg_id, 'deposit', data={"amount": amount, "bonus": bonus})    send_successful_deposit(order.tg_id, amount, bonus)
 
 

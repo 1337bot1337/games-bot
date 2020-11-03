@@ -47,12 +47,11 @@ def update_balance_after_game(account, game_id, start_real_balance, start_virtua
         account.save()
 
         statistic_data = {
-            'game_id': game_id,
+            'game_id': str(game_id),
             'result': 'win',
-            'amount': int(profit),
-            'start_real_balance': int(start_real_balance),
-            'start_bonus_balance': int(start_virtual_balance),
-        }
+            'amount': str(profit),
+            'start_real_balance': str(start_real_balance),
+            'start_bonus_balance': str(start_virtual_balance)        }
 
     elif end_balance < max_start_balance:  # user at a lose
         loss = max_start_balance - end_balance
@@ -67,20 +66,19 @@ def update_balance_after_game(account, game_id, start_real_balance, start_virtua
         account.save()
 
         statistic_data = {
-            'game_id': game_id,
+            'game_id': str(game_id),
             'result': 'lose',
-            'amount': int(loss),
-            'start_real_balance': int(start_real_balance),
-            'start_bonus_balance': int(start_virtual_balance),
-        }
+            'amount': str(loss),
+            'start_real_balance': str(start_real_balance),
+            'start_bonus_balance': str(start_virtual_balance)        }
     else:  # draw
 
         statistic_data = {
-            'game_id': game_id,
+            'game_id': str(game_id),
             'result': 'draw',
-            'start_real_balance': int(start_real_balance),
-            'start_bonus_balance': int(start_virtual_balance),
-        }
+            'start_real_balance': str(start_real_balance),
+            'start_bonus_balance': str(start_virtual_balance)        }
+
 
     statistic_services.register_statistic(account.tg_id, type_action='end_game', data=statistic_data)
 
@@ -98,6 +96,7 @@ def create_game_session(tg_id, game_id, type_invoice):
         try:
             closed_invoice = client.close_invoice(active_invoice.invoice_id)
             if type_invoice == 'real':
+
                 update_balance_after_game(account, game_id, active_invoice.start_real_amount, active_invoice.start_virtual_amount, Decimal(closed_invoice[0])*Decimal(10))
 
             active_invoice.status = 'closed'
@@ -106,7 +105,7 @@ def create_game_session(tg_id, game_id, type_invoice):
             active_invoice.status = 'closed'
             active_invoice.save()
         except ThirdPartyVendorException:
-            helpbot_services.send_msg(tg_id, 'вќЊ Р’РѕР·РЅРёРєР»Р° РЅРµРёР·РІРµСЃС‚РЅР°СЏ РѕС€РёР±РєР°... РўР°РєРѕРµ РјРѕР¶РµС‚ РїСЂРѕРёР·РѕР№С‚Рё РµСЃР»Рё Р’С‹ РЅРµ Р·Р°РІРµСЂС€РёР»Рё РїСЂРµРґС‹РґСѓС‰СѓСЋ РёРіСЂСѓ, РёР»Рё Р·Р°РІРµСЂС€РёР»Рё РёРіСЂСѓ Р·Р°РєСЂС‹РІ РІРєР»Р°РґРєСѓ РІ Р±СЂР°СѓР·РµСЂРµ. РЇ СЂРµРєРѕРјРµРЅРґСѓСЋ Р·Р°РІРµСЂС€Р°С‚СЊ РёРіСЂСѓ РЅР°Р¶Р°С‚РёРµРј РЅР° РєРЅРѕРїРєСѓ "Р’С‹С…РѕРґ". РџРѕРїСЂРѕР±СѓР№С‚Рµ РЅР°С‡Р°С‚СЊ РёРіСЂСѓ Р·Р°РЅРѕРІРѕ, Рё РїРѕСЃР»Рµ Р·Р°РІРµСЂС€РµРЅРёСЏ, РЅР°Р¶Р°С‚СЊ РЅР° РєРЅРѕРїРєСѓ "Р’С‹С…РѕРґ". РўР°Рє Р¶Рµ, СЂРµРєРѕРјРµРЅРґСѓСЋ Р·Р°РєСЂС‹С‚СЊ РІСЃРµ РѕСЃС‚Р°Р»СЊРЅС‹Рµ РІРєР»Р°РґРєРё СЃ РґСЂСѓРіРёРјРё РёРіСЂР°РјРё Рё РїРѕРґРѕР¶РґР°С‚СЊ РЅРµСЃРєРѕР»СЊРєРѕ СЃРµРєСѓРЅРґ.')
+            helpbot_services.send_msg(tg_id, '? Возникла неизвестная ошибка... Такое может произойти если Вы не завершили предыдущую игру, или завершили игру закрыв вкладку в браузере. Я рекомендую завершать игру нажатием на кнопку "Выход". Попробуйте начать игру заново, и после завершения, нажать на кнопку "Выход". Так же, рекомендую закрыть все остальные вкладки с другими играми и подождать несколько секунд.')
             return None, {'err_txt': 'The previous session is not finished', 'err_code': 2}
 
     if type_invoice == "demo":
@@ -121,6 +120,7 @@ def create_game_session(tg_id, game_id, type_invoice):
         )
         return invoice_id, None
 
+
     if account.real_balance > Decimal(0) or account.virtual_balance > Decimal(0):
         invoice_id, transaction_id = client.create_invoice(Decimal(sum((account.real_balance, account.virtual_balance))/Decimal(10)))
 
@@ -134,7 +134,7 @@ def create_game_session(tg_id, game_id, type_invoice):
             start_virtual_amount=account.virtual_balance
         )
         return invoice_id, None
-    helpbot_services.send_msg(tg_id, 'вќЊ РќР° Р’Р°С€РµРј Р±Р°Р»Р°РЅСЃРµ РЅР°РґРѕСЃС‚Р°С‚РѕС‡РЅРѕ СЃСЂРµРґСЃС‚РІ. Р§С‚РѕР±С‹ РїРѕРїРѕР»РЅРёС‚СЊ СЃС‡РµС‚, РїРµСЂРµР№РґРёС‚Рµ РІ РјРµРЅСЋ "рџ’° Р‘Р°Р»Р°РЅСЃ" Рё СЃР»РµРґСѓР№С‚Рµ РјРѕРёРј РїСЂРѕСЃС‚С‹Рј РїРѕРґСЃРєР°Р·РєР°Рј!')
+    helpbot_services.send_msg(tg_id, '? На Вашем балансе надостаточно средств. Чтобы пополнить счет, перейдите в меню "?? Баланс" и следуйте моим простым подсказкам!')
     return None, {"err_txt": "Insufficient funds", "err_code": 1}
 
 
