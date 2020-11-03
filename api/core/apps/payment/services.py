@@ -3,7 +3,7 @@ from .models import PaymentOrder
 from core.apps.helpbot.api.pyroAPI import HelpBot
 from core.apps.payment.freekassa.api import FreeKassaApi
 from core.apps.wallet.services import refill_wallet
-from core.apps.statistic.services import register_statistic, get_user_source
+from core.apps.statistic.services import register_statistic
 from decimal import Decimal
 
 
