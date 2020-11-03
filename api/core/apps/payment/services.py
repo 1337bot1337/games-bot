@@ -20,22 +20,23 @@ def check_deposit(request):
     remote_ip = str(request.META.get('HTTP_X_FORWARDED_FOR'))
     if remote_ip not in (
     '136.243.38.147', '136.243.38.149', '136.243.38.150', '136.243.38.151', '136.243.38.189', '136.243.38.108'):
-        return False
+        return False, 'HACK!'
 
     order_id = int(request.data['MERCHANT_ORDER_ID'])
     request_sign = request.data['SIGN']
 
     order_query = PaymentOrder.objects.filter(order_id=order_id)
     if not order_query.exists():
-        return False
+        return False, 'unknown order_id'
+
     order = order_query[0]
     client = FreeKassaApi()
-    sign = client.generate_form_signature(order.amount, order.order_id)
+    sign = client.generate_callback_signature(order.amount, order.order_id)
 
     if request_sign != sign:
-        return False
+        return False, 'signatures do not match'
 
-    return True
+    return True, None
 
 
 def send_successful_deposit(tg_id, amount, bonus: int = False):
