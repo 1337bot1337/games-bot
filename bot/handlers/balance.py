@@ -20,11 +20,12 @@ def balance_menu(cli, cb):
     action = cb.data.split('-')[1]
 
     if action == 'buy_token':
+
+        deposit_client = BalanceClient()
+        _deposit(deposit_client)
         cb.message.reply('Введите желаемую сумму пополнения\n'
                          '**Минимальная сумма**: 100 руб.',
                          reply_markup=kb.cancel_deposit)
-        deposit_client = BalanceClient()
-        _deposit(deposit_client)
         deposit_client.start()
 
         deposit_client.done.wait()
