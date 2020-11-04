@@ -138,7 +138,7 @@ def _deposit(client):
     @client.on_callback_query(Filters.callback_data('cancel_deposit'))
     def cancel_withdrawal_cb(cli, cb):
         cb.message.edit(cb.message.text)
-        cb.message.repy('Пополнение баланса отменено.')
+        cb.message.reply('Пополнение баланса отменено.')
         GameAPI.send_statistic(cb.from_user.id, 'press_button', data={"button_name": "cancel_deposit",
                                                                      "location": "main_menu/balance/deposit"})
         cli.done.set()
