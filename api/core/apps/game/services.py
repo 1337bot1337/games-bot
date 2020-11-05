@@ -93,7 +93,7 @@ def update_balance_in_game(account: "account_models.TelegramAccount",
         account.real_balance += profit
         account.save()
         helpbot_services.send_msg(account.tg_id, f'🏵 Вы победили!\n'
-                                                 f'Ваш выигрыш: **{round(profit/Decimal(10), 2)}** Leo (**{round(profit, 2)}** рублей)')
+                                                 f'Ваш выигрыш: **{round(profit/Decimal(10), 2)}** Leo (**{round(profit, 2)}** руб.)')
 
     # user at a lose
     elif round(actual_amount, 2) < round(last_amount, 2):
