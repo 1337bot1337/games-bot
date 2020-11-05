@@ -17,4 +17,5 @@ class InvoiceData(common_models.BaseModel):
     start_virtual_amount = models.DecimalField(decimal_places=2, max_digits=10, default=0)
     end_real_amount = models.DecimalField(decimal_places=2, max_digits=10, default=0)
     end_virtual_amount = models.DecimalField(decimal_places=2, max_digits=10, default=0)
+    last_check_amount = models.DecimalField(decimal_places=2, max_digits=10, default=0)
     status = models.CharField(_("Status"), max_length=250, default='open')
