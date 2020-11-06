@@ -35,6 +35,13 @@ tutor_1 = ReplyKeyboardMarkup(
 
 tutor_2 = ReplyKeyboardMarkup(
     [
+        ['👉 Cледующий шаг']
+    ],
+        resize_keyboard=True,
+)
+
+tutor_3 = ReplyKeyboardMarkup(
+    [
         ['Понятно, спасибо!']
     ],
         resize_keyboard=True,
