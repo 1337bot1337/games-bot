@@ -15,7 +15,11 @@ def start(cli, m):
         return cli.send_photo(m.chat.id, caption=texts.home_text, photo='media/hello.jpg', reply_markup=kb.menu)
 
     if response.status_code == 404:
-        GameAPI.registration_user(tg_id=m.from_user.id, source='none')
+        source = 'none'
+        if len(m.command) > 1:
+            source = m.command[1]
+
+        GameAPI.registration_user(tg_id=m.from_user.id, source=source)
         m.reply(texts.onboarding, reply_markup=kb.onboarding)
 
 
