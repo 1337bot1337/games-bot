@@ -241,7 +241,7 @@ def create_game_session(tg_id, game_id, type_invoice):
     if type_invoice == "demo":
 
         invoice_id, transaction_id = client.create_invoice(settings.DEFAULT_DEMO_AMOUNT/100)
-        InvoiceData.objects.create(
+        game_models.InvoiceData.objects.create(
             invoice_id=invoice_id,
             game_id=game_id,
             tr_id=transaction_id,
