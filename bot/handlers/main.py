@@ -43,12 +43,16 @@ def accept_license_terms(cli, m):
 
 @Client.on_message(Filters.regex(r'^👉 Следующий шаг$'))
 def tutor1_kb(cli, m):
-    m.reply(texts.tutor_2)
-    m.reply(texts.tutor_3, reply_markup=kb.tutor_2)
+    m.reply(texts.tutor_2, reply_markup=kb.tutor_2)
+
+
+@Client.on_message(Filters.regex(r'👉 Cледующий шаг'))
+def tutor2_kb(cli, m):
+    m.reply(texts.tutor_3, reply_markup=kb.tutor_3)
 
 
 @Client.on_message(Filters.regex(r'^Понятно, спасибо!$'))
-def tutor2_kb(cli, m):
+def tutor3_kb(cli, m):
     m.reply(texts.finish_tutor)
     cli.send_photo(m.chat.id, caption=texts.home_text, photo='media/hello.jpg', reply_markup=kb.menu)
     GameAPI.send_statistic(m.from_user.id, 'finish_tutorial', data={})
