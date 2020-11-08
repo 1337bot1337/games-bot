@@ -5,6 +5,10 @@ djangorestframework
 requests
 gunicorn
 ansible
+celery
+redis
+django-celery-beat
+django-celery-results
 
 # Dev requirements
 django-environ

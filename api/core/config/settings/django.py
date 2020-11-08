@@ -1,7 +1,8 @@
 import os
 
 from core.env import ROOT, env
-
+from celery.schedules import crontab
+from datetime import timedelta
 
 SECRET_KEY = env.str('CORE_SECRET_KEY', default='secret')
 
@@ -18,6 +19,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_celery_beat',
+    'django_celery_results',
 
     # 3rd party apps
     "rest_framework",
@@ -88,7 +91,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru-ru'
 
 TIME_ZONE = 'UTC'
 
@@ -111,3 +114,16 @@ STATIC_ROOT = env.str("CORE_STATIC_ROOT", DEFAULT_PUBLIC_ROOT)
 STATICFILES_DIRS = (
     ROOT("static"),
 )
+
+CELERY_BROKER_URL = 'redis://redis:6379'
+CELERY_RESULT_BACKEND = 'redis://redis:6379'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+
+CELERY_BEAT_SCHEDULE = {
+    'check_invoice': {
+        'task': 'core.apps.game.tasks.check_invoice',
+        'schedule': 5.0
+    }
+}

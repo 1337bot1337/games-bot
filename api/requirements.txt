@@ -58,6 +58,10 @@ wcwidth==0.2.5            # via prompt-toolkit
 APScheduler==3.6.3
 Pyrogram==0.17.1
 TgCrypto==1.2.0
+celery==4.4.1
+redis==3.4.1
+django-celery-beat
+django-celery-results
 # The following packages are considered to be unsafe in a requirements file:
 # pip
 # setuptools
