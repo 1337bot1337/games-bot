@@ -7,8 +7,10 @@ gunicorn
 ansible
 celery
 redis
+django-redis
 django-celery-beat
 django-celery-results
+django-modeltranslation
 
 # Dev requirements
 django-environ

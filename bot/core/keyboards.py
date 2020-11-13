@@ -1,134 +1,144 @@
 from pyrogram import ReplyKeyboardMarkup, InlineKeyboardMarkup, InlineKeyboardButton
 from .services import game_dict as games
 from .api import GameAPI
+from core.abtest import get_text
 import urllib
 
 
-select_language = ReplyKeyboardMarkup(
-            [
-                ['🇬🇧 English'],
-                ['🇷🇺 Русский']
-            ],
-            resize_keyboard=True,
-        )
+# select_language = ReplyKeyboardMarkup(
+#     [
+#         ['🇬🇧 English'],
+#         ['🇷🇺 Русский']
+#     ],
+#     resize_keyboard=True,
+# )
+#
+# accept_license_terms = ReplyKeyboardMarkup(
+#     [
+#         ['✅ Принимаю условия']
+#     ],
+#     resize_keyboard=True,
+# )
 
-accept_license_terms = ReplyKeyboardMarkup(
-            [
-                ['✅ Принимаю условия']
-            ],
-            resize_keyboard=True,
-        )
 
-onboarding = ReplyKeyboardMarkup(
-    [
-        ['👩‍🎓 Пройти обучение']
-    ],
+def onboarding(tg_id: int):
+    kb = ReplyKeyboardMarkup(
+
+        [
+            [get_text(tg_id, "kb-onboarding_0")]
+        ],
         resize_keyboard=True,
-)
+    )
+    return kb
 
-tutor_1 = ReplyKeyboardMarkup(
-    [
-        ['👉 Следующий шаг']
-    ],
+
+def tutor_1(tg_id: int):
+    kb = ReplyKeyboardMarkup(
+        [
+            [get_text(tg_id, "kb-onboarding_1")]
+        ],
         resize_keyboard=True,
-)
+    )
+    return kb
 
-tutor_2 = ReplyKeyboardMarkup(
-    [
-        ['👉 Cледующий шаг']
-    ],
+
+def tutor_2(tg_id: int):
+    kb = ReplyKeyboardMarkup(
+        [
+            [get_text(tg_id, "kb-onboarding_2")]
+        ],
         resize_keyboard=True,
-)
+    )
+    return kb
 
-tutor_3 = ReplyKeyboardMarkup(
-    [
-        ['Понятно, спасибо!']
-    ],
+
+def tutor_3(tg_id: int):
+    kb = ReplyKeyboardMarkup(
+        [
+            [get_text(tg_id, "kb-onboarding_final")]
+        ],
         resize_keyboard=True,
-)
-
-menu = ReplyKeyboardMarkup(
-            [
-                ['🎰 Игры'],
-                ['💰 Баланс', '❓ Помощь']
-            ],
-            resize_keyboard=True,
-        )
+    )
+    return kb
 
 
-# games = ReplyKeyboardMarkup(
-#             [
-#                 [f'Играть - {games["Fire Rage +"]["emoji"]} Fire Rage +', f'Играть - {games["King of Jewels"]["emoji"]} King of Jewels'],
-#                 [f'Играть - {games["Gates of Avalon"]["emoji"]} Gates of Avalon', f"Играть - {games['Dolphins Shell']['emoji']} Dolphins Shell"],
-#                 [f'Играть - {games["Lady Luck"]["emoji"]} Lady Luck', f'Играть - {games["Pirates Fortune"]["emoji"]} Pirates Fortune'],
-#                 [f'Играть - {games["Bananas"]["emoji"]} Bananas', f'Играть - {games["Extra Super 7"]["emoji"]} Extra Super 7'],
-#                 [f'Играть - {games["Box of Ra"]["emoji"]} Box of Ra', f'Играть - {games["Rise Of Imperium"]["emoji"]} Rise Of Imperium'],
-#                 ['🔙 В главное меню']
-#             ],
-#             resize_keyboard=True,
-#        )
+def menu(tg_id: int):
+    kb = ReplyKeyboardMarkup(
+        [
+            [get_text(tg_id, "kb-games")],
+            [get_text(tg_id, "kb-balance"), get_text(tg_id, "kb-help")]
+        ],
+        resize_keyboard=True,
+    )
+    return kb
 
 
 def game_list():
     kb_list = []
     for game in games:
-        kb_list.append([InlineKeyboardButton(f'{games[game]["emoji"]} {game}', callback_data=f'game-{games[game]["id"]}')])
+        kb_list.append(
+            [InlineKeyboardButton(f'{games[game]["emoji"]} {game}', callback_data=f'game-{games[game]["id"]}')])
 
     return InlineKeyboardMarkup(kb_list)
 
 
-def play_game(tg_id, game_id):
+def play_game(tg_id: int, game_id: int):
     base_url = GameAPI.base_url
-    #base_url = 'http://127.0.0.1:8000/api/v1/'
-    url = base_url+f'games/{game_id}/demo/{tg_id}/'
-    # if balance['real_balance'] > 50:
-    #     kb = InlineKeyboardMarkup(
-    #         [
-    #             #[InlineKeyboardButton('Играть на Gambling Tokens')],
-    #             [InlineKeyboardButton('Играть на демо-счёт', url=url)]
-    #         ]
-    #     )
+    # base_url = 'http://127.0.0.1:8000/api/v1/'
+
     kb = InlineKeyboardMarkup(
         [
-            [InlineKeyboardButton('Играть', url=base_url+f'games/{game_id}/real/{tg_id}/')],
-            [InlineKeyboardButton("Играть на демо-счёт", url=base_url+f'games/{game_id}/demo/{tg_id}/')]
+            [InlineKeyboardButton(get_text(tg_id, "kb-game-start_on_real"),
+                                  url=base_url + f'games/{game_id}/real/{tg_id}/')],
+            [InlineKeyboardButton(get_text(tg_id, "kb-game-start_on_demo"),
+                                  url=base_url + f'games/{game_id}/demo/{tg_id}/')]
         ]
     )
     return kb
 
 
-cancel_withdrawal = InlineKeyboardMarkup(
-    [
-        [InlineKeyboardButton('❌ Отменить вывод', callback_data='cancel_withdrawal')]
-    ]
-)
-
-cancel_deposit = InlineKeyboardMarkup(
-    [
-        [InlineKeyboardButton('❌ Отменить депозит', callback_data='cancel_deposit')]
-    ]
-)
-
-balance_menu = InlineKeyboardMarkup(
+def cancel_withdrawal(tg_id: int):
+    kb = ReplyKeyboardMarkup(
         [
-            [InlineKeyboardButton('Пополнить баланс 💳👉💰', callback_data='balance-buy_token')],
-            [InlineKeyboardButton('Вывести деньги на карту 💰👉💳', callback_data='balance-withdrawal')]
-        ]
-
+            [get_text(tg_id, "kb-balance-cancel_withdrawal")]
+        ], resize_keyboard=True
     )
+    return kb
 
 
-support = InlineKeyboardMarkup(
+def cancel_deposit(tg_id: int):
+    kb = ReplyKeyboardMarkup(
     [
-        [InlineKeyboardButton('🟢 Связаться с тех. поддержкой', url='https://t.me/GamblingGameSupport')]
+        [get_text(tg_id, "kb-balance-cancel_deposit")]
+    ], resize_keyboard=True
+)
+    return kb
+
+
+def balance_menu(tg_id: int):
+    kb = InlineKeyboardMarkup(
+    [
+        [InlineKeyboardButton(get_text(tg_id, "kb-balance-deposit"), callback_data='balance-buy_token')],
+        [InlineKeyboardButton(get_text(tg_id, "kb-balance-withdrawal"), callback_data='balance-withdrawal')]
+    ]
+
+)
+    return kb
+
+
+def support(tg_id: int):
+    kb = InlineKeyboardMarkup(
+    [
+        [InlineKeyboardButton(get_text(tg_id, "kb-contact_support"), url='https://t.me/GamblingGameSupport')]
     ]
 )
+    return kb
 
 
-def deposit_url(tg_id, amount):
+def deposit_url(tg_id: int, amount):
     url = GameAPI.deposit_user(tg_id, amount)
     return InlineKeyboardMarkup(
-    [
-        [InlineKeyboardButton('Перейти к оплате', url=url)]
-    ]
-)
+        [
+            [InlineKeyboardButton(get_text(tg_id, "kb-balance-go_to_deposit"), url=url)]
+        ]
+    )

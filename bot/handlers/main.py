@@ -2,7 +2,7 @@ from pyrogram import Client, Filters
 
 from core.api import GameAPI
 from core import keyboards as kb
-from core import texts
+from core.abtest import get_text, get_welcome_bonus
 
 
 @Client.on_message(Filters.command('start'))
@@ -12,7 +12,7 @@ def start(cli, m):
     # Делает проверку зарегестрирован ли юзер
     response = GameAPI.check_user(tg_id)
     if response.status_code == 200:
-        return cli.send_photo(m.chat.id, caption=texts.home_text, photo='media/hello.jpg', reply_markup=kb.menu)
+        return cli.send_photo(m.chat.id, caption=get_text(tg_id, "home_text"), photo='media/hello.jpg', reply_markup=kb.menu(tg_id))
 
     if response.status_code == 404:
         source = 'none'
@@ -20,7 +20,8 @@ def start(cli, m):
             source = m.command[1]
 
         GameAPI.registration_user(tg_id=m.from_user.id, source=source)
-        m.reply(texts.onboarding, reply_markup=kb.onboarding)
+
+        m.reply(get_text(tg_id, 'onboarding-step_0'), reply_markup=kb.onboarding(tg_id))
 
 
 # @Client.on_message(Filters.regex(r'^🇬🇧 English$|^🇷🇺 Русский$'))
@@ -36,31 +37,36 @@ def start(cli, m):
 #     cli.send_photo(m.chat.id, caption=texts.home_text, photo='media/hello.jpg', reply_markup=kb.menu)
 
 
-@Client.on_message(Filters.regex(r'^👩‍🎓 Пройти обучение$'))
+@Client.on_message(Filters.create(lambda _, m: m.text in get_text(m.from_user.id, "kb-onboarding_0")))
 def accept_license_terms(cli, m):
-    cli.send_photo(m.chat.id, caption=texts.tutor_1, photo='media/tutor_1.jpg', reply_markup=kb.tutor_1)
+    tg_id = m.from_user.id
+    cli.send_photo(m.chat.id, caption=get_text(tg_id, "onboarding-step_1"), photo='media/tutor_1.jpg', reply_markup=kb.tutor_1(tg_id))
 
 
-@Client.on_message(Filters.regex(r'^👉 Следующий шаг$'))
+@Client.on_message(Filters.create(lambda _, m: m.text in get_text(m.from_user.id, "kb-onboarding_1")))
 def tutor1_kb(cli, m):
-    m.reply(texts.tutor_2, reply_markup=kb.tutor_2)
+    tg_id = m.from_user.id
+    m.reply(get_text(tg_id, "onboarding-step_2"), reply_markup=kb.tutor_2(tg_id))
 
 
-@Client.on_message(Filters.regex(r'👉 Cледующий шаг'))
+@Client.on_message(Filters.create(lambda _, m: m.text in get_text(m.from_user.id, "kb-onboarding_2")))
 def tutor2_kb(cli, m):
-    m.reply(texts.tutor_3, reply_markup=kb.tutor_3)
+    tg_id = m.from_user.id
+    m.reply(get_text(tg_id, "onboarding-step_3"), reply_markup=kb.tutor_3(tg_id))
 
 
-@Client.on_message(Filters.regex(r'^Понятно, спасибо!$'))
+@Client.on_message(Filters.create(lambda _, m: m.text in get_text(m.from_user.id, "kb-onboarding_final")))
 def tutor3_kb(cli, m):
-    m.reply(texts.finish_tutor)
-    cli.send_photo(m.chat.id, caption=texts.home_text, photo='media/hello.jpg', reply_markup=kb.menu)
+    tg_id = m.from_user.id
+    bonus_amount = get_welcome_bonus(tg_id)
+    m.reply(get_text(tg_id, "onboarding-finish").format(bonus_amount=float(bonus_amount)))
+    cli.send_photo(m.chat.id, caption=get_text(tg_id, "home_text"), photo='media/hello.jpg', reply_markup=kb.menu(tg_id))
     GameAPI.send_statistic(m.from_user.id, 'finish_tutorial', data={})
 
 
-@Client.on_message(Filters.regex(r'^🔙 В главное меню$'))
-def main_menu(cli, m):
-    cli.send_photo(m.chat.id, caption=texts.home_text, photo='media/hello.jpg', reply_markup=kb.menu)
+# @Client.on_message(Filters.regex(r'^🔙 В главное меню$'))
+# def main_menu(cli, m):
+#     cli.send_photo(m.chat.id, caption=texts.home_text, photo='media/hello.jpg', reply_markup=kb.menu)
 
 
 @Client.on_callback_query(Filters.callback_data('close'))
@@ -71,11 +77,8 @@ def close_bot_window(cli, cb):
         pass
 
 
-# @Client.on_message(Filters.regex(r'^🤝 Партнёрская программа$'))
-# def affiliate_kb(cli, m):
-
-
-@Client.on_message(Filters.regex(r'^❓ Помощь$'))
+@Client.on_message(Filters.create(lambda _, m: m.text in get_text(m.from_user.id, "kb-help")))
 def help_kb(cli, m):
-    m.reply('Для того, чтобы связаться с технической поддержкой нажмите кнопку под этим сообщением', reply_markup=kb.support)
-    GameAPI.send_statistic(m.from_user.id, 'press_button', data={"button_name": "help", "location": "main_menu"})
+    tg_id = m.from_user.id
+    m.reply(get_text(tg_id, "contact_support"), reply_markup=kb.support(tg_id))
+    GameAPI.send_statistic(tg_id, 'press_button', data={"button_name": "help", "location": "main_menu"})

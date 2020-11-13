@@ -12,9 +12,14 @@ services:
     ports:
       - "5433:5432"
   redis:
+    restart: always
     image: redis:alpine
     depends_on:
       - postgres
+    expose:
+      - "6379"
+    volumes:
+      - cache:/src/redis/cache
   api:
     build:
       context: ./../  # games-bot
@@ -25,6 +30,7 @@ services:
       - postgres
     volumes:
       - static_volume:/src/public/static
+      - cache:/src/redis/cache
     environment:
       - CORE_DATABASE_WAIT=1
       - CORE_DATABASE_URL=psql://postgres:postgres@postgres:5432/core_db
@@ -37,6 +43,8 @@ services:
       - BOT_TOKEN
     depends_on:
       - api
+    volumes:
+      - cache:/src/redis/cache
   nginx:
     build:
       context: ./../  # games-bot
@@ -76,3 +84,4 @@ volumes:
   pg_data:
   static_volume:
   letsencrypt:
+  cache:

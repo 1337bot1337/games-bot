@@ -13,6 +13,7 @@ ALLOWED_HOSTS = env.list("CORE_ALLOWED_HOSTS", default=["*"])
 
 # Application definition
 INSTALLED_APPS = [
+    'modeltranslation',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -34,6 +35,7 @@ INSTALLED_APPS = [
     'core.apps.payment',
     'core.apps.helpbot',
     'core.apps.statistic',
+    'core.apps.abtest',
 ]
 
 if DEBUG:
@@ -92,6 +94,14 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 LANGUAGE_CODE = 'ru-ru'
+gettext = lambda s: s
+LANGUAGES = [
+    ('ru', 'Russian'),
+    ('en', 'English'),
+]
+
+MODELTRANSLATION_TRANSLATION_REGISTRY = 'core.apps.abtest.translation'
+
 
 TIME_ZONE = 'UTC'
 
@@ -122,8 +132,25 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 
 CELERY_BEAT_SCHEDULE = {
-    'check_invoice': {
-        'task': 'core.apps.game.tasks.check_invoice',
-        'schedule': 5.0
+    "check_invoice": {
+        "task": "core.apps.game.tasks.check_invoice",
+        "schedule": 5.0
+    },
+    "update_cache": {
+        "task": "core.apps.abtest.tasks.update_cache",
+        "schedule": crontab(minute='*/3')
     }
 }
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://redis:6379",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+}
+
+SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+SESSION_CACHE_ALIAS = "default"

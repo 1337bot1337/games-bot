@@ -20,6 +20,7 @@ if [ "CORE_DATABASE_WAIT" ]; then
     python /src/api/manage.py migrate --noinput
     python /src/api/manage.py makemigrations game
     python /src/api/manage.py migrate game
+    python /src/api/manage.py update_cache
 #    python /src/api/manage.py makemigrations account
 #    python /src/api/manage.py migrate account
 

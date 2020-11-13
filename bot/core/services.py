@@ -1,4 +1,3 @@
-from .api import GameAPI
 from pyrogram import Client
 from config.settings.bot import TG_API_ID, TG_API_HASH, TG_API_TOKEN
 from threading import Event

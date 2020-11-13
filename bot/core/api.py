@@ -2,8 +2,8 @@ import requests
 
 
 class GameAPI:
-    base_url = 'https://smarted.store/api/v1/'
-    #base_url = 'http://api:8080/api/v1/'
+    #base_url = 'https://smarted.store/api/v1/'
+    base_url = 'http://api:8080/api/v1/'
     @classmethod
     def get_games(cls):
         response = requests.get(cls.base_url+'games')

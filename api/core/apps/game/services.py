@@ -10,6 +10,7 @@ from core.apps.vendor.exceptions import ThirdPartyVendorException, FailInvoiceVe
 
 from core.apps.statistic import services as statistic_services
 from core.apps.helpbot import services as helpbot_services
+from core.apps.abtest import services as abtest_services
 
 AVAILABLE_GAMES = (
     (1003, "Fire Rage +"),
@@ -235,7 +236,7 @@ def create_game_session(tg_id, game_id, type_invoice):
             active_invoice.status = 'closed'
             active_invoice.save()
         except ThirdPartyVendorException:
-            helpbot_services.send_msg(tg_id, '❌ Возникла неизвестная ошибка... Такое может произойти если Вы не завершили предыдущую игру, или завершили игру закрыв вкладку в браузере. Я рекомендую завершать игру нажатием на кнопку "Выход". Попробуйте начать игру заново, и после завершения, нажать на кнопку "Выход". Так же, рекомендую закрыть все остальные вкладки с другими играми и подождать несколько секунд.')
+            helpbot_services.send_msg(tg_id, abtest_services.get_text(tg_id, "error_start_game"))
             return None, {'err_txt': 'The previous session is not finished', 'err_code': 2}
 
     if type_invoice == "demo":
@@ -264,7 +265,7 @@ def create_game_session(tg_id, game_id, type_invoice):
             last_check_amount=account.real_balance+account.virtual_balance
         )
         return invoice_id, None
-    helpbot_services.send_msg(tg_id, '❌ На Вашем балансе надостаточно средств. Чтобы пополнить счет, перейдите в меню "💰 Баланс" и следуйте моим простым подсказкам!')
+    helpbot_services.send_msg(tg_id, tg_id, abtest_services.get_text(tg_id, "error_insufficient_balance"))
     return None, {"err_txt": "Insufficient funds", "err_code": 1}
 
 
