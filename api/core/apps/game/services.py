@@ -265,7 +265,7 @@ def create_game_session(tg_id, game_id, type_invoice):
             last_check_amount=account.real_balance+account.virtual_balance
         )
         return invoice_id, None
-    helpbot_services.send_msg(tg_id, tg_id, abtest_services.get_text(tg_id, "error_insufficient_balance"))
+    helpbot_services.send_msg(tg_id, abtest_services.get_text(tg_id, "error_insufficient_balance"))
     return None, {"err_txt": "Insufficient funds", "err_code": 1}
 
 

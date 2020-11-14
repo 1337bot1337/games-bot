@@ -1,15 +1,16 @@
 from django.core.cache import cache
 
 
-def get_text(tg_id: int, text_name: str):
+def get_text(tg_id, text_name: str):
     texts = cache.get("texts")
     source = get_user_source(tg_id)
-    bot_profile = get_bot_profile(source)
+    src_dict = get_source_setup(source)
+    bot_profile = get_bot_profile(src_dict)
 
-    return texts[(text_name, bot_profile.version_text)]
+    return texts[(text_name, bot_profile["version_text"])]["text_ru"]
 
 
-def get_user_source(tg_id: int):
+def get_user_source(tg_id):
     users = cache.get("users")
     return users[tg_id]["source"]
 
@@ -20,5 +21,5 @@ def get_source_setup(source: str):
 
 
 def get_bot_profile(source: dict):
-    bot_profile = cache.get("bot_profiles")
-    return bot_profile[source["profile"]]
+    bot_profile = cache.get("botprofiles")
+    return bot_profile[source["profile_id"]]
