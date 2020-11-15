@@ -13,19 +13,23 @@ from core.apps.common import models as common_models
 class WithdrawRequest(common_models.BaseModel):
     account = models.ForeignKey(account_models.TelegramAccount, on_delete=models.CASCADE)
     amount = models.DecimalField(
-        _("Desire withdraw amount"),
+        _("Сумма вывода"),
         decimal_places=2,
         max_digits=9,
         validators=[MinValueValidator(0), MaxValueValidator(settings.MAX_WITHDRAW_AMOUNT_PER_REQUEST)]
     )
-    card_number = models.CharField(_("Card number"), max_length=20)
+    card_number = models.CharField(_("Номер карты"), max_length=20)
     status = models.CharField(
-        _("Withdraw request status"),
+        _("Статус запроса"),
         max_length=50,
         choices=choices.WITHDRAW_REQUEST_STATUS_CHOICES,
         default=choices.WithdrawRequestStatus.IN_PROGRESS
     )
-    is_active = models.BooleanField(_("Active"), default=True)
+    is_active = models.BooleanField(_("Активен/Неактивен"), default=True)
+
+    class Meta:
+        verbose_name = "Запрос на вывод"
+        verbose_name_plural = "Запросы на вывод"
 
 
 class Refill(common_models.BaseModel):
