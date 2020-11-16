@@ -10,7 +10,7 @@ class BotText(models.Model):
 
     class Meta:
         verbose_name = "Текст"
-        verbose_name_plural = "Текста бота"
+        verbose_name_plural = "Тексты бота"
 
 
 class BotProfile(models.Model):

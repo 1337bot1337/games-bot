@@ -11,6 +11,7 @@ django-redis
 django-celery-beat
 django-celery-results
 django-modeltranslation
+django-admin-tools
 
 # Dev requirements
 django-environ

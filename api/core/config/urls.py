@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.contrib import admin
-from django.urls import include, path
+from django.urls import include, path, re_path
 from django.views.generic import TemplateView
 
 
@@ -20,6 +20,7 @@ internal_api_v1_urlpatterns = [
 
 urlpatterns = [
     #path('', IndexView.as_view(), name="index"),
+    re_path(r'^admin_tools/', include('admin_tools.urls')),
     path('admin/', admin.site.urls),
     path('api/v1/', include(internal_api_v1_urlpatterns), name='internal-api-v1'),
 ]
