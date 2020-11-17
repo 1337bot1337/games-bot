@@ -1,4 +1,5 @@
 import requests
+import pyrogram
 
 
 class GameAPI:
@@ -17,9 +18,26 @@ class GameAPI:
             return response.json()
 
     @classmethod
-    def registration_user(cls, tg_id, source):
+    def registration_user(cls, tg_user: pyrogram.User, source: str):
         request_url = 'accounts/user/'
-        response = requests.post(cls.base_url+request_url, data={'tg_id': tg_id, 'source': source})
+
+        username = tg_user.username
+        first_name = tg_user.first_name
+        last_name = tg_user.last_name
+
+        if not username:
+            username = '[отсутствует]'
+        if not first_name:
+            first_name = '[отсутствует]'
+        if not last_name:
+            last_name = '[отсутствует]'
+
+        response = requests.post(cls.base_url+request_url, data={
+            'tg_id': tg_user.id,
+            'username': username,
+            'first_name': first_name,
+            'last_name': last_name,
+            'source': source})
 
         if response.status_code == 201:
             return 'is_created'

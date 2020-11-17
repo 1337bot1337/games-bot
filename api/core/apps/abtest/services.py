@@ -20,9 +20,10 @@ def get_source_setup(source: str):
     return source_setup[source]
 
 
-def get_bot_profile(source: dict):
+def get_bot_profile(source: str):
+    scr_setup = get_source_setup(source)
     bot_profile = cache.get("botprofiles")
-    return bot_profile[source["profile_id"]]
+    return bot_profile[scr_setup["profile_id"]]
 
 
 texts = [

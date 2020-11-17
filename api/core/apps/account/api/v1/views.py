@@ -11,13 +11,19 @@ class RegisterUserSourceAPIView(GenericAPIView):
     serializer_class = RegisterUserSourceSerializer
 
     def post(self, request, *args, **kwargs):
-        serializer = self.serializer_class(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        if account_services.register_user_source(
-                tg_id=serializer.validated_data["tg_id"],
-                source=serializer.validated_data["source"]
-        ):
-            return Response(status=status.HTTP_200_OK)
+        try:
+            serializer = self.serializer_class(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            if account_services.register_user_source(
+                    tg_id=serializer.validated_data["tg_id"],
+                    username=serializer.validated_data["username"],
+                    first_name=serializer.validated_data["first_name"],
+                    last_name=serializer.validated_data["last_name"],
+                    source=serializer.validated_data["source"]
+            ):
+                return Response(status=status.HTTP_200_OK)
+        except Exception as e:
+            print(e)
 
 
 class UserCheckAPIView(ListAPIView):

@@ -18,6 +18,7 @@ class BotProfile(models.Model):
     version_text = models.CharField(_("Версия текста"), max_length=25)
     welcome_bonus = models.FloatField(_("Вступительный бонус"))
     deposit_bonus = models.FloatField(_("Бонус на депозит"))
+    onboarding = models.BooleanField(_("Вступительное обучение"), default=True)
 
     class Meta:
         verbose_name = "A/B профиль"
