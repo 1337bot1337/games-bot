@@ -21,6 +21,7 @@ services:
     volumes:
     - cache:/src/redis/cache
   api:
+    restart: always
     build:
       context: ./../  # games-bot
       dockerfile: docker/images/api/Dockerfile
@@ -46,6 +47,7 @@ services:
     volumes:
     - cache:/src/redis/cache
   celery_worker:
+    restart: always
     command: ["python", '-m', "celery", "-A", "core.config", "worker", "-l", "info"]
     depends_on:
       - redis
@@ -55,7 +57,8 @@ services:
       - CORE_DATABASE_URL=psql://postgres:postgres@postgres:5432/core_db
     image: docker_api
   celery_beat:
-    command: [ "python", '-m', "celery", "-A", "core.config", "beat", "-l", "info", "--scheduler", "django_celery_beat.schedulers:DatabaseScheduler" ]
+    restart: always
+    command: [ "python", '-m', "celery", "--pidfile=", "-A", "core.config", "beat", "-l", "info", "--scheduler", "django_celery_beat.schedulers:DatabaseScheduler" ]
     depends_on:
       - redis
       - api
