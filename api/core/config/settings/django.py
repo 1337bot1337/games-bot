@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'core.apps.helpbot',
     'core.apps.statistic',
     'core.apps.abtest',
+    'core.apps.broadcast',
 ]
 
 if DEBUG:
@@ -147,6 +148,10 @@ CELERY_BEAT_SCHEDULE = {
     "update_cache": {
         "task": "core.apps.abtest.tasks.update_cache",
         "schedule": crontab(minute='*/3')
+    },
+    "broadcast": {
+        "task": "core.apps.broadcast.tasks.check_broadcast_query",
+        "schedule": 10.0
     }
 }
 

@@ -51,3 +51,4 @@ REFILL_STATUS_CHOICES = (
     (RefillStatus.SUCCEED, _("Refill succeed")),
     (RefillStatus.FAILED, _("Refill failed")),
 )
+

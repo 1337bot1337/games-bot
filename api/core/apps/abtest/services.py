@@ -1,4 +1,5 @@
 from django.core.cache import cache
+from core.apps.abtest import models as abtest_models
 
 
 def get_text(tg_id, text_name: str):
@@ -24,6 +25,14 @@ def get_bot_profile(source: str):
     scr_setup = get_source_setup(source)
     bot_profile = cache.get("botprofiles")
     return bot_profile[scr_setup["profile_id"]]
+
+
+def get_sources_from_botprofile(bot_profile: "abtest_models.BotProfile"):
+    sources = abtest_models.SourceSetup.objects.filter(profile=bot_profile)
+    if sources.exists():
+        return [source.name for source in sources]
+
+    return []
 
 
 texts = [

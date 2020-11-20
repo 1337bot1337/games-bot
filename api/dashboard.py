@@ -55,6 +55,11 @@ class CustomIndexDashboard(Dashboard):
             models=('core.apps.abtest.models.*',),
         ))
 
+        self.children.append(modules.ModelList(
+            title=u'Рассылка',
+            models=('core.apps.broadcast.models.BroadcastQuery',),
+        ))
+
         # # append an app list module for "Administration"
         # self.children.append(modules.AppList(
         #     _('Administration'),
