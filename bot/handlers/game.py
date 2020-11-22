@@ -19,4 +19,4 @@ def game_cb(cli, cb):
     game_id = int(cb.data.split('-')[1])
     game_title = games[game_id]
     txt = get_text(tg_id, "game_info").format(game_title=game_title)
-    cli.send_photo(cb.message.chat.id, photo=str(game_dict[game_title]["image"]), caption=txt, reply_markup=kb.play_ game(cb.from_user.id, game_id))
+    cli.send_photo(cb.message.chat.id, photo=str(game_dict[game_title]["image"]), caption=txt, reply_markup=kb.play_game(cb.from_user.id, game_id))
