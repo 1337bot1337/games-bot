@@ -1,4 +1,5 @@
 from pyrogram import Client
+from pyrogram import Message as PyrogramMessage
 from config.settings.bot import TG_API_ID, TG_API_HASH, TG_API_TOKEN
 from threading import Event
 
@@ -37,3 +38,23 @@ class BalanceClient(Client):
         self.value = None
         self.event_canceled = False
         super().__init__(session_name='session_balance', api_id=TG_API_ID, api_hash=TG_API_HASH, bot_token=TG_API_TOKEN)
+
+
+def get_user(message: PyrogramMessage) -> dict:
+    user = {
+        "id": message.from_user.id,
+        "username": "[отсутствует]",
+        "first_name": "[отсутствует]",
+        "last_name": "[отсутствует]",
+    }
+
+    if message.from_user.username:
+        user["username"] = message.from_user.username
+
+    if message.from_user.first_name:
+        user["first_name"] = message.from_user.first_name
+
+    if message.from_user.last_name:
+        user["last_name"] = message.from_user.last_name
+
+    return user

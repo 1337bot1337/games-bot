@@ -5,24 +5,18 @@ API high-level flow overview
 Create the telegram account in the system with the source:
 ```bash
 curl -X POST \
-  https://push.money/api/v1/accounts/user/ \
+  https://smarted.store/api/v1/accounts/user/ \
   -H 'Content-Type: application/json' \
   -d '{
       "tg_id": 2147483647,
+      "username": "petya1337",
+      "first_name": "Petya",
+      "last_name": "Ivanov",
       "source": "Space"
 }'
 ```
 
 ## Telegram Account Refill
-Refill the real & virtual balance (depends on refill range config):
-```bash
-curl -X POST \
-  https://push.money/api/v1/wallets/2147483647/refill/ \
-  -H 'Content-Type: application/json' \
-  -d '{
-      "amount": 50000
-}'
-``` 
 
 Let's assume that multiplier for 50,000 is 1.5, so:
 - real balance = 50,000

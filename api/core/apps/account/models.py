@@ -15,7 +15,7 @@ class TelegramAccount(common_models.BaseModel):
     source = models.CharField(_("Кто привел пользователя"), max_length=50, default=settings.DEFAULT_USER_SOURCE)
 
     class Meta:
-        verbose_name = 'Телеграм пользователь'
+        verbose_name = 'Телеграм пользователя'
         verbose_name_plural = 'Телеграм пользователи'
 
     def __str__(self):

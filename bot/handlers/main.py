@@ -3,6 +3,7 @@ from pyrogram import Client, Filters
 from core.api import GameAPI
 from core import keyboards as kb
 from core.abtest import get_text, get_welcome_bonus, get_onboarding
+from core.services import get_user
 
 
 @Client.on_message(Filters.command('start'))
@@ -22,19 +23,6 @@ def start(cli, m):
         GameAPI.registration_user(tg_user=m.from_user, source=source)
 
         m.reply(get_text(tg_id, 'onboarding-step_0'), reply_markup=kb.onboarding(tg_id))
-
-
-# @Client.on_message(Filters.regex(r'^🇬🇧 English$|^🇷🇺 Русский$'))
-# def select_lang(cli, m):
-#     user_lang = 'en' if m.text == '🇬🇧 English' else 'ru'
-#     GameAPI.registration_user(tg_id=m.from_user.id, source='none')
-#     m.reply(texts.license_terms, reply_markup=kb.accept_license_terms)
-
-
-# @Client.on_message(Filters.regex(r'^✅ Принимаю условия$'))
-# def accept_license_terms(cli, m):
-#     GameAPI.registration_user(tg_id=m.from_user.id, source='none')
-#     cli.send_photo(m.chat.id, caption=texts.home_text, photo='media/hello.jpg', reply_markup=kb.menu)
 
 
 @Client.on_message(Filters.create(lambda _, m: m.text in get_text(m.from_user.id, "kb-onboarding_0")))
@@ -66,7 +54,9 @@ def tutor4_kb(cli, m):
     bonus_amount = get_welcome_bonus(tg_id)
     m.reply(get_text(tg_id, "onboarding-finish").format(bonus_amount=float(bonus_amount)))
     cli.send_photo(m.chat.id, caption=get_text(tg_id, "home_text"), photo='media/hello.jpg', reply_markup=kb.menu(tg_id))
-    GameAPI.send_statistic(m.from_user.id, 'finish_tutorial', data={})
+
+    user = get_user(m)
+    GameAPI.send_statistic(user, 'finish_tutorial', data={})
 
 
 # @Client.on_message(Filters.regex(r'^🔙 В главное меню$'))
@@ -86,4 +76,5 @@ def close_bot_window(cli, cb):
 def help_kb(cli, m):
     tg_id = m.from_user.id
     m.reply(get_text(tg_id, "contact_support"), reply_markup=kb.support(tg_id))
-    GameAPI.send_statistic(tg_id, 'press_button', data={"button_name": "help", "location": "main_menu"})
+    user = get_user(m)
+    GameAPI.send_statistic(user, 'press_button', data={"button_name": "help", "location": "main_menu"})

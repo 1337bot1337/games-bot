@@ -12,8 +12,15 @@ class GameAPI:
             return response.json()
 
     @classmethod
-    def get_game_url(cls, game_id, type_game, tg_id):
-        response = requests.get(cls.base_url+f'games/{game_id}/{type_game}/{tg_id}/')
+    def get_game_url(cls, game_id, type_game, user):
+        response = requests.get(cls.base_url+f'games/play/', data={
+            "game_id": game_id,
+            "type_game": type_game,
+            "tg_id": user["id"],
+            "username": user["username"],
+            "fist_name": user["first_name"],
+            "last_name": user["last_name"],
+        })
         if response.status_code == 200:
             return response.json()
 
@@ -69,9 +76,15 @@ class GameAPI:
         return cls.base_url+f'payment/generate/{tg_id}/{amount}/'
 
     @classmethod
-    def send_statistic(cls, tg_id, type_action, data):
+    def send_statistic(cls, user: dict, type_action: str, data: dict):
         request_url = 'http://api:8080/api/v1/statistic/register/'
-        r=requests.post(request_url, json={"tg_id": tg_id, "type_action": type_action, "data": data})
+        r=requests.post(request_url, json={
+            "tg_id": user["id"],
+            "username": user["username"],
+            "first_name": user["first_name"],
+            "last_name": user["last_name"],
+            "type_action": type_action,
+            "data": data})
 
 
 

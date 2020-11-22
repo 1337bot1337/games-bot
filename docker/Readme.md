@@ -19,5 +19,10 @@ make up
 
 Note that on the production environment API is served via nginx:
 ```bash
-docker-compose -f live.yml -d
+docker-compose -f live.yml -d up
+```
+
+stop docker containers:
+```bash
+docker stop $(docker ps -a -q)
 ```

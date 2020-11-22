@@ -3,7 +3,7 @@ from core import texts
 from core.api import GameAPI
 from core import keyboards as kb
 from threading import Event
-from core.services import BalanceClient
+from core.services import BalanceClient, get_user
 from decimal import Decimal, InvalidOperation
 from core.abtest import get_text
 
@@ -25,14 +25,15 @@ def balance_bt(cli, m):
             bonus_balance=balances["virtual_balance"]
         ), reply_markup=kb.balance_menu(tg_id))
 
-    GameAPI.send_statistic(tg_id, 'press_button', data={"button_name": "balance", "location": "main_menu"})
+    user = get_user(m)
+    GameAPI.send_statistic(user, 'press_button', data={"button_name": "balance", "location": "main_menu"})
 
 
 @Client.on_callback_query(Filters.create(lambda _, cb: cb.data.startswith('balance')))
 def balance_menu(cli, cb):
     tg_id = cb.from_user.id
     action = cb.data.split('-')[1]
-
+    user = get_user(cb)
     if action == 'buy_token':
 
         deposit_client = BalanceClient()
@@ -43,10 +44,10 @@ def balance_menu(cli, cb):
         deposit_client.done.wait()
         deposit_client.stop()
 
-        GameAPI.send_statistic(tg_id, 'press_button', data={"button_name": "deposit", "location": "main_menu/balance"})
+        GameAPI.send_statistic(user, 'press_button', data={"button_name": "deposit", "location": "main_menu/balance"})
 
     if action == 'withdrawal':
-        GameAPI.send_statistic(tg_id, 'press_button',
+        GameAPI.send_statistic(user, 'press_button',
                                data={"button_name": "withdrawal", "location": "main_menu/balance"})
 
         cb.message.reply(get_text(tg_id, "withdrawal-enter_amount"), reply_markup=kb.cancel_withdrawal(tg_id))
@@ -70,7 +71,7 @@ def balance_menu(cli, cb):
             app_card.stop()
             if card_done:
                 if app_amount.event_canceled is True:
-                    GameAPI.send_statistic(tg_id, 'press_button', data={"button_name": "cancel_withdrawal",
+                    GameAPI.send_statistic(user, 'press_button', data={"button_name": "cancel_withdrawal",
                                                                                  "location": "main_menu/balance/withdrawal"})
                     return cb.message.reply(get_text(tg_id, "withdrawal-cancel"))
 
@@ -155,7 +156,8 @@ def _deposit(client):
         min_deposit = 100
         if m.text == get_text(tg_id, "kb-balance-cancel_deposit"):
             m.reply(get_text(tg_id, "deposit-canceled"), reply_markup=kb.menu(tg_id))
-            GameAPI.send_statistic(tg_id, 'press_button', data={"button_name": "cancel_deposit",
+            user = get_user(m)
+            GameAPI.send_statistic(user, 'press_button', data={"button_name": "cancel_deposit",
                                                                 "location": "main_menu/balance/deposit"})
             cli.done.set()
             return

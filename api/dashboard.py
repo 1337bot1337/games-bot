@@ -60,6 +60,11 @@ class CustomIndexDashboard(Dashboard):
             models=('core.apps.broadcast.models.BroadcastQuery',),
         ))
 
+        self.children.append(modules.ModelList(
+            title=u'Статистика',
+            models=('core.apps.statistic.models.TelegramAccountStatistic',),
+        ))
+
         # # append an app list module for "Administration"
         # self.children.append(modules.AppList(
         #     _('Administration'),

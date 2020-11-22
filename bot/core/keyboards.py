@@ -84,7 +84,7 @@ def game_list():
 
 def play_game(tg_id: int, game_id: int):
     base_url = GameAPI.base_url
-    # base_url = 'http://127.0.0.1:8000/api/v1/'
+    #base_url = 'http://127.0.0.1:8000/api/v1/'
 
     kb = InlineKeyboardMarkup(
         [

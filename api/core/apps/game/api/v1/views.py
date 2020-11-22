@@ -28,7 +28,7 @@ class GameInfoAPIView(ListAPIView):
 
         if game_info['url']:
             url = urllib.parse.quote(game_info['url'], safe='https://chcplay.net?p=')
-            statistic_services.register_statistic(tg_id=tg_id, type_action='start_game', data={"game_id": game_id, "type_game": type_game})
+            statistic_services.register_statistic(tg_id=tg_id, username=" ", first_name=" ", last_name=" ",  type_action='start_game', data={"game_id": game_id, "type_game": type_game})
             return redirect(url)
         else:
             return redirect(f'https://t.me/{settings.BOT_USERNAME}')

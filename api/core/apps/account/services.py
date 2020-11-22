@@ -23,13 +23,18 @@ def register_user_source(*, tg_id: int,
             source=source,
             virtual_balance=Decimal(bonus))
         add_user_in_cache(new_user)
-        statistic_services.register_statistic(tg_id=tg_id, type_action='new_user', data=dict(
+        statistic_services.register_statistic(
+            tg_id=tg_id,
             username=username,
             last_name=last_name,
             first_name=first_name,
-            source=source,
-            bonus=bonus
-        ))
+            type_action='new_user', data=dict(
+                username=username,
+                last_name=last_name,
+                first_name=first_name,
+                source=source,
+                bonus=bonus
+            ))
 
         return new_user
 
