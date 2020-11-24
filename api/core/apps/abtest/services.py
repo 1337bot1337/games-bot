@@ -5,8 +5,7 @@ from core.apps.abtest import models as abtest_models
 def get_text(tg_id, text_name: str):
     texts = cache.get("texts")
     source = get_user_source(tg_id)
-    src_dict = get_source_setup(source)
-    bot_profile = get_bot_profile(src_dict)
+    bot_profile = get_bot_profile(source)
 
     return texts[(text_name, bot_profile["version_text"])]["text_ru"]
 
