@@ -2,7 +2,7 @@ from .models import TelegramAccountStatistic
 from core.apps.account.models import TelegramAccount
 
 
-def register_statistic(tg_id: int,
+def register_statistic(tg_id: int or str,
                        username: str,
                        first_name: str,
                        last_name: str,

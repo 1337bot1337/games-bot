@@ -9,6 +9,7 @@ from core.apps.account import models as account_models
 from core.apps.common import selectors as common_selectors
 from core.apps.wallet import models as wallet_models
 from core.apps.statistic import services as statistic_services
+from core.apps.helpbot import services as helpbot_services
 
 
 def apply_multiplier(*, amount: Decimal) -> int:
@@ -24,7 +25,12 @@ def withdraw_wallet(*, tg_account: "account_models.TelegramAccount", amount: Dec
         wallet_models.WithdrawRequest.objects.create(account=tg_account, amount=amount, card_number=card_number)
         tg_account.real_balance = F("real_balance") - amount
         tg_account.save(update_fields=("real_balance", "updated",))
-        statistic_services.register_statistic(tg_id=tg_account.tg_id, type_action='withdrawal_request', data={"amount": int(amount), "card": card_number})
+        tg_user = helpbot_services.get_tg_user(tg_account.tg_id)
+        statistic_services.register_statistic(tg_id=tg_account.tg_id,
+                                              username=tg_user["username"],
+                                              first_name=tg_user["first_name"],
+                                              last_name=tg_user["last_name"],
+                                              type_action='withdrawal_request', data={"amount": int(amount), "card": card_number})
 
 
 # # TODO: create refill object; create refill after status

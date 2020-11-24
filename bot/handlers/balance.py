@@ -61,7 +61,7 @@ def balance_menu(cli, cb):
             if app_amount.event_canceled is True:
                 return cb.message.reply(get_text(tg_id, "withdrawal-cancel"), reply_markup=kb.menu(tg_id))
 
-            cb.message.reply('withdrawal-enter_card', reply_markup=kb.cancel_withdrawal(tg_id))
+            cb.message.reply(get_text(tg_id, 'withdrawal-enter_card'), reply_markup=kb.cancel_withdrawal(tg_id))
 
             app_card = BalanceClient()
             _card_withdrawal(app_card)
@@ -83,7 +83,7 @@ def balance_menu(cli, cb):
                     cb.message.reply(get_text(tg_id, "withdrawal-request_created").format(
                         amount=amount,
                         card=card
-                    ))
+                    ), reply_markup=kb.menu(tg_id))
 
 
 def _amount_withdrawal(client):

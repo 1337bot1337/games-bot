@@ -26,6 +26,7 @@ class GameAPI:
 
     @classmethod
     def registration_user(cls, tg_user: pyrogram.User, source: str):
+        base_url = 'http://api:8080/api/v1/'
         request_url = 'accounts/user/'
 
         username = tg_user.username
@@ -39,7 +40,7 @@ class GameAPI:
         if not last_name:
             last_name = '[отсутствует]'
 
-        response = requests.post(cls.base_url+request_url, data={
+        response = requests.post(base_url+request_url, data={
             'tg_id': tg_user.id,
             'username': username,
             'first_name': first_name,
@@ -51,21 +52,24 @@ class GameAPI:
 
     @classmethod
     def check_user(cls, tg_id):
+        base_url = 'http://api:8080/api/v1/'
         request_url = f'accounts/{tg_id}/'
-        response = requests.get(cls.base_url+request_url)
+        response = requests.get(base_url+request_url)
         return response
 
     @classmethod
     def get_balance(cls, tg_id):
-        response = requests.get(cls.base_url+f'wallets/{tg_id}/check/')
+        base_url = 'http://api:8080/api/v1/'
+        response = requests.get(base_url+f'wallets/{tg_id}/check/')
 
         if response.status_code == 200:
             return response.json()
 
     @classmethod
     def withdrawal_request(cls, tg_id, card, amount):
+        base_url = 'http://api:8080/api/v1/'
         request_url = f'wallets/{tg_id}/withdraw/'
-        response = requests.post(cls.base_url + request_url, data={'card_number': card, 'amount': amount})
+        response = requests.post(base_url + request_url, data={'card_number': card, 'amount': amount})
 
         if response.status_code == 200:
             return response.status_code
