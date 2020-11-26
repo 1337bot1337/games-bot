@@ -33,7 +33,7 @@ INSTALLED_APPS = [
     # Project apps
     'core.apps.account',
     'core.apps.common',
-    'core.apps.wallet',
+    'core.apps.wallet.apps.WalletConfig',
     'core.apps.vendor',
     'core.apps.game',
     'core.apps.payment',

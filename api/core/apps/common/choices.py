@@ -34,7 +34,7 @@ class WithdrawRequestStatus:
 
 
 WITHDRAW_REQUEST_STATUS_CHOICES = (
-    (WithdrawRequestStatus.ACCEPTED, _("Запрос на снятие средств принят")),
+    (WithdrawRequestStatus.ACCEPTED, _("Запрос на снятие средств выполнен")),
     (WithdrawRequestStatus.REJECTED, _("Запрос на снятие средств отклонен")),
     (WithdrawRequestStatus.IN_PROGRESS, _("Запрос на снятие средств выполняется")),
 )
