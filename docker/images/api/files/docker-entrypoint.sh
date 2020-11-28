@@ -16,7 +16,6 @@ if [ "CORE_DATABASE_WAIT" ]; then
 fi
 
 if [ "CORE_DATABASE_WAIT" ]; then
-    #python /src/api/manage.py makemigrations
     python /src/api/manage.py migrate --noinput
     python /src/api/manage.py init_botprofiles
     python /src/api/manage.py first_init_text

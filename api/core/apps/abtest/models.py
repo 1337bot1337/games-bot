@@ -26,7 +26,7 @@ class BotProfile(models.Model):
 
 
 class SourceSetup(models.Model):
-    name = models.CharField(_("Название источника трафика"), max_length=55)
+    name = models.CharField(_("Название источника трафика"), max_length=55, unique=True)
     profile = models.ForeignKey("abtest.BotProfile", verbose_name="A/B тест профиль", on_delete=models.CASCADE)
 
     class Meta:

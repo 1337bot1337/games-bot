@@ -3,15 +3,25 @@ from config import cache
 
 def get_text(tg_id: int, text_name: str):
     texts = cache.get_texts()
-    source = _get_user_source(tg_id)
+
     try:
         source = _get_user_source(tg_id)
     except:
         return []
 
-    src_dict = _get_source_setup(source)
+    try:
+        src_dict = _get_source_setup(source)
+    except:
+        src_dict = _get_source_setup("none")
+
     bot_profile = _get_bot_profile(src_dict)
-    return texts[(text_name, bot_profile["version_text"])]["text_ru"]
+
+    try:
+        texts = texts[(text_name, bot_profile["version_text"])]["text_ru"]
+    except:
+        texts = texts[(text_name, "a")]["text_ru"]
+
+    return texts
 
 
 def get_onboarding(tg_id: int):

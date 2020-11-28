@@ -21,7 +21,11 @@ def get_source_setup(source: str):
 
 
 def get_bot_profile(source: str):
-    scr_setup = get_source_setup(source)
+    try:
+        scr_setup = get_source_setup(source)
+    except:
+        scr_setup = get_source_setup("none")
+
     bot_profile = cache.get("botprofiles")
     return bot_profile[scr_setup["profile_id"]]
 
