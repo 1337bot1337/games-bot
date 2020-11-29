@@ -63,9 +63,9 @@ services:
       - DOMAINS=smarted.store
   celery_worker:
     restart: on-failure
-      build:
-        context: ./../
-        dockerfile: docker/images/celery/Dockerfile
+    build:
+      context: ./../
+      dockerfile: docker/images/celery/Dockerfile
     command: [ "python", '-m', "celery", "-A", "core.config", "worker", "-l", "info" ]
     depends_on:
       - redis
