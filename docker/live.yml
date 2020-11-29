@@ -62,6 +62,10 @@ services:
       - EMAIL=sergost1337@gmail.com
       - DOMAINS=smarted.store
   celery_worker:
+    restart: on-failure
+      build:
+        context: ./../
+        dockerfile: docker/images/celery/Dockerfile
     command: [ "python", '-m', "celery", "-A", "core.config", "worker", "-l", "info" ]
     depends_on:
       - redis
@@ -69,8 +73,9 @@ services:
     environment:
       - CORE_DATABASE_WAIT=1
       - CORE_DATABASE_URL=psql://postgres:postgres@postgres:5432/core_db
-    image: docker_api
+    image: docker_celery
   celery_beat:
+    restart: on-failure
     command: [ "python", '-m', "celery", "-A", "core.config", "beat", "-l", "info", "--scheduler", "django_celery_beat.schedulers:DatabaseScheduler" ]
     depends_on:
       - redis
@@ -78,7 +83,7 @@ services:
     environment:
       - CORE_DATABASE_WAIT=1
       - CORE_DATABASE_URL=psql://postgres:postgres@postgres:5432/core_db
-    image: docker_api
+    image: docker_celery
 
 volumes:
   pg_data:
