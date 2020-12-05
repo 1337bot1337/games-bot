@@ -60,7 +60,7 @@ class BotProfileAdmin(admin.ModelAdmin):
                     return self.message_user(request, "Такой версии текстов не существует в BotText", level=messages.ERROR)
             return obj.save()
 
-        texts = abtest_models.BotText.objects.filter(version=form.initial)
+        texts = abtest_models.BotText.objects.filter(version=form.cleaned_data["version_text"])
         if texts.exists():
             a_texts = abtest_models.BotText.objects.filter(version="a")
             if texts.count() != a_texts.count():

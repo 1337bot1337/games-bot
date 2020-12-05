@@ -12,13 +12,9 @@ init:
     echo SECOND_SECRET=uf44bxhn >> .env
     echo TG_API_ID=567238 >> .env
     echo TG_API_HASH=a7e1581760e680629ab397765857e862 >> .env
-    echo TG_API_TOKEN=1342111530:AAEHaqEfw38O-eOwG6OKCHDSZK-draszatc >> .env
-    echo BOT_USERNAME=GamblingGamesBot >> .env
+    echo TG_API_TOKEN=1422793511:AAF-fDtEgxqFP5V68ADgjd7h7tAXRWQ5IZE >> .env
+    echo BOT_USERNAME=megawingamesbot >> .env
 	cp .env ../api/core/config/settings
-
-	echo TG_API_ID=567238 >> .env
-    echo TG_API_HASH=a7e1581760e680629ab397765857e862 >> .env
-    echo TG_API_TOKEN=1342111530:AAEHaqEfw38O-eOwG6OKCHDSZK-draszatc >> .env
     cp .env ../bot/config/settings
 
 

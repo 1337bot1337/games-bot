@@ -17,11 +17,11 @@ class WithdrawRequestAdmin(admin.ModelAdmin):
             if form.initial["status"] != form.cleaned_data["status"]:
                 update_fields.append("status")
 
-        if obj.is_active and update_fields[0] == "status":
-            obj.save(update_fields=update_fields)
+                if obj.is_active and update_fields[0] == "status":
+                    obj.save(update_fields=update_fields)
+        #obj.save()
 
-
-@admin.register(wallet_models.Refill)
-class RefillAdmin(admin.ModelAdmin):
-    list_display = ("account", "amount", "multiplier", "status", "created", )
-    list_filter = ("status",)
+# @admin.register(wallet_models.Refill)
+# class RefillAdmin(admin.ModelAdmin):
+#     list_display = ("account", "amount", "multiplier", "status", "created", )
+#     list_filter = ("status",)
