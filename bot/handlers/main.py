@@ -22,7 +22,7 @@ def start(cli, m):
 
         GameAPI.registration_user(tg_user=m.from_user, source=source)
 
-        m.reply(get_text(tg_id, 'onboarding-step_0'), reply_markup=kb.onboarding(tg_id))
+        m.reply(get_text(tg_id, 'onboarding-step_0').format(bonus=float(get_welcome_bonus(tg_id))), reply_markup=kb.onboarding(tg_id))
 
 
 @Client.on_message(Filters.create(lambda _, m: m.text in get_text(m.from_user.id, "kb-onboarding_0")))
@@ -52,7 +52,7 @@ def tutor3_kb(cli, m):
 def tutor4_kb(cli, m):
     tg_id = m.from_user.id
     bonus_amount = get_welcome_bonus(tg_id)
-    m.reply(get_text(tg_id, "onboarding-finish").format(bonus_amount=float(bonus_amount)))
+    m.reply(get_text(tg_id, "onboarding-finish").format(bonus=float(bonus_amount)))
     cli.send_photo(m.chat.id, caption=get_text(tg_id, "home_text"), photo='media/hello.jpg', reply_markup=kb.menu(tg_id))
 
     user = get_user(m)
