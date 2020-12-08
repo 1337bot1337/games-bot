@@ -85,7 +85,7 @@ class BotProfileAdmin(admin.ModelAdmin):
 
 @admin.register(abtest_models.SourceSetup)
 class SourceSetupAdmin(admin.ModelAdmin):
-    list_display = ("name", "profile", "ad_link", "creative_link", )
+    list_display = ("name", "channel_name", "profile", "ad_link", "creative_link", )
 
     def save_model(self, request, obj, form, change):
         if change:
