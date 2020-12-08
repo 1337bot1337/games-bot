@@ -27,6 +27,7 @@ class BotProfile(models.Model):
 
 class SourceSetup(models.Model):
     name = models.CharField(_("Название источника трафика"), max_length=55, unique=True)
+    channel_name = models.CharField(_("Название канала"), max_length=255, default="none")
     profile = models.ForeignKey("abtest.BotProfile", verbose_name="A/B тест профиль", on_delete=models.CASCADE)
     ad_link = models.URLField(_("Рекламная ссылка"), default="none")
     creative_link = models.URLField(_("Ссылка на креатив"), default="none")
