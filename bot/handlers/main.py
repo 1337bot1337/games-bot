@@ -22,7 +22,7 @@ def start(cli, m):
 
         GameAPI.registration_user(tg_user=m.from_user, source=source)
 
-        m.reply(get_text(tg_id, 'onboarding-step_0').format(bonus=float(get_welcome_bonus(tg_id))), reply_markup=kb.onboarding(tg_id))
+        m.reply(get_text(tg_id, 'onboarding-step_0').format(amount=float(get_welcome_bonus(tg_id))), reply_markup=kb.onboarding(tg_id))
 
 
 @Client.on_message(Filters.create(lambda _, m: m.text in get_text(m.from_user.id, "kb-onboarding_0")))
