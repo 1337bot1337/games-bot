@@ -19,8 +19,14 @@ init:
 
 
 
-build:
-	docker-compose -f local.yml build
+local:
+	docker-compose -f local.yml up
 
 up:
-	docker-compose -f local.yml up
+	docker-compose -f live.yml up
+
+stop:
+	docker stop $(docker ps -a -q)
+
+cert:
+	docker-compose exec nginx /etc/nginx/ssl/certbot.sh -v
