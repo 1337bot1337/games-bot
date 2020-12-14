@@ -88,10 +88,9 @@ def play_game(tg_id: int, game_id: int):
 
     kb = InlineKeyboardMarkup(
         [
-            [InlineKeyboardButton(get_text(tg_id, "kb-game-start_on_real"),
-                                  url=base_url + f'games/{game_id}/real/{tg_id}/')],
-            [InlineKeyboardButton(get_text(tg_id, "kb-game-start_on_demo"),
-                                  url=base_url + f'games/{game_id}/demo/{tg_id}/')]
+            [InlineKeyboardButton(get_text(tg_id, "kb-game-start_on_real"), url=base_url + f'games/{game_id}/real/{tg_id}/')]
+            # [InlineKeyboardButton(get_text(tg_id, "kb-game-start_on_demo"),
+            #                       url=base_url + f'games/{game_id}/demo/{tg_id}/')]
         ]
     )
     return kb
