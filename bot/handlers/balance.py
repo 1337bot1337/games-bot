@@ -172,16 +172,17 @@ def _deposit(client):
         except InvalidOperation:
             return m.reply(get_text(tg_id, "invalid_number"), reply_markup=kb.cancel_deposit(tg_id))
 
+        cli.send_photo(m.chat.id, caption=get_text(tg_id, "home_text"), photo='media/hello.jpg', reply_markup=kb.menu(tg_id))
         m.reply(get_text(tg_id, "deposit-replenish_link").format(
             amount=amount
         ), reply_markup=kb.deposit_url(tg_id, amount))
+
         cli.done.set()
 
     # @client.on_callback_query(~Filters.bot & Filters.create(lambda _, m: m.text == get_text(m.from_user.id, "kb-balance-cancel_deposit")))
     # def cancel_deposit_kb(cli, m):
     #     tg_id = m.from_user.id
-    #     m.reply(get_text(tg_id, "deposit-canceled"))
-    #     cli.send_photo(m.chat.id, caption=get_text(tg_id, "home_text"), photo='media/hello.jpg', reply_markup=kb.menu(tg_id))
+    #     m.reply(get_text(tg_id, "deposit-canceled"), reply_markup=kb.menu(tg_id))
     #     GameAPI.send_statistic(tg_id, 'press_button', data={"button_name": "cancel_deposit",
     #                                                                  "location": "main_menu/balance/deposit"})
     #     cli.done.set()
