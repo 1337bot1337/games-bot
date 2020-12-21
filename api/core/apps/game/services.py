@@ -11,6 +11,7 @@ from core.apps.vendor.exceptions import ThirdPartyVendorException, FailInvoiceVe
 from core.apps.statistic import services as statistic_services
 from core.apps.helpbot import services as helpbot_services
 from core.apps.abtest import services as abtest_services
+from core.apps.game.utils import GAME_LIST
 
 AVAILABLE_GAMES = (
     (1003, "Fire Rage +"),
@@ -124,10 +125,12 @@ def update_balance_after_game(account: "account_models.TelegramAccount",
 
         statistic_data = {
             'game_id': str(invoice.game_id),
+            'name': GAME_LIST[int(invoice.game_id)],
             'result': 'win',
-            'amount': str(max_profit),
+            'amount': round(max_profit, 2),
             'start_real_balance': str(invoice.start_real_amount),
-            'start_bonus_balance': str(invoice.start_virtual_amount)}
+            'start_bonus_balance': str(invoice.start_virtual_amount),
+            'end_balance': invoice.last_check_amount}
 
     elif round(end_amount, 2) < round(max_start_balance, 2):  # user at a lose
         max_loss = max_start_balance - end_amount
@@ -143,21 +146,29 @@ def update_balance_after_game(account: "account_models.TelegramAccount",
 
         statistic_data = {
             'game_id': str(invoice.game_id),
+            'name': GAME_LIST[int(invoice.game_id)],
             'result': 'lose',
-            'amount': str(max_loss),
+            'amount': round(max_loss, 2),
             'start_real_balance': str(invoice.start_real_amount),
-            'start_bonus_balance': str(invoice.start_virtual_amount)
+            'start_bonus_balance': str(invoice.start_virtual_amount),
+            'end_balance': invoice.last_check_amount
         }
     else:  # draw
 
         statistic_data = {
             'game_id': str(invoice.game_id),
+            'name': GAME_LIST[int(invoice.game_id)],
             'result': 'draw',
             'start_real_balance': str(invoice.start_real_amount),
-            'start_bonus_balance': str(invoice.start_virtual_amount)
+            'start_bonus_balance': str(invoice.start_virtual_amount),
+            'end_balance': invoice.last_check_amount
         }
 
-    statistic_services.register_statistic(account.tg_id, type_action='end_game', data=statistic_data)
+    statistic_services.register_statistic(tg_id=account.tg_id,
+                                          username=account.username,
+                                          first_name=account.first_name,
+                                          last_name=account.last_name,
+                                          type_action='end_game', data=statistic_data)
 
 # def create_game_session(tg_id, game_id, type_invoice):
 #     try:
