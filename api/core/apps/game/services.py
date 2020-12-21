@@ -127,10 +127,10 @@ def update_balance_after_game(account: "account_models.TelegramAccount",
             'game_id': str(invoice.game_id),
             'name': GAME_LIST[int(invoice.game_id)],
             'result': 'win',
-            'amount': round(max_profit, 2),
+            'amount': round(float(max_profit), 2),
             'start_real_balance': str(invoice.start_real_amount),
             'start_bonus_balance': str(invoice.start_virtual_amount),
-            'end_balance': invoice.last_check_amount}
+            'end_balance': round(float(end_amount), 2)}
 
     elif round(end_amount, 2) < round(max_start_balance, 2):  # user at a lose
         max_loss = max_start_balance - end_amount
@@ -148,10 +148,10 @@ def update_balance_after_game(account: "account_models.TelegramAccount",
             'game_id': str(invoice.game_id),
             'name': GAME_LIST[int(invoice.game_id)],
             'result': 'lose',
-            'amount': round(max_loss, 2),
+            'amount': round(float(max_loss), 2),
             'start_real_balance': str(invoice.start_real_amount),
             'start_bonus_balance': str(invoice.start_virtual_amount),
-            'end_balance': invoice.last_check_amount
+            'end_balance': round(float(end_amount), 2)
         }
     else:  # draw
 
@@ -161,7 +161,7 @@ def update_balance_after_game(account: "account_models.TelegramAccount",
             'result': 'draw',
             'start_real_balance': str(invoice.start_real_amount),
             'start_bonus_balance': str(invoice.start_virtual_amount),
-            'end_balance': invoice.last_check_amount
+            'end_balance': round(float(end_amount), 2)
         }
 
     statistic_services.register_statistic(tg_id=account.tg_id,
@@ -169,6 +169,7 @@ def update_balance_after_game(account: "account_models.TelegramAccount",
                                           first_name=account.first_name,
                                           last_name=account.last_name,
                                           type_action='end_game', data=statistic_data)
+
 
 # def create_game_session(tg_id, game_id, type_invoice):
 #     try:

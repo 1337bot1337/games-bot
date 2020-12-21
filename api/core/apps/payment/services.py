@@ -4,6 +4,7 @@ from core.apps.helpbot.api.pyroAPI import HelpBot
 from core.apps.payment.freekassa.api import FreeKassaApi
 from core.apps.wallet.services import refill_wallet
 from core.apps.statistic.services import register_statistic
+from core.apps.account import models as account_models
 from decimal import Decimal
 
 
@@ -57,7 +58,12 @@ def new_refill(request):
     bonus = refill_wallet(order.tg_id, amount)
     order.status = 'payed'
     order.save()
-    register_statistic(order.tg_id, 'deposit', data={"amount": amount, "bonus": bonus})
+    account = account_models.TelegramAccount.objects.get(tg_id=int(order.tg_id))
+    register_statistic(tg_id=order.tg_id,
+                       username=account.username,
+                       first_name=account.first_name,
+                       last_name=account.last_name,
+                       type_action='deposit', data={"amount": amount, "bonus": bonus})
     send_successful_deposit(order.tg_id, amount, bonus)
 
 

@@ -30,7 +30,7 @@ def check_invoice():
                 try:
                     chc_invoice = client.check_invoice(invoice.invoice_id)
                 except:
-                    print(invoice.invoice_id)
+                    print("check_invoice_error", invoice.invoice_id)
                     continue
                 actual_amount = Decimal(chc_invoice[0] * 10)
                 game_services.update_balance_in_game(account, invoice.last_check_amount, actual_amount)
