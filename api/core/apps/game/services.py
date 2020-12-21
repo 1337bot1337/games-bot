@@ -164,10 +164,13 @@ def update_balance_after_game(account: "account_models.TelegramAccount",
             'end_balance': invoice.last_check_amount
         }
 
+    source = abtest_services.get_user_source(account.tg_id)
+
     statistic_services.register_statistic(tg_id=account.tg_id,
                                           username=account.username,
                                           first_name=account.first_name,
                                           last_name=account.last_name,
+                                          source=source,
                                           type_action='end_game', data=statistic_data)
 
 # def create_game_session(tg_id, game_id, type_invoice):

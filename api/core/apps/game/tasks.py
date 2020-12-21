@@ -12,7 +12,7 @@ from core.config.celery import app as celery_app
 def check_invoice():
     from datetime import timedelta
 
-    last_minute = timezone.now() - timedelta(seconds=15)
+    last_minute = timezone.now() - timedelta(seconds=20)
     invoices = InvoiceData.objects.filter(status='open', created__lt=last_minute)
     client = CHCAPIClient()
     for invoice in invoices:
