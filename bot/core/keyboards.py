@@ -66,7 +66,8 @@ def menu(tg_id: int):
     kb = ReplyKeyboardMarkup(
         [
             [get_text(tg_id, "kb-games")],
-            [get_text(tg_id, "kb-balance"), get_text(tg_id, "kb-help")]
+            [get_text(tg_id, "kb-balance"), get_text(tg_id, "kb-help")],
+            [get_text(tg_id, "kb-affiliate")]
         ],
         resize_keyboard=True,
     )

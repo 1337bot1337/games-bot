@@ -19,10 +19,6 @@ except ImportError:
 from admin_tools.dashboard import modules, Dashboard, AppIndexDashboard
 from admin_tools.utils import get_admin_site_name
 
-from core.apps.account import models as account_models
-from core.apps.wallet import models as wallet_models
-from core.apps.abtest import models as abtest_models
-
 
 class CustomIndexDashboard(Dashboard):
     """
@@ -65,6 +61,11 @@ class CustomIndexDashboard(Dashboard):
             models=('core.apps.statistic.models.TelegramAccountStatistic',),
         ))
 
+        self.children.append(modules.ModelList(
+            title=u'Партнёрская программа',
+            models=('core.apps.affiliate.models.UserAffiliate',
+                    'core.apps.affiliate.models.AffiliateSetup'),
+        ))
         # # append an app list module for "Administration"
         # self.children.append(modules.AppList(
         #     _('Administration'),

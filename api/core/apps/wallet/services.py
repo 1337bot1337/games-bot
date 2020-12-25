@@ -1,15 +1,17 @@
 from decimal import Decimal
-
 from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.db.models import F
 from django.utils.translation import gettext_lazy as _
 
-from core.apps.account import models as account_models
 from core.apps.common import selectors as common_selectors
+from core.apps.account import models as account_models
 from core.apps.wallet import models as wallet_models
+from core.apps.affiliate import models as affiliate_models
+from core.apps.statistic import models as statistic_models
 from core.apps.statistic import services as statistic_services
 from core.apps.helpbot import services as helpbot_services
+from core.apps.affiliate import services as affiliate_services
 
 
 def apply_multiplier(*, amount: Decimal) -> int:
@@ -50,10 +52,17 @@ def withdraw_wallet(*, tg_account: "account_models.TelegramAccount", amount: Dec
 
 def refill_wallet(tg_id, amount):
     account = account_models.TelegramAccount.objects.get(tg_id=tg_id)
-
     account.real_balance += Decimal(amount)
-    bonus = apply_multiplier(amount=amount)
-    account.virtual_balance += Decimal(bonus)
+    bonus = 0
+    if affiliate_models.UserAffiliate.objects.filter(referral=account).exists():
+        user_ref = affiliate_models.UserAffiliate.objects.get(referral=account)
+        affiliate_setup = affiliate_models.AffiliateSetup.objects.get(name="default")
+        if not statistic_models.TelegramAccountStatistic.objects.filter(tg_id=account.tg_id, type_action="deposit").exists():
+           bonus = affiliate_setup.referral_deposit_bonus
+           account.virtual_balance += bonus
+        referrer_bonus = affiliate_setup.referrer_deposit_bonus
+        referrer = user_ref.referrer
+        affiliate_services.pay_referrer_bonus(referrer, referrer_bonus)
     account.save()
 
     return bonus

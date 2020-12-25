@@ -2,8 +2,8 @@ from pyrogram import Client, Filters
 
 from core.api import GameAPI
 from core import keyboards as kb
-from core.abtest import get_text, get_welcome_bonus, get_onboarding
-from core.services import get_user
+from core.abtest import get_text, get_source_welcome_bonus, get_onboarding, check_source
+from core.services import get_user, get_referrer_name, get_referral_bonus, ref_source_none
 
 
 @Client.on_message(Filters.command('start'))
@@ -16,13 +16,30 @@ def start(cli, m):
         return cli.send_photo(m.chat.id, caption=get_text(tg_id, "home_text"), photo='media/hello.jpg', reply_markup=kb.menu(tg_id))
 
     if response.status_code == 404:
-        source = 'none'
+        source = "none"
         if len(m.command) > 1:
-            source = m.command[1]
+            if m.command[1][:3] == "ref":
+                referrer_id = int(m.command[1][3:])
+                referrer_name = get_referrer_name(referrer_id)
+
+                if referrer_name:
+                    GameAPI.registration_user(tg_user=m.from_user, source=source, referrer_id=referrer_id)
+
+                    bonus_amount = get_referral_bonus()
+                    text = get_text(tg_id, "onboarding-step_0-ref").format(referer_name=referrer_name,
+                                                                           amount=bonus_amount)
+                    return m.reply(text, reply_markup=kb.onboarding(tg_id))
+            else:
+                if check_source(m.command[1]):
+                    source = m.command[1]
+                    GameAPI.registration_user(tg_user=m.from_user, source=source)
+                    start_bonus = get_source_welcome_bonus(tg_id)
+                    text = get_text(tg_id, "onboarding-step_0-source").format(amount=start_bonus)
+                    return m.reply(text, reply_markup=kb.onboarding(tg_id))
 
         GameAPI.registration_user(tg_user=m.from_user, source=source)
-
-        m.reply(get_text(tg_id, 'onboarding-step_0').format(amount=float(get_welcome_bonus(tg_id))), reply_markup=kb.onboarding(tg_id))
+        text = get_text(tg_id, "onboarding-step_0-none")
+        m.reply(text, reply_markup=kb.onboarding(tg_id))
 
 
 @Client.on_message(Filters.create(lambda _, m: m.text in get_text(m.from_user.id, "kb-onboarding_0")))
@@ -51,11 +68,21 @@ def tutor3_kb(cli, m):
 @Client.on_message(Filters.create(lambda _, m: m.text in get_text(m.from_user.id, "kb-onboarding_final")))
 def tutor4_kb(cli, m):
     tg_id = m.from_user.id
-    bonus_amount = get_welcome_bonus(tg_id)
-    m.reply(get_text(tg_id, "onboarding-finish").format(bonus=float(bonus_amount)))
-    cli.send_photo(m.chat.id, caption=get_text(tg_id, "home_text"), photo='media/hello.jpg', reply_markup=kb.menu(tg_id))
+    bonus_amount = get_source_welcome_bonus(tg_id)
 
     user = get_user(m)
+    ref, source, none = ref_source_none(tg_id)
+
+    if ref:
+        m.reply(get_text(tg_id, "onboarding-finish-ref"))
+    if source:
+        m.reply(get_text(tg_id, "onboarding-finish-source").format(bonus=float(bonus_amount)))
+
+    if none:
+        m.reply(get_text(tg_id, "onboarding-finish-none"))
+
+    cli.send_photo(m.chat.id, caption=get_text(tg_id, "home_text"), photo='media/hello.jpg',
+                   reply_markup=kb.menu(tg_id))
     GameAPI.send_statistic(user, 'finish_tutorial', data={})
 
 

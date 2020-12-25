@@ -3,6 +3,7 @@ from django.core.cache import cache
 from core.config.celery import app as celery_app
 from core.apps.abtest import models as abtest_models
 from core.apps.account import models as account_models
+from core.apps.affiliate import models as affiliate_models
 
 
 @celery_app.task
@@ -29,6 +30,13 @@ def update_cache():
     for i in abtest_models.SourceSetup.objects.all().values():
         source_cache[i["name"]] = i
 
+    affiliate_cache = affiliate_models.AffiliateSetup.objects.filter(name="default")
+    if affiliate_cache.exists():
+        affiliate_cache = affiliate_cache.values()[0]
+    else:
+        affiliate_cache = {}
+
+    cache.set("affiliate", affiliate_cache, timeout=None)
     cache.set("users", user_cache, timeout=None)
     cache.set("botprofiles", botprofile_cache, timeout=None)
     cache.set("sources", source_cache, timeout=None)

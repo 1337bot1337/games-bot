@@ -11,9 +11,13 @@ def register_user_source(*, tg_id: int,
                          username: str,
                          first_name: str,
                          last_name: str,
-                         source: str) -> typing.Optional["account_models.TelegramAccount"]:
+                         source: str,
+                         type_bonus: str) -> typing.Optional["account_models.TelegramAccount"]:
     if not account_models.TelegramAccount.objects.filter(tg_id=tg_id).exists():
-        bonus = get_welcome_bonus(source)
+        if type_bonus == "source":
+            bonus = get_welcome_bonus(source)
+        else:
+            bonus = 0
 
         new_user = account_models.TelegramAccount.objects.create(
             tg_id=tg_id,

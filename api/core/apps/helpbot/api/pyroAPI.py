@@ -13,6 +13,6 @@ class HelpBot(Client):
 
         try:
             app.send_message(tg_id, text)
-        except:
-            pass
+        except Exception as e:
+            print(e)
         app.stop()

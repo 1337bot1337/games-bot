@@ -2,6 +2,8 @@ from pyrogram import Client
 from pyrogram import Message as PyrogramMessage
 from config.settings.bot import TG_API_ID, TG_API_HASH, TG_API_TOKEN
 from threading import Event
+from config import cache
+from core.api import GameAPI
 
 games = {
     1003: "Fire Rage +",
@@ -58,3 +60,47 @@ def get_user(message: PyrogramMessage) -> dict:
         user["last_name"] = message.from_user.last_name
 
     return user
+
+
+def get_user_from_cache(tg_id):
+    users = cache.get_users()
+    user = users.get(tg_id, None)
+
+    return user
+
+
+def get_referrer_name(referrer_id):
+    name = None
+    # if user.user_name:
+    #     return f'@{user.user_name}'
+
+    user = get_user_from_cache(referrer_id)
+
+    if not user:
+        return None
+
+    if user["first_name"] != "[отсутствует]" and user["last_name"] == "[отсутствует]":
+
+        name = f'[{user["first_name"]}](tg://user?id={referrer_id})'
+
+    elif user["first_name"] != "[отсутствует]" and user["last_name"] != "[отсутствует]":
+        name = f'[{user["first_name"]} {user["last_name"]}](tg://user?id={referrer_id})'
+
+    return name
+
+
+def get_referral_bonus():
+    r = cache.get_affiliate_setup()
+    return r["referral_deposit_bonus"]
+
+
+def ref_source_none(tg_id: int or str):
+    user = get_user_from_cache(tg_id)
+
+    if user["source"] != "none":
+        return False, True, False
+
+    if GameAPI.check_ref(tg_id):
+        return True, False, False
+
+    return False, False, False

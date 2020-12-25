@@ -4,6 +4,7 @@ from core.apps.helpbot.api.pyroAPI import HelpBot
 from core.apps.payment.freekassa.api import FreeKassaApi
 from core.apps.wallet.services import refill_wallet
 from core.apps.statistic.services import register_statistic
+from core.apps.abtest import services as abtest_services
 from core.apps.account import models as account_models
 from decimal import Decimal
 
@@ -31,6 +32,10 @@ def check_deposit(request):
         return False, 'unknown order_id'
 
     order = order_query[0]
+    if order.status != "new":
+        return False, 'closed order'
+
+    order = order_query[0]
     client = FreeKassaApi()
     sign = client.generate_callback_signature(order.amount, order.order_id)
 
@@ -40,14 +45,14 @@ def check_deposit(request):
     return True, None
 
 
-def send_successful_deposit(tg_id, amount, bonus: int = False):
+def send_successful_deposit(tg_id, amount, bonus):
     client = HelpBot()
 
-    text = f'💸 Ваш баланс пополнен на {amount} руб.'
+    bonus_text = " "
+    if bonus != 0:
+        bonus_text = abtest_services.get_text(tg_id, "replenish_balance-bonus").format(bonus=bonus)
 
-    if bonus:
-        text += f'\nЗа пополнение начислено {bonus} бонусных жетонов.'
-
+    text = abtest_services.get_text(tg_id, "replenish_balance").format(amount=amount, bonus_text=bonus_text)
     client.send_msg(tg_id, text=text)
 
 
@@ -63,7 +68,7 @@ def new_refill(request):
                        username=account.username,
                        first_name=account.first_name,
                        last_name=account.last_name,
-                       type_action='deposit', data={"amount": amount, "bonus": bonus})
+                       type_action='deposit', data={"amount": round(float(amount), 2), "bonus": round(float(bonus), 2)})
     send_successful_deposit(order.tg_id, amount, bonus)
 
 

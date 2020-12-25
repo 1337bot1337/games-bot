@@ -18,3 +18,7 @@ def get_botprofiles():
 
 def get_sources():
     return pickle.loads(cache.get(":1:sources"))
+
+
+def get_affiliate_setup():
+    return pickle.loads(cache.get(":1:affiliate"))

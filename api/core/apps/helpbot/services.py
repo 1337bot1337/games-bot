@@ -1,12 +1,12 @@
 from .api.pyroAPI import HelpBot
 
 
-def send_msg(tg_id, text: str):
+def send_msg(tg_id: int or str, text: str):
     client = HelpBot()
     client.send_msg(tg_id, text)
 
 
-def broadcast(users, message):
+def broadcast(users: iter, message: str):
     client = HelpBot()
     client.start()
 

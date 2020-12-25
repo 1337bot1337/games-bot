@@ -18,6 +18,7 @@ class CallbackPayment(ListAPIView):
 
         if check:
             new_refill(request)
+
             return Response(status=status.HTTP_200_OK)
         else:
             return Response(data={'error': err}, status=status.HTTP_423_LOCKED)

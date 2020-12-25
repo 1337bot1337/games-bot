@@ -1,7 +1,8 @@
 from django.core.management.base import BaseCommand
 
 from core.apps.abtest import models as abtest_models
-
+from core.apps.affiliate import models as affiliate_models
+from decimal import Decimal
 
 class Command(BaseCommand):
 
@@ -25,5 +26,12 @@ class Command(BaseCommand):
             abtest_models.SourceSetup.objects.create(
                 name="none",
                 profile=abtest_models.BotProfile.objects.get(name='default')
+            )
+
+        if not affiliate_models.AffiliateSetup.objects.filter(name="default").exists():
+            affiliate_models.AffiliateSetup.objects.create(
+                name="default",
+                referrer_deposit_bonus=Decimal(100),
+                referral_deposit_bonus=Decimal(100)
             )
 

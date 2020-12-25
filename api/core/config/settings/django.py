@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'core.apps.statistic',
     'core.apps.abtest',
     'core.apps.broadcast',
+    'core.apps.affiliate',
 ]
 
 if DEBUG:

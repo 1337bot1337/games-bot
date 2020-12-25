@@ -31,7 +31,7 @@ def get_onboarding(tg_id: int):
     return bot_profile["onboarding"]
 
 
-def get_welcome_bonus(tg_id: int):
+def get_source_welcome_bonus(tg_id: int):
     source = _get_user_source(tg_id)
     src_dict = _get_source_setup(source)
     bot_profile = _get_bot_profile(src_dict)
@@ -44,7 +44,12 @@ def _get_user_source(tg_id: int):
 
 def _get_source_setup(source: str) -> dict:
     source_setup = cache.get_sources()
-    return source_setup[source]
+    return source_setup.get(source, None)
+
+
+def check_source(source: str):
+    if _get_source_setup(source):
+        return True
 
 
 def _get_bot_profile(source: dict):
