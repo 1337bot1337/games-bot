@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from core.apps.account import services as account_services
 from core.apps.affiliate import services as affiliate_services
 from .serializers import RegisterUserSourceSerializer
-from core.apps.account.models import TelegramAccount
+from core.apps.account import models as account_models
 from core.apps.affiliate import models as affiliate_models
 
 
@@ -39,12 +39,12 @@ class RegisterUserSourceAPIView(GenericAPIView):
 
 
 class UserCheckAPIView(ListAPIView):
-    lookup_field = 'tg_id'
-    lookup_url_kwarg = 'tg_id'
+    lookup_field = "tg_id"
+    lookup_url_kwarg = "tg_id"
 
     def list(self, request, *args, **kwargs):
-        tg_id = self.kwargs['tg_id']
-        users = [user.tg_id for user in TelegramAccount.objects.all()]
+        tg_id = self.kwargs["tg_id"]
+        users = [user.tg_id for user in account_models.TelegramAccount.objects.all()]
         if tg_id in users:
             return Response(status=status.HTTP_200_OK)
 
@@ -52,12 +52,12 @@ class UserCheckAPIView(ListAPIView):
 
 
 class RefCheckAPIView(ListAPIView):
-    lookup_field = 'tg_id'
-    lookup_url_kwarg = 'tg_id'
+    lookup_field = "tg_id"
+    lookup_url_kwarg = "tg_id"
 
     def list(self, request, *args, **kwargs):
-        tg_id = self.kwargs['tg_id']
-        account = TelegramAccount.objects.get(tg_id=tg_id)
+        tg_id = self.kwargs["tg_id"]
+        account = account_models.TelegramAccount.objects.get(tg_id=tg_id)
         check = affiliate_models.UserAffiliate.objects.filter(referral=account).exists()
         if check:
             return Response(status=status.HTTP_200_OK)
@@ -66,14 +66,13 @@ class RefCheckAPIView(ListAPIView):
 
 
 class RefCountCheckAPIView(ListAPIView):
-    lookup_field = 'tg_id'
-    lookup_url_kwarg = 'tg_id'
+    lookup_field = "tg_id"
+    lookup_url_kwarg = "tg_id"
 
     def list(self, request, *args, **kwargs):
-        tg_id = self.kwargs['tg_id']
-        account = TelegramAccount.objects.get(tg_id=tg_id)
+        tg_id = self.kwargs["tg_id"]
+        account = account_models.TelegramAccount.objects.get(tg_id=tg_id)
         refs = affiliate_models.UserAffiliate.objects.filter(referrer=account)
         count = refs.count()
 
         return Response(status=status.HTTP_200_OK, data={"count": count})
-

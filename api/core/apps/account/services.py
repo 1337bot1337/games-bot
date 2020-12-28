@@ -44,6 +44,7 @@ def register_user_source(*, tg_id: int,
 
 
 def add_user_in_cache(account: "account_models.TelegramAccount"):
+    # TODO Не плохо бы поменять ключи
     users = cache.get("users")
 
     users[account.tg_id] = dict(
@@ -57,7 +58,13 @@ def add_user_in_cache(account: "account_models.TelegramAccount"):
         source=account.source
 
     )
+
     cache.set("users", users)
+    cache.set(f"{account.tg_id}", {"await_deposit_amount": False,
+                                   "await_withdraw_amount": False,
+                                   "await_withdraw_card": False,
+                                   "await_game_search": False,
+                                   "withdraw_amount": 0})
 
 
 def get_welcome_bonus(source):

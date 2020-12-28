@@ -42,7 +42,7 @@ def start(cli, m):
         m.reply(text, reply_markup=kb.onboarding(tg_id))
 
 
-@Client.on_message(Filters.create(lambda _, m: m.text in get_text(m.from_user.id, "kb-onboarding_0")))
+@Client.on_message(Filters.create(lambda _, m: m.text == get_text(m.from_user.id, "kb-onboarding_0")))
 def tutor1_kb(cli, m):
     tg_id = m.from_user.id
     onboarding = get_onboarding(tg_id)
@@ -53,19 +53,19 @@ def tutor1_kb(cli, m):
                        reply_markup=kb.menu(tg_id))
 
 
-@Client.on_message(Filters.create(lambda _, m: m.text in get_text(m.from_user.id, "kb-onboarding_1")))
+@Client.on_message(Filters.create(lambda _, m: m.text == get_text(m.from_user.id, "kb-onboarding_1")))
 def tutor2_kb(cli, m):
     tg_id = m.from_user.id
     m.reply(get_text(tg_id, "onboarding-step_2"), reply_markup=kb.tutor_2(tg_id))
 
 
-@Client.on_message(Filters.create(lambda _, m: m.text in get_text(m.from_user.id, "kb-onboarding_2")))
+@Client.on_message(Filters.create(lambda _, m: m.text == get_text(m.from_user.id, "kb-onboarding_2")))
 def tutor3_kb(cli, m):
     tg_id = m.from_user.id
     m.reply(get_text(tg_id, "onboarding-step_3"), reply_markup=kb.tutor_3(tg_id))
 
 
-@Client.on_message(Filters.create(lambda _, m: m.text in get_text(m.from_user.id, "kb-onboarding_final")))
+@Client.on_message(Filters.create(lambda _, m: m.text == get_text(m.from_user.id, "kb-onboarding_final")))
 def tutor4_kb(cli, m):
     tg_id = m.from_user.id
     bonus_amount = get_source_welcome_bonus(tg_id)
@@ -99,7 +99,7 @@ def close_bot_window(cli, cb):
         pass
 
 
-@Client.on_message(Filters.create(lambda _, m: m.text in get_text(m.from_user.id, "kb-help")))
+@Client.on_message(Filters.create(lambda _, m: m.text == get_text(m.from_user.id, "kb-help")))
 def help_kb(cli, m):
     tg_id = m.from_user.id
     m.reply(get_text(tg_id, "contact_support"), reply_markup=kb.support(tg_id))

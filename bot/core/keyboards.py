@@ -1,5 +1,5 @@
 from pyrogram import ReplyKeyboardMarkup, InlineKeyboardMarkup, InlineKeyboardButton
-from .services import game_dict as games
+from core.services import game_dict
 from .api import GameAPI
 from core.abtest import get_text
 import urllib
@@ -74,13 +74,63 @@ def menu(tg_id: int):
     return kb
 
 
-def game_list():
+def game_list(games, offset):
     kb_list = []
-    for game in games:
+    if offset == 0:
+        kb_list = [
+            [InlineKeyboardButton(f'🔍 Поиск', callback_data="game-search"),
+             InlineKeyboardButton(f'⏩', callback_data="game-move-10")]
+        ]
+    elif offset == 10:
+        kb_list = [
+            [InlineKeyboardButton(f'⏪', callback_data="game-move-0"),
+             InlineKeyboardButton(f'🔍 Поиск', callback_data="game-search"),
+             InlineKeyboardButton(f'⏩', callback_data="game-move-20")]
+        ]
+    elif offset == 20:
+        kb_list = [
+            [InlineKeyboardButton(f'⏪', callback_data="game-move-10"),
+             InlineKeyboardButton(f'🔍 Поиск', callback_data="game-search"),
+             InlineKeyboardButton(f'⏩', callback_data="game-move-30")]
+        ]
+    elif offset == 30:
+        kb_list = [
+            [InlineKeyboardButton(f'⏪', callback_data="game-move-20"),
+             InlineKeyboardButton(f'🔍 Поиск', callback_data="game-search"),
+             InlineKeyboardButton(f'⏩', callback_data="game-move-40")]
+        ]
+    elif offset == 40:
+        kb_list = [
+            [InlineKeyboardButton(f'⏪', callback_data="game-move-30"),
+             InlineKeyboardButton(f'🔍 Поиск', callback_data="game-search")]
+        ]
+
+    for game_id in games:
+        game_title = games[game_id]
+        emoji = game_dict[game_title]["emoji"]
+
         kb_list.append(
-            [InlineKeyboardButton(f'{games[game]["emoji"]} {game}', callback_data=f'game-{games[game]["id"]}')])
+            [InlineKeyboardButton(f'{emoji} {game_title}', callback_data=f'game-{game_id}')])
 
     return InlineKeyboardMarkup(kb_list)
+
+
+try_search = InlineKeyboardMarkup(
+    [
+        [InlineKeyboardButton("Попробовать ещё", callback_data="try_search")]
+    ]
+)
+
+
+def result_game(games):
+    kb = [[InlineKeyboardButton("Попробовать ещё", callback_data="try_search")]]
+
+    for game in games:
+        kb.append(
+            [InlineKeyboardButton(game["name"], callback_data=f"game-{game['id']}")]
+        )
+
+    return InlineKeyboardMarkup(kb)
 
 
 def play_game(tg_id: int, game_id: int):
