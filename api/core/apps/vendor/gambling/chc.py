@@ -80,6 +80,7 @@ class CHCAPIClient(CHCBlackPayloadMixin, SignBuilderMixin):
     check_invoice_uri = "/api/invoice/check"
     close_invoice_uri = "/api/invoice/close"
     last_jackpot_uri = "/api/last-jackpots/"
+    invoice_history_url = "/api/invoice/games-history"
 
     @staticmethod
     def get_url(uri: str) -> str:
@@ -106,6 +107,7 @@ class CHCAPIClient(CHCBlackPayloadMixin, SignBuilderMixin):
             self.get_url(self.last_jackpot_uri), {**sign_payload, "sign": sign}
         )
         return response_data, transaction_id
+
 
     @append_transaction
     def create_invoice(self, amount: Decimal, *, transaction_id: str = None):
@@ -154,6 +156,19 @@ class CHCAPIClient(CHCBlackPayloadMixin, SignBuilderMixin):
             self.get_url(self.add_invoice_uri), {**sign_payload, "sign": sign}
         )
         return response_data["sum"], transaction_id
+
+    @append_transaction
+    def invoice_game_history(self, invoice_id: str, *, transaction_id: str = None):
+        sign_payload = {
+            **self.get_base_payload(transaction_id),
+            **self.get_check_invoice_payload(invoice_id),
+        }
+        sign = self.build_sign(self.invoice_history_url, sign_payload)
+        response_data = self.create_request(
+            self.get_url(self.invoice_history_url), {**sign_payload, "sign": sign}
+        )
+
+        return response_data["game-history"]
 
 
 def get_game_url(

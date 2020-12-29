@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from core.apps.common import models as common_models
-
+from django.contrib.postgres.fields import JSONField
 from ..common.models import GetOrNoneManager
 
 
@@ -19,3 +19,5 @@ class InvoiceData(common_models.BaseModel):
     end_virtual_amount = models.DecimalField(decimal_places=2, max_digits=10, default=0)
     last_check_amount = models.DecimalField(decimal_places=2, max_digits=10, default=0)
     status = models.CharField(_("Status"), max_length=250, default='open')
+
+    game_history = JSONField(default=list)

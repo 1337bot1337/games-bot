@@ -13,7 +13,7 @@ class CheckWalletSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = account_models.TelegramAccount
-        fields = ("real_balance", "virtual_balance", "withdraw_in_progress_amount",)
+        fields = ("real_balance", "virtual_balance", "withdraw_in_progress_amount", "max_withdrawal")
 
     def get_withdraw_in_progress_amount(self, account: "account_models.TelegramAccount") -> Decimal:
         withdraw_requests = wallet_models.WithdrawRequest.objects.filter(

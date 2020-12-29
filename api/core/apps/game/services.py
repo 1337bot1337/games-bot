@@ -6,6 +6,7 @@ from core.apps.vendor.gambling import chc
 
 from core.apps.game import models as game_models
 from core.apps.account import models as account_models
+from core.apps.common import models as common_models
 from core.apps.vendor.exceptions import ThirdPartyVendorException, FailInvoiceVendorException
 
 from core.apps.statistic import services as statistic_services
@@ -38,52 +39,6 @@ def get_games():
         result.append(item)
 
     return result
-
-
-# def update_balance_after_game(account, game_id, start_real_balance, start_virtual_balance, end_balance):
-#     max_start_balance = start_real_balance + start_virtual_balance
-#
-#     # user in profit
-#     if end_balance > max_start_balance:
-#         profit = end_balance - max_start_balance
-#         account.real_balance += profit
-#         account.save()
-#
-#         statistic_data = {
-#             'game_id': str(game_id),
-#             'result': 'win',
-#             'amount': str(profit),
-#             'start_real_balance': str(start_real_balance),
-#             'start_bonus_balance': str(start_virtual_balance)}
-#
-#     elif end_balance < max_start_balance:  # user at a lose
-#         loss = max_start_balance - end_balance
-#
-#         if loss > start_virtual_balance:
-#             account.virtual_balance = 0
-#             remainder_of_loss = loss - start_virtual_balance
-#             account.real_balance -= remainder_of_loss
-#         else:
-#             account.virtual_balance -= loss
-#
-#         account.save()
-#
-#         statistic_data = {
-#             'game_id': str(game_id),
-#             'result': 'lose',
-#             'amount': str(loss),
-#             'start_real_balance': str(start_real_balance),
-#             'start_bonus_balance': str(start_virtual_balance)        }
-#     else:  # draw
-#
-#         statistic_data = {
-#             'game_id': str(game_id),
-#             'result': 'draw',
-#             'start_real_balance': str(start_real_balance),
-#             'start_bonus_balance': str(start_virtual_balance)        }
-#
-#
-#     statistic_services.register_statistic(account.tg_id, type_action='end_game', data=statistic_data)
 
 
 def update_balance_in_game(account: "account_models.TelegramAccount",
@@ -163,7 +118,7 @@ def update_balance_after_game(account: "account_models.TelegramAccount",
             'start_bonus_balance': str(invoice.start_virtual_amount),
             'end_balance': round(float(end_amount), 2)
         }
-
+    update_max_wihdraw(account, invoice.game_history)
     statistic_services.register_statistic(tg_id=account.tg_id,
                                           username=account.username,
                                           first_name=account.first_name,
@@ -171,60 +126,16 @@ def update_balance_after_game(account: "account_models.TelegramAccount",
                                           type_action='end_game', data=statistic_data)
 
 
-# def create_game_session(tg_id, game_id, type_invoice):
-#     try:
-#         account = TelegramAccount.objects.get(tg_id=tg_id)
-#     except:
-#         return None, 'Telegram user does not exist'
-#
-#     client = chc.CHCAPIClient()
-#     active_invoice = InvoiceData.objects.get_or_none(account=account, status='open', type_invoice=type_invoice)
-#
-#     if active_invoice:
-#         try:
-#             closed_invoice = client.close_invoice(active_invoice.invoice_id)
-#             if type_invoice == 'real':
-#
-#                 update_balance_after_game(account, game_id, active_invoice.start_real_amount, active_invoice.start_virtual_amount, Decimal(closed_invoice[0])*Decimal(10))
-#
-#             active_invoice.status = 'closed'
-#             active_invoice.save()
-#         except FailInvoiceVendorException:
-#             active_invoice.status = 'closed'
-#             active_invoice.save()
-#         except ThirdPartyVendorException:
-#             helpbot_services.send_msg(tg_id, '❌ Возникла неизвестная ошибка... Такое может произойти если Вы не завершили предыдущую игру, или завершили игру закрыв вкладку в браузере. Я рекомендую завершать игру нажатием на кнопку "Выход". Попробуйте начать игру заново, и после завершения, нажать на кнопку "Выход". Так же, рекомендую закрыть все остальные вкладки с другими играми и подождать несколько секунд.')
-#             return None, {'err_txt': 'The previous session is not finished', 'err_code': 2}
-#
-#     if type_invoice == "demo":
-#
-#         invoice_id, transaction_id = client.create_invoice(settings.DEFAULT_DEMO_AMOUNT/100)
-#         InvoiceData.objects.create(
-#             invoice_id=invoice_id,
-#             game_id=game_id,
-#             tr_id=transaction_id,
-#             account=account,
-#             type_invoice="demo"
-#         )
-#         return invoice_id, None
-#
-#
-#     if account.real_balance > Decimal(0) or account.virtual_balance > Decimal(0):
-#         invoice_id, transaction_id = client.create_invoice(Decimal(sum((account.real_balance, account.virtual_balance))/Decimal(10)))
-#
-#         InvoiceData.objects.create(
-#             invoice_id=invoice_id,
-#             game_id=game_id,
-#             tr_id=transaction_id,
-#             account=account,
-#             type_invoice='real',
-#             start_real_amount=account.real_balance,
-#             start_virtual_amount=account.virtual_balance
-#         )
-#         return invoice_id, None
-#     helpbot_services.send_msg(tg_id, '❌ На Вашем балансе надостаточно средств. Чтобы пополнить счет, перейдите в меню "💰 Баланс" и следуйте моим простым подсказкам!')
-#     return None, {"err_txt": "Insufficient funds", "err_code": 1}
-#
+def update_max_wihdraw(account: "account_models.TelegramAccount", game_history: list):
+    sumbet = Decimal(0)
+    for i in game_history:
+        if "bet" in i["event"]:
+            sumbet += Decimal(i["value"])
+
+    if sumbet > 0:
+        sumbet = sumbet * 10
+        account.max_withdrawal += sumbet / Decimal(common_models.Settings.objects.filter()[0].wager)
+        account.save()
 
 
 def create_game_session(tg_id, game_id, type_invoice):

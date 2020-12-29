@@ -13,17 +13,22 @@ from config import cache
 def balance_bt(cli, m):
     tg_id = m.from_user.id
     balances = GameAPI.get_balance(tg_id)
-    if int(balances['withdraw_in_progress_amount']) > 0:
+    max_sum_withdrawal = balances["max_withdrawal"]
+    if Decimal(max_sum_withdrawal) < Decimal(cache.get_settings()["min_withdrawal"]):
+        max_sum_withdrawal = 0
 
+    if int(balances['withdraw_in_progress_amount']) > 0:
         m.reply(get_text(tg_id, "balance_menu-with_withdraw_in_progress_amount").format(
             real_balance=balances["real_balance"],
             bonus_balance=balances["virtual_balance"],
-            withdraw_in_progress_amount=balances['withdraw_in_progress_amount']
+            withdraw_in_progress_amount=balances['withdraw_in_progress_amount'],
+            max_withdrawal=max_sum_withdrawal
         ), reply_markup=kb.balance_menu(tg_id))
     else:
         m.reply(get_text(tg_id, "balance_menu-without_withdraw_in_progress_amount").format(
             real_balance=balances["real_balance"],
-            bonus_balance=balances["virtual_balance"]
+            bonus_balance=balances["virtual_balance"],
+            max_withdrawal=max_sum_withdrawal
         ), reply_markup=kb.balance_menu(tg_id))
 
     user = get_user(m)
@@ -35,9 +40,10 @@ def balance_menu(cli, cb):
     tg_id = cb.from_user.id
     action = cb.data.split('-')[1]
     user = get_user(cb)
+    settings = cache.get_settings()
     if action == 'buy_token':
         cache.change_user_cache(tg_id, "await_deposit_amount", True)
-        cb.message.reply(get_text(tg_id, "deposit-enter_amount").format(min_deposit=100),
+        cb.message.reply(get_text(tg_id, "deposit-enter_amount").format(min_deposit=settings["min_deposit"]),
                          reply_markup=kb.cancel_deposit(tg_id))
 
         GameAPI.send_statistic(user, 'press_button', data={"button_name": "deposit", "location": "main_menu/balance"})
@@ -46,7 +52,13 @@ def balance_menu(cli, cb):
         GameAPI.send_statistic(user, 'press_button',
                                data={"button_name": "withdrawal", "location": "main_menu/balance"})
 
-        cb.message.reply(get_text(tg_id, "withdrawal-enter_amount"), reply_markup=kb.cancel_withdrawal(tg_id))
+        balance = GameAPI.get_balance(tg_id)
+        if Decimal(balance["max_withdrawal"]) < Decimal(settings["min_withdrawal"]):
+            needsumbet = (Decimal(settings["min_withdrawal"]) - Decimal(balance["max_withdrawal"])) * Decimal(settings["wager"])
+            cb.message.reply(get_text(tg_id, "withdrawal-limit_error").format(needsumbet=round(needsumbet, 2)))
+            return
+
+        cb.message.reply(get_text(tg_id, "withdrawal-enter_amount").format(min_withdrawal=cache.get_settings()["min_withdrawal"]), reply_markup=kb.cancel_withdrawal(tg_id))
 
         cache.change_user_cache(tg_id, "await_withdraw_amount", True)
 
@@ -71,15 +83,15 @@ def cancel_withdraw_kb(cli, m):
 def withdraw_amount(cli, m):
     tg_id = m.from_user.id
     try:
-        amount = Decimal(m.text.replace(',', '.'))
+        amount = Decimal(m.text.replace(",", "."))
         if amount == 0:
             return m.reply(get_text(tg_id, "withdrawal-null_error"), reply_markup=kb.cancel_withdrawal(tg_id))
 
         balance = GameAPI.get_balance(tg_id)
 
-        if amount > Decimal(balance['real_balance']):
+        if amount > Decimal(balance["max_withdrawal"]):
             return m.reply(get_text(tg_id, "withdrawal-max_limit").format(
-                max_amount=round(Decimal(balance["real_balance"]), 2)), reply_markup=kb.cancel_withdrawal(tg_id))
+                max_amount=round(Decimal(balance["max_withdrawal"]), 2)), reply_markup=kb.cancel_withdrawal(tg_id))
 
         cache.change_user_cache(tg_id, "withdraw_amount", amount)
         cache.change_user_cache(tg_id, "await_withdraw_amount", False)
@@ -127,11 +139,11 @@ def cancel_deposit_kb(cli, m):
 @Client.on_message(Filters.create(lambda _, m: cache.get_user_cache(m.from_user.id)["await_deposit_amount"]))
 def deposit_amount(cli, m):
     tg_id = m.from_user.id
-    min_deposit = 100
+    min_deposit = cache.get_settings()["min_deposit"]
 
     try:
         amount = Decimal(m.text.replace(',', '.'))
-        if amount < min_deposit:
+        if amount < Decimal(min_deposit):
             return m.reply(get_text(tg_id, "deposit-min_limit").format(
                 min_deposit=min_deposit
             ), reply_markup=kb.cancel_deposit(tg_id))

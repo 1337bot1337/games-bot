@@ -41,3 +41,8 @@ def change_user_cache(tg_id: int, flag_name: str, value):
 def get_withdraw_amount(tg_id: int):
     user_cache = get_user_cache(tg_id)
     return user_cache["withdraw_amount"]
+
+
+def get_settings():
+    settings = pickle.loads(cache.get(f":1:settings"))
+    return settings

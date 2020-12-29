@@ -4,6 +4,7 @@ from core.config.celery import app as celery_app
 from core.apps.abtest import models as abtest_models
 from core.apps.account import models as account_models
 from core.apps.affiliate import models as affiliate_models
+from core.apps.common import models as common_models
 
 
 @celery_app.task
@@ -36,6 +37,13 @@ def update_cache():
     else:
         affiliate_cache = {}
 
+    settings_cache = common_models.Settings.objects.filter()
+    if settings_cache.exists():
+        settings_cache = settings_cache.values()[0]
+    else:
+        settings_cache = {}
+
+    cache.set("settings", settings_cache, timeout=None)
     cache.set("affiliate", affiliate_cache, timeout=None)
     cache.set("users", user_cache, timeout=None)
     cache.set("botprofiles", botprofile_cache, timeout=None)

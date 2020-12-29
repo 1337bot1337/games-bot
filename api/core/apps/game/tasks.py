@@ -20,6 +20,8 @@ def check_invoice():
         account = TelegramAccount.objects.get(tg_id=invoice.account.tg_id)
         try:
             closed_invoice = client.close_invoice(invoice.invoice_id)
+            game_history = client.invoice_game_history(invoice.invoice_id)
+            invoice.game_history = game_history
             invoice.status = 'closed'
             invoice.save()
 

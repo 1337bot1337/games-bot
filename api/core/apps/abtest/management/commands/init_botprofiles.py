@@ -2,7 +2,9 @@ from django.core.management.base import BaseCommand
 
 from core.apps.abtest import models as abtest_models
 from core.apps.affiliate import models as affiliate_models
+from core.apps.common import models as common_models
 from decimal import Decimal
+
 
 class Command(BaseCommand):
 
@@ -35,3 +37,9 @@ class Command(BaseCommand):
                 referral_deposit_bonus=Decimal(100)
             )
 
+        if not common_models.Settings.objects.filter().exists():
+            common_models.Settings.objects.create(
+                wager=37,
+                min_withdrawal=100,
+                min_deposit=100
+            )

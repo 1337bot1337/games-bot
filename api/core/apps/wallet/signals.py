@@ -3,6 +3,7 @@ from django.dispatch import receiver
 from core.apps.wallet import models as wallet_models
 from core.apps.helpbot import services as helpbot_services
 from core.apps.abtest import services as abtest_services
+from decimal import Decimal
 
 
 @receiver(post_save, sender=wallet_models.WithdrawRequest)
@@ -21,6 +22,8 @@ def my_handler(sender, instance, **kwargs):
                                       ))
 
         if instance.status == "accepted":
+            user.max_withdrawal -= instance.amount
+            user.save()
             helpbot_services.send_msg(user.tg_id, abtest_services.get_text(user.tg_id, "withdrawal-accepted_withdraw_request").format(
                                           amount=instance.amount,
                                           card=instance.card_number

@@ -47,3 +47,10 @@ class BalanceMultiplierConfig(BaseModel):
     def save(self, *args, **kwargs):
         self.full_clean()
         return super().save(*args, **kwargs)
+
+
+class Settings(models.Model):
+    wager = models.PositiveIntegerField()
+    min_withdrawal = models.PositiveIntegerField()
+    min_deposit = models.PositiveIntegerField()
+
