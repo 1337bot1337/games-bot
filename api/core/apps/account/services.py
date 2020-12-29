@@ -70,3 +70,8 @@ def add_user_in_cache(account: "account_models.TelegramAccount"):
 def get_welcome_bonus(source):
     abprofile = abtest_services.get_bot_profile(source)
     return abprofile["welcome_bonus"]
+
+
+def get_deposit_bonus(source):
+    abprofile = abtest_services.get_bot_profile(source)
+    return abprofile["deposit_bonus"], abprofile["type_deposit_bonus"]

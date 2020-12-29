@@ -9,7 +9,7 @@ from core.abtest import get_text
 from config import cache
 
 
-@Client.on_message(Filters.create(lambda _, m: m.text == get_text(m.from_user.id, "kb-balance")))
+@Client.on_message(~Filters.bot & Filters.create(lambda _, m: m.text == get_text(m.from_user.id, "kb-balance")))
 def balance_bt(cli, m):
     tg_id = m.from_user.id
     balances = GameAPI.get_balance(tg_id)
@@ -79,7 +79,7 @@ def cancel_withdraw_kb(cli, m):
                        reply_markup=kb.menu(tg_id))
 
 
-@Client.on_message(Filters.create(lambda _, m: cache.get_user_cache(m.from_user.id)["await_withdraw_amount"]))
+@Client.on_message(~Filters.bot & Filters.create(lambda _, m: cache.get_user_cache(m.from_user.id)["await_withdraw_amount"]))
 def withdraw_amount(cli, m):
     tg_id = m.from_user.id
     try:
@@ -101,7 +101,7 @@ def withdraw_amount(cli, m):
         return m.reply(get_text(tg_id, "invalid_number"), reply_markup=kb.cancel_withdrawal(tg_id))
 
 
-@Client.on_message(Filters.create(lambda _, m: cache.get_user_cache(m.from_user.id)["await_withdraw_card"]))
+@Client.on_message(~Filters.bot & Filters.create(lambda _, m: cache.get_user_cache(m.from_user.id)["await_withdraw_card"]))
 def card_withdraw(cli, m):
     tg_id = m.from_user.id
     try:
@@ -136,7 +136,7 @@ def cancel_deposit_kb(cli, m):
                        reply_markup=kb.menu(tg_id))
 
 
-@Client.on_message(Filters.create(lambda _, m: cache.get_user_cache(m.from_user.id)["await_deposit_amount"]))
+@Client.on_message(~Filters.bot & Filters.create(lambda _, m: cache.get_user_cache(m.from_user.id)["await_deposit_amount"]))
 def deposit_amount(cli, m):
     tg_id = m.from_user.id
     min_deposit = cache.get_settings()["min_deposit"]

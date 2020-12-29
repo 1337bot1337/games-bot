@@ -15,7 +15,6 @@ class CallbackPayment(ListAPIView):
 
     def post(self, request, *args, **kwargs):
         check, err = check_deposit(request)
-
         if check:
             new_refill(request)
 

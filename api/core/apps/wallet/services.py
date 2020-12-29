@@ -12,6 +12,7 @@ from core.apps.statistic import models as statistic_models
 from core.apps.statistic import services as statistic_services
 from core.apps.helpbot import services as helpbot_services
 from core.apps.affiliate import services as affiliate_services
+from core.apps.account import services as account_services
 
 
 def apply_multiplier(*, amount: Decimal) -> int:
@@ -63,6 +64,14 @@ def refill_wallet(tg_id, amount):
         referrer_bonus = affiliate_setup.referrer_deposit_bonus
         referrer = user_ref.referrer
         affiliate_services.pay_referrer_bonus(referrer, referrer_bonus)
+    elif account.source != "none":
+        bonus, type_bonus = account_services.get_deposit_bonus(account.source)
+        if type_bonus == "factor":
+            bonus = Decimal(bonus) * Decimal(amount) - Decimal(amount)
+            account.virtual_balance += bonus
+        else:
+            account.virtual_balance += Decimal(bonus)
+        account.virtual_balance += Decimal(bonus)
     account.save()
 
     return bonus

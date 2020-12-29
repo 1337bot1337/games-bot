@@ -34,7 +34,7 @@ class BotTextAdmin(TranslationAdmin):
 
 @admin.register(abtest_models.BotProfile)
 class BotProfileAdmin(admin.ModelAdmin):
-    list_display = ("name", "version_text", "welcome_bonus", "deposit_bonus", "onboarding", )
+    list_display = ("name", "version_text", "welcome_bonus", "deposit_bonus", "type_deposit_bonus", "onboarding", )
 
     def save_model(self, request, obj, form, change):
         if change:

@@ -5,6 +5,7 @@ from core.apps.payment.freekassa.api import FreeKassaApi
 from core.apps.wallet.services import refill_wallet
 from core.apps.statistic.services import register_statistic
 from core.apps.abtest import services as abtest_services
+from core.apps.account import services as account_services
 from core.apps.account import models as account_models
 from decimal import Decimal
 
@@ -47,10 +48,13 @@ def check_deposit(request):
 
 def send_successful_deposit(tg_id, amount, bonus):
     client = HelpBot()
-
+    account = account_models.TelegramAccount.objects.get(tg_id=tg_id)
     bonus_text = " "
     if bonus != 0:
-        bonus_text = abtest_services.get_text(tg_id, "replenish_balance-bonus").format(bonus=bonus)
+        bonus_text = abtest_services.get_text(tg_id, "replenish_balance-bonus").format(bonus=round(bonus, 2))
+
+    if account.source != "none":
+        bonus_text = abtest_services.get_text(tg_id, "replenish_balance-bonus-source").format(bonus=round(bonus, 2))
 
     text = abtest_services.get_text(tg_id, "replenish_balance").format(amount=amount, bonus_text=bonus_text)
     client.send_msg(tg_id, text=text)

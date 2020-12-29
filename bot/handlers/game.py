@@ -6,7 +6,7 @@ from core.abtest import get_text
 from config import cache
 
 
-@Client.on_message(Filters.create(lambda _, m: m.text == get_text(m.from_user.id, "kb-games")))
+@Client.on_message(~Filters.bot & Filters.create(lambda _, m: m.text == get_text(m.from_user.id, "kb-games")))
 def games_list(cli, m):
     tg_id = m.from_user.id
     cli.send_photo(m.chat.id, photo='media/games.jpg', caption=get_text(tg_id, "select_game"), reply_markup=kb.game_list(games_1, 0))
@@ -47,7 +47,7 @@ def research_game(cli, cb):
     cb.message.edit(cb.message.text)
 
 
-@Client.on_message(Filters.create(lambda _, m: cache.get_user_cache(m.from_user.id)["await_game_search"]))
+@Client.on_message(~Filters.bot & Filters.create(lambda _, m: cache.get_user_cache(m.from_user.id)["await_game_search"]))
 def game_search(cli, m):
     tg_id = m.from_user.id
     game_search = m.text
