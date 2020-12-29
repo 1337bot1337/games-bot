@@ -55,7 +55,7 @@ def balance_menu(cli, cb):
         balance = GameAPI.get_balance(tg_id)
         if Decimal(balance["max_withdrawal"]) < Decimal(settings["min_withdrawal"]):
             needsumbet = (Decimal(settings["min_withdrawal"]) - Decimal(balance["max_withdrawal"])) * Decimal(settings["wager"])
-            cb.message.reply(get_text(tg_id, "withdrawal-limit_error").format(needsumbet=round(needsumbet, 2)))
+            cb.message.reply(get_text(tg_id, "withdrawal-limit_error").format(needsumbet=round(needsumbet, 2), in_leo=round(needsumbet/Decimal(10), 2)))
             return
 
         cb.message.reply(get_text(tg_id, "withdrawal-enter_amount").format(min_withdrawal=cache.get_settings()["min_withdrawal"]), reply_markup=kb.cancel_withdrawal(tg_id))
