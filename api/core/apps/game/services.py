@@ -50,7 +50,8 @@ def update_balance_in_game(account: "account_models.TelegramAccount",
         account.real_balance += profit
         account.save()
         helpbot_services.send_msg(account.tg_id, f'🏵 Вы победили!\n'
-                                                 f'Ваш выигрыш: **{round(profit/Decimal(10), 2)}** Leo (**{round(profit, 2)}** руб.)')
+                                                 f'Ваш выигрыш: **{round(profit/Decimal(10), 2)}** Leo (**{round(profit, 2)}** руб.)',
+                                  session_name="update_balance_in_game")
 
     # user at a lose
     elif round(actual_amount, 2) < round(last_amount, 2):
@@ -159,7 +160,7 @@ def create_game_session(tg_id, game_id, type_invoice):
             active_invoice.status = 'closed'
             active_invoice.save()
         except ThirdPartyVendorException:
-            helpbot_services.send_msg(tg_id, abtest_services.get_text(tg_id, "error_start_game"))
+            helpbot_services.send_msg(tg_id, abtest_services.get_text(tg_id, "error_start_game"), session_name="err_start_game2")
             return None, {'err_txt': 'The previous session is not finished', 'err_code': 2}
 
     if type_invoice == "demo":
@@ -188,7 +189,7 @@ def create_game_session(tg_id, game_id, type_invoice):
             last_check_amount=account.real_balance+account.virtual_balance
         )
         return invoice_id, None
-    helpbot_services.send_msg(tg_id, abtest_services.get_text(tg_id, "error_insufficient_balance"))
+    helpbot_services.send_msg(tg_id, abtest_services.get_text(tg_id, "error_insufficient_balance"), session_name="err_balance")
     return None, {"err_txt": "Insufficient funds", "err_code": 1}
 
 

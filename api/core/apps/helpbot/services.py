@@ -1,13 +1,13 @@
 from .api.pyroAPI import HelpBot
 
 
-def send_msg(tg_id: int or str, text: str):
-    client = HelpBot()
+def send_msg(tg_id: int or str, text: str, session_name: str = None):
+    client = HelpBot(session_name=session_name)
     client.send_msg(tg_id, text)
 
 
 def broadcast(users: iter, message: str):
-    client = HelpBot()
+    client = HelpBot(session_name="session_broadcast")
     client.start()
 
     for user in users:
@@ -20,7 +20,7 @@ def broadcast(users: iter, message: str):
 
 
 def get_tg_user(tg_id: int or str):
-    client = HelpBot()
+    client = HelpBot(session_name="get_tg_user_session")
     client.start()
 
     tg_user = client.get_users(tg_id)

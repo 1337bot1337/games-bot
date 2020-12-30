@@ -19,7 +19,7 @@ def my_handler(sender, instance, **kwargs):
                                       abtest_services.get_text(user.tg_id, "withdrawal-rejected_withdraw_request").format(
                                           amount=instance.amount,
                                           card=instance.card_number
-                                      ))
+                                      ), session_name="withdrawal_rejected")
 
         if instance.status == "accepted":
             user.max_withdrawal -= instance.amount
@@ -27,5 +27,5 @@ def my_handler(sender, instance, **kwargs):
             helpbot_services.send_msg(user.tg_id, abtest_services.get_text(user.tg_id, "withdrawal-accepted_withdraw_request").format(
                                           amount=instance.amount,
                                           card=instance.card_number
-                                      ))
+                                      ), session_name="withdrawal_accepted")
 

@@ -23,7 +23,7 @@ def create_new_ref(referral_id: int, referrer_id: int):
                                                     "first_name": referral.first_name,
                                                     "last_name": referral.last_name})
 
-        helpbot_services.send_msg(referrer_id, abtest_services.get_text(referrer_id, "affiliate-new_referral"))
+        helpbot_services.send_msg(referrer_id, abtest_services.get_text(referrer_id, "affiliate-new_referral"), session_name="new_ref")
 
 
 def pay_referrer_bonus(referrer: "account_models.TelegramAccount", bonus: Decimal):
@@ -31,7 +31,7 @@ def pay_referrer_bonus(referrer: "account_models.TelegramAccount", bonus: Decima
     referrer.save()
     text = abtest_services.get_text(referrer.tg_id, "affiliate-bonus_for_referrer_from_deposit_referral").format(
         bonus=round(bonus, 2))
-    helpbot_services.send_msg(referrer.tg_id, text)
+    helpbot_services.send_msg(referrer.tg_id, text, session_name="pay_ref_sess")
 
     statistic_services.register_statistic(tg_id=referrer.tg_id,
                                           username=referrer.username,
