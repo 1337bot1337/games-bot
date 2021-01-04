@@ -60,7 +60,7 @@ def refill_wallet(tg_id, amount: Decimal):
         affiliate_setup = affiliate_models.AffiliateSetup.objects.get(name="default")
         if not statistic_models.TelegramAccountStatistic.objects.filter(tg_id=account.tg_id, type_action="deposit").exists():
             bonus = affiliate_setup.referral_deposit_bonus
-            if affiliate_setup.referral_type_deposit_bonus == "factor":
+            if affiliate_setup.type_referral_deposit_bonus == "factor":
                 bonus = amount * affiliate_setup.referral_deposit_bonus - amount
 
             account.virtual_balance += bonus

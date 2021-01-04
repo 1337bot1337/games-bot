@@ -50,7 +50,10 @@ class BalanceMultiplierConfig(BaseModel):
 
 
 class Settings(models.Model):
-    wager = models.PositiveIntegerField()
-    min_withdrawal = models.PositiveIntegerField()
-    min_deposit = models.PositiveIntegerField()
+    wager = models.PositiveIntegerField(_("Вагер"))
+    min_withdrawal = models.PositiveIntegerField(_("Минимальная сумма вывода"))
+    min_deposit = models.PositiveIntegerField(_("Минимальная сумма депозита"))
 
+    class Meta:
+        verbose_name = "Настройки"
+        verbose_name_plural = "Настройки"
