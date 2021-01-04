@@ -6,6 +6,21 @@ from core.apps.statistic import services as statistic_services
 from decimal import Decimal
 
 
+def get_user_name(user: "account_models.TelegramAccount"):
+    name = None
+    # if user.user_name:
+    #     return f'@{user.user_name}'
+
+    if user.first_name != "[отсутствует]" and user.last_name == "[отсутствует]":
+
+        name = f'[{user.first_name}](tg://user?id={user.tg_id})'
+
+    elif user.first_name != "[отсутствует]" and user.last_name != "[отсутствует]":
+        name = f'[{user.first_name} {user.last_name}](tg://user?id={user.tg_id})'
+
+    return name
+
+
 def create_new_ref(referral_id: int, referrer_id: int):
     referral = account_models.TelegramAccount.objects.get(tg_id=referral_id)
 
@@ -22,8 +37,12 @@ def create_new_ref(referral_id: int, referrer_id: int):
                                                     "username": referral.username,
                                                     "first_name": referral.first_name,
                                                     "last_name": referral.last_name})
+        set = account_models.AffiliateSetup.objects.filter()[0]
 
-        helpbot_services.send_msg(referrer_id, abtest_services.get_text(referrer_id, "affiliate-new_referral"), session_name="new_ref")
+        helpbot_services.send_msg(referrer_id, abtest_services.get_text(referrer_id, "affiliate-new_referral").format(
+            friend_name=get_user_name(referral),
+            min_referral_deposit=set.min_referral_deposit),
+                                  session_name="new_ref")
 
 
 def pay_referrer_bonus(referrer: "account_models.TelegramAccount",
