@@ -11,12 +11,9 @@ class AffiliateSetup(common_models.BaseModel):
     name = models.CharField(_("Имя профиля"), max_length=255)
     referrer_deposit_bonus = models.DecimalField(_("Бонус рефереру от депозита реферала"), max_digits=10,
                                                  decimal_places=2)
-    referral_deposit_bonus = models.DecimalField(_("Разовый бонус рефералу на депозит"), max_digits=10,
+    referral_deposit_bonus = models.DecimalField(_("Коэффициент рефералу на первое пополнение депозита"), max_digits=10,
                                                  decimal_places=2)
-    type_referral_deposit_bonus = models.CharField(_("Тип бонуса для реферала за разовый депозит"), max_length=50,
-                                              choices=(
-                                                  ("factor", _("Множитель")),
-                                                  ("fixed", _("Фиксированный"))), default="factor")
+
     min_referral_deposit = models.DecimalField(_("Минимальная сумма депозита реферала для выплаты бонусов рефереру"),
                                                max_digits=10, decimal_places=2, default=Decimal(1000))
 

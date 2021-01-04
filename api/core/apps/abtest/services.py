@@ -39,6 +39,16 @@ def get_sources_from_botprofile(bot_profile: "abtest_models.BotProfile"):
 
 
 texts = [
+    {'name': 'affiliate-invite_friend',
+     'text': "Привет друг нашего друга! Приглашаем тебя в казино!\n\nЖми на кнопку и получай бонус {bonus}% за первый депозит",
+     'text_ru': "Привет друг нашего друга! Приглашаем тебя в казино!\n\nЖми на кнопку и получай бонус {bonus}% за первый депозит",
+     'text_en': '',
+     'version': 'a'},
+    {'name': 'affiliate-invite_friend',
+     'text': "Привет друг нашего друга! Приглашаем тебя в казино!\n\nЖми на кнопку и получай бонус {bonus}% за первый депозит",
+     'text_ru': "Привет друг нашего друга! Приглашаем тебя в казино!\n\nЖми на кнопку и получай бонус {bonus}% за первый депозит",
+     'text_en': '',
+     'version': 'b'},
     {'name': 'balance-conditions',
      'text': 'Минимальная сумма для зачисления на счет - {min_deposit}\n'
              'Минимальная сумма для вывода - {min_withdrawal}\n'
