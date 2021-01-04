@@ -66,6 +66,10 @@ class CustomIndexDashboard(Dashboard):
             models=('core.apps.affiliate.models.UserAffiliate',
                     'core.apps.affiliate.models.AffiliateSetup'),
         ))
+        self.children.append(modules.ModelList(
+            title=u'Настройки казино',
+            models=('core.apps.common.models.Settings',),
+        ))
         # # append an app list module for "Administration"
         # self.children.append(modules.AppList(
         #     _('Administration'),
