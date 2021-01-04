@@ -10,7 +10,7 @@ class UserAffiliateAdmin(admin.ModelAdmin):
 
 @admin.register(affiliate_models.AffiliateSetup)
 class AffiliateSetupAdmin(admin.ModelAdmin):
-    list_display = ("name", "referrer_deposit_bonus", "referral_deposit_bonus", "type_referral_deposit_bonus", "min_referral_deposit")
+    list_display = ("name", "referrer_deposit_bonus", "referral_deposit_bonus", "min_referral_deposit")
 
     def save_model(self, request, obj, form, change):
         if change:
