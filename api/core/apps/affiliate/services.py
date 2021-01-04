@@ -26,7 +26,14 @@ def create_new_ref(referral_id: int, referrer_id: int):
         helpbot_services.send_msg(referrer_id, abtest_services.get_text(referrer_id, "affiliate-new_referral"), session_name="new_ref")
 
 
-def pay_referrer_bonus(referrer: "account_models.TelegramAccount", bonus: Decimal):
+def pay_referrer_bonus(referrer: "account_models.TelegramAccount",
+                       bonus: Decimal,
+                       referral_deposit: Decimal):
+    min_deposit = affiliate_models.AffiliateSetup.objects.filter()[0].min_referral_deposit
+
+    if referral_deposit < min_deposit:
+        return
+
     referrer.virtual_balance += bonus
     referrer.save()
     text = abtest_services.get_text(referrer.tg_id, "affiliate-bonus_for_referrer_from_deposit_referral").format(

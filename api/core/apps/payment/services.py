@@ -63,7 +63,7 @@ def send_successful_deposit(tg_id, amount, bonus):
 def new_refill(request):
     order_id = int(request.data['MERCHANT_ORDER_ID'])
     order = PaymentOrder.objects.get(order_id=order_id)
-    amount = int(request.data['AMOUNT'])
+    amount = Decimal(request.data['AMOUNT'])
     bonus = refill_wallet(order.tg_id, amount)
     order.status = 'payed'
     order.save()

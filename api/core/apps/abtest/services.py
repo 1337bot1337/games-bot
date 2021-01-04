@@ -39,6 +39,24 @@ def get_sources_from_botprofile(bot_profile: "abtest_models.BotProfile"):
 
 
 texts = [
+    {'name': 'balance-conditions',
+     'text': 'Мин. депозит {min_deposit}\n'
+             'Мин. вывод {min_withdrawal}\n'
+             'Вагер {wager}',
+     'text_ru':'Мин. депозит {min_deposit}\n'
+             'Мин. вывод {min_withdrawal}\n'
+             'Вагер {wager}',
+     'text_en': '',
+     'version': 'a'},
+    {'name': 'balance-conditions',
+     'text': 'Мин. депозит {min_deposit}\n'
+             'Мин. вывод {min_withdrawal}\n'
+             'Вагер {wager}',
+     'text_ru': 'Мин. депозит {min_deposit}\n'
+             'Мин. вывод {min_withdrawal}\n'
+             'Вагер {wager}',
+     'text_en': '',
+     'version': 'b'},
     {'name': 'enter_search_game',
      'text': 'Для поискал игры нужно ввести хотя бы 4 буквы из названия игры',
      'text_ru': 'Для поискал игры нужно ввести хотя бы 4 буквы из названия игры',
@@ -506,6 +524,16 @@ texts = [
     {'name': 'kb-balance',
      'text': '💰 Баланс',
      'text_ru': '💰 Баланс',
+     'text_en': None,
+     'version': 'b'},
+    {'name': 'kb-balance-conditions',
+     'text': '❗️ Условия',
+     'text_ru': '❗️ Условия',
+     'text_en': None,
+     'version': 'a'},
+    {'name': 'kb-balance-conditions',
+     'text': '❗️ Условия',
+     'text_ru': '❗️ Условия',
      'text_en': None,
      'version': 'b'},
     {'name': 'kb-balance-deposit',

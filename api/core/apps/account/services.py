@@ -74,4 +74,4 @@ def get_welcome_bonus(source):
 
 def get_deposit_bonus(source):
     abprofile = abtest_services.get_bot_profile(source)
-    return abprofile["deposit_bonus"], abprofile["type_deposit_bonus"]
+    return Decimal(abprofile["deposit_bonus"]), abprofile["type_deposit_bonus"]

@@ -62,6 +62,16 @@ def balance_menu(cli, cb):
 
         cache.change_user_cache(tg_id, "await_withdraw_amount", True)
 
+    if action == 'conditions':
+        GameAPI.send_statistic(user, 'press_button',
+                               data={"button_name": "conditions", "location": "main_menu/balance"})
+
+        cb.message.reply(get_text(tg_id, "balance-conditions").format(
+            wager=settings["wager"],
+            min_deposit=settings["min_deposit"],
+            min_withdrawal=settings["min_withdrawal"]
+        ))
+
 
 @Client.on_message(~Filters.bot & Filters.create(lambda _, m: m.text == get_text(m.from_user.id, "kb-balance-cancel_withdrawal")))
 def cancel_withdraw_kb(cli, m):

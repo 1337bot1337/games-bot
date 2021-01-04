@@ -51,7 +51,7 @@ def withdraw_wallet(*, tg_account: "account_models.TelegramAccount", amount: Dec
 #     return url
 
 
-def refill_wallet(tg_id, amount):
+def refill_wallet(tg_id, amount: Decimal):
     account = account_models.TelegramAccount.objects.get(tg_id=tg_id)
     account.real_balance += Decimal(amount)
     bonus = 0
@@ -59,19 +59,22 @@ def refill_wallet(tg_id, amount):
         user_ref = affiliate_models.UserAffiliate.objects.get(referral=account)
         affiliate_setup = affiliate_models.AffiliateSetup.objects.get(name="default")
         if not statistic_models.TelegramAccountStatistic.objects.filter(tg_id=account.tg_id, type_action="deposit").exists():
-           bonus = affiliate_setup.referral_deposit_bonus
-           account.virtual_balance += bonus
+            bonus = affiliate_setup.referral_deposit_bonus
+            if affiliate_setup.referral_type_deposit_bonus == "factor":
+                bonus = amount * affiliate_setup.referral_deposit_bonus - amount
+
+            account.virtual_balance += bonus
         referrer_bonus = affiliate_setup.referrer_deposit_bonus
         referrer = user_ref.referrer
-        affiliate_services.pay_referrer_bonus(referrer, referrer_bonus)
+        affiliate_services.pay_referrer_bonus(referrer, referrer_bonus, amount)
     elif account.source != "none":
         bonus, type_bonus = account_services.get_deposit_bonus(account.source)
         if type_bonus == "factor":
-            bonus = Decimal(bonus) * Decimal(amount) - Decimal(amount)
+            bonus = bonus * amount - amount
             account.virtual_balance += bonus
         else:
-            account.virtual_balance += Decimal(bonus)
-        account.virtual_balance += Decimal(bonus)
+            account.virtual_balance += bonus
+        account.virtual_balance += bonus
     account.save()
 
     return bonus

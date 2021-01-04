@@ -169,7 +169,8 @@ def balance_menu(tg_id: int):
     kb = InlineKeyboardMarkup(
     [
         [InlineKeyboardButton(get_text(tg_id, "kb-balance-deposit"), callback_data='balance-buy_token')],
-        [InlineKeyboardButton(get_text(tg_id, "kb-balance-withdrawal"), callback_data='balance-withdrawal')]
+        [InlineKeyboardButton(get_text(tg_id, "kb-balance-withdrawal"), callback_data='balance-withdrawal')],
+        [InlineKeyboardButton(get_text(tg_id, "kb-balance-conditions"), callback_data='balance-conditions')]
     ]
 
 )

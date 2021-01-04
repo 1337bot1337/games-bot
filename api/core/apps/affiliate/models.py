@@ -8,10 +8,17 @@ from django.utils import timezone
 
 
 class AffiliateSetup(common_models.BaseModel):
-
     name = models.CharField(_("Имя профиля"), max_length=255)
-    referrer_deposit_bonus = models.DecimalField(_("Бонус рефереру от депозита реферала"), max_digits=10, decimal_places=2)
-    referral_deposit_bonus = models.DecimalField(_("Разовый бонус рефералу на депозит"), max_digits=10, decimal_places=2)
+    referrer_deposit_bonus = models.DecimalField(_("Бонус рефереру от депозита реферала"), max_digits=10,
+                                                 decimal_places=2)
+    referral_deposit_bonus = models.DecimalField(_("Разовый бонус рефералу на депозит"), max_digits=10,
+                                                 decimal_places=2)
+    type_referral_deposit_bonus = models.CharField(_("Тип бонуса для реферала за разовый депозит"), max_length=50,
+                                              choices=(
+                                                  ("factor", _("Множитель")),
+                                                  ("fixed", _("Фиксированный"))), default="factor")
+    min_referral_deposit = models.DecimalField(_("Минимальная сумма депозита реферала для выплаты бонусов рефереру"),
+                                               max_digits=10, decimal_places=2, default=Decimal(1000))
 
     class Meta:
         verbose_name = "Настройки партнёрской программы"
@@ -19,8 +26,10 @@ class AffiliateSetup(common_models.BaseModel):
 
 
 class UserAffiliate(common_models.BaseModel):
-    referral = models.OneToOneField("account.TelegramAccount", verbose_name=_("Реферал"), related_name="refl", on_delete=models.CASCADE)
-    referrer = models.ForeignKey("account.TelegramAccount", verbose_name=_("Реферер"), related_name="refr", on_delete=models.CASCADE)
+    referral = models.OneToOneField("account.TelegramAccount", verbose_name=_("Реферал"), related_name="refl",
+                                    on_delete=models.CASCADE)
+    referrer = models.ForeignKey("account.TelegramAccount", verbose_name=_("Реферер"), related_name="refr",
+                                 on_delete=models.CASCADE)
 
     class Meta:
         verbose_name = "Реестр рефералов"
