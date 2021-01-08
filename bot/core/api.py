@@ -103,8 +103,10 @@ class GameAPI:
 
     @classmethod
     def deposit_user(cls, tg_id, amount):
-
-        return cls.base_url+f"payment/generate/{tg_id}/{amount}/"
+        base_url = "http://api:8080/api/v1/"
+        response = requests.get(base_url+f"payment/generate/{tg_id}/{amount}/")
+        if response.status_code == 200:
+            return response.json()["url"]
 
     @classmethod
     def send_statistic(cls, user: dict, type_action: str, data: dict):
