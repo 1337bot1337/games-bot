@@ -17,3 +17,20 @@ class TelegramAccountStatistic(common_models.BaseModel):
     class Meta:
         verbose_name = "запись в статистике телеграм аккаунтов"
         verbose_name_plural = "Статистика Телеграм Аккаунтов"
+
+
+class StatisticRequest(common_models.BaseModel):
+    source = models.ForeignKey("abtest.SourceSetup", verbose_name=_("Выбрать канал"), blank=True, null=True, on_delete=models.CASCADE)
+    source_list = models.CharField(_("Указать название каналов через запятую"), max_length=250, blank=True, null=True)
+    all_user = models.BooleanField(_("Статистика по всем пользователям"), default=False)
+    type_setup = models.CharField(_("Тип выгружаемой статистики"), max_length=50, choices=(
+        ("default", _("Общая статистика")),
+       ), default="default")
+    # ("top_games", _("Топ игр"))
+    date_1 = models.DateTimeField(_("Дата 1"), blank=True, null=True)
+    date_2 = models.DateTimeField(_("Дата 2"), blank=True, null=True)
+
+    class Meta:
+        verbose_name = "Выгрузка статистики"
+        verbose_name_plural = "Выгрузка статистики"
+

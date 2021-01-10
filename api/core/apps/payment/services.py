@@ -72,7 +72,7 @@ def new_refill(request):
                        username=account.username,
                        first_name=account.first_name,
                        last_name=account.last_name,
-                       type_action='deposit', data={"amount": round(float(amount), 2), "bonus": round(float(bonus), 2)})
+                       type_action='deposit', data={"amount": round(float(amount), 2), "bonus": round(float(bonus), 2), "order_id": order_id})
     send_successful_deposit(order.tg_id, amount, bonus)
 
 

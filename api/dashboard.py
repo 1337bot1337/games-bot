@@ -58,7 +58,8 @@ class CustomIndexDashboard(Dashboard):
 
         self.children.append(modules.ModelList(
             title=u'Статистика',
-            models=('core.apps.statistic.models.TelegramAccountStatistic',),
+            models=('core.apps.statistic.models.TelegramAccountStatistic',
+                    'core.apps.statistic.models.StatisticRequest',),
         ))
 
         self.children.append(modules.ModelList(

@@ -18,17 +18,17 @@ def affiliate_kb(cli, m):
     m.reply(txt, reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("🤝 Пригласить друга", switch_inline_query="start")]]))
 
 
-@Client.on_inline_query()
-def send_ref_request(cli, m):
-    set = cache.get_affiliate_setup()
-    factor_deposit = int(round(set.referral_deposit_bonus * 100 - 100, 2))
-    txt = get_text(m.from_user.id, "affiliate-invite_friend").format(bonus=factor_deposit)
-    ref_link = f"https://telegram.me/{BOT_USERNAME}?start=ref{m.from_user.id}"
-    cli.answer_inline_query(inline_query_id=m.id,  results=[
-            InlineQueryResultArticle(
-                "🤝 Пригласить друга",
-                InputTextMessageContent(txt),
-                reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton(text="🎰 Пойти играть", url=ref_link)]]),
-            )
-        ],
-    )
+# @Client.on_inline_query()
+# def send_ref_request(cli, m):
+#     set = cache.get_affiliate_setup()
+#     factor_deposit = int(round(set["referral_deposit_bonus"] * 100 - 100, 2))
+#     txt = get_text(m.from_user.id, "affiliate-invite_friend").format(bonus=factor_deposit)
+#     ref_link = f"https://telegram.me/{BOT_USERNAME}?start=ref{m.from_user.id}"
+#     cli.answer_inline_query(inline_query_id=m.id,  results=[
+#             InlineQueryResultArticle(
+#                 "🤝 Пригласить друга",
+#                 InputTextMessageContent(txt),
+#                 reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton(text="🎰 Пойти играть", url=ref_link)]]),
+#             )
+#         ],
+#     )

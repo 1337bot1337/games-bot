@@ -3,6 +3,7 @@ from django.conf.urls import url
 from django.http import HttpResponseRedirect, HttpResponse
 from django.utils import timezone
 from core.apps.statistic import models as statistic_models
+from core.apps.statistic import services as statistic_services
 import csv
 
 
@@ -50,8 +51,19 @@ class TelegramAccountStatisticAdmin(admin.ModelAdmin):
 
         self.message_user(request, "Статистика за последние 7 дней успешно импортирована!")
         writer = csv.writer(response)
-        statistic = [i for i in statistic_models.TelegramAccountStatistic.objects.filter(
-            created__gte=timezone.now() - timezone.timedelta(days=7)).values()]
+        statistic = [i for i in statistic_models.TelegramAccountStatistic.objects.filter(created__gte=timezone.now() - timezone.timedelta(days=7)).values()]
         writer.writerow(statistic)
 
         return response
+
+
+@admin.register(statistic_models.StatisticRequest)
+class StatisticRequestAdmin(admin.ModelAdmin):
+    list_display = ("source", "source_list", "all_user", "type_setup", "date_1", "date_2", )
+
+    def save_model(self, request, obj, form, change):
+        if statistic_services.update_gsheet(obj):
+            obj.save()
+
+
+

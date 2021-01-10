@@ -40,3 +40,5 @@ class SourceSetup(models.Model):
         verbose_name = "Конфигурация источника трафика"
         verbose_name_plural = "Конфигурации источника трафика"
 
+    def __str__(self):
+        return f"{self.name}"
