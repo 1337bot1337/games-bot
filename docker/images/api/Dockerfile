@@ -22,7 +22,10 @@ ENTRYPOINT ["/src/docker/docker-entrypoint.sh"]
 
 COPY ./api /src/api/
 
+COPY ./client_secret.json /src/gsheets/
+
 WORKDIR /src/api
+
 
 RUN python manage.py collectstatic --noinput
 

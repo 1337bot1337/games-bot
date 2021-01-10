@@ -7,6 +7,7 @@ from django.db.models import QuerySet as DjangoQuerySet
 import pygsheets
 from collections import defaultdict
 
+
 def register_statistic(tg_id: int or str,
                        username: str,
                        first_name: str,
@@ -29,7 +30,7 @@ def get_accounts_from_request(obj: "statistic_models.StatisticRequest"):
     if obj.source:
         accounts = account_models.TelegramAccount.objects.filter(source=obj.source.name)
 
-    elif len(obj.source_list) > 3:
+    elif obj.source_list and len(obj.source_list) > 3:
         source_list = obj.source_list.replace(" ", "").split(",")
         accounts = account_models.TelegramAccount.objects.filter(source__in=source_list)
 
@@ -89,7 +90,7 @@ def _get_statistic(obj, accounts: DjangoQuerySet):
 
         statistic = statistic_models.TelegramAccountStatistic.objects.filter(
             tg_id__in=users_ids,
-            create__range=(obj.date_1, obj.date_2))
+            created__range=(obj.date_1, obj.date_2))
     else:
         statistic = statistic_models.TelegramAccountStatistic.objects.filter(tg_id__in=users_ids)
 
@@ -101,7 +102,7 @@ def _get_invoice_data(obj, accounts: DjangoQuerySet):
 
         invoice_data = game_models.InvoiceData.objects.filter(
             account__in=accounts,
-            create__range=(obj.date_1, obj.date_2))
+            created__range=(obj.date_1, obj.date_2))
     else:
         invoice_data = game_models.InvoiceData.objects.filter(account__in=accounts)
     return invoice_data
@@ -138,19 +139,20 @@ def create_values_for_pygsheet(obj, accounts):
 
 def update_gsheet(obj: "statistic_models.StatisticRequest"):
     accounts = get_accounts_from_request(obj)
+    gs = pygsheets.authorize("/src/gsheets/client_secret.json", credentials_directory="/src/gsheets/")
+    default_stat_list = gs.open("test").sheet1
+    default_stat_list.clear(start="B3", end=f"L100000")
     if accounts:
         statistic = _get_statistic(obj, accounts)
         if statistic.count() == 0:
             return
 
-        gs = pygsheets.authorize()
         if obj.type_setup == "default":
             len_queryset = accounts.count()
             first_cord = "B3"
             last_cord = f"L{3+len_queryset}"
             values = create_values_for_pygsheet(obj, accounts)
-            default_stat_list = gs.open("test").sheet1
-            default_stat_list.clear(start="B3", end=f"L{accounts.count()+50}")
+
             default_stat_list.update_values(values=values, crange=f"{first_cord}:{last_cord}")
             return True
 

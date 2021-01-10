@@ -31,6 +31,7 @@ services:
     volumes:
       - static_volume:/src/public/static
       - cache:/src/redis/cache
+      - gsheets:/src/gsheets
     environment:
       - CORE_DATABASE_WAIT=1
       - CORE_DATABASE_URL=psql://postgres:postgres@postgres:5432/core_db
@@ -90,3 +91,4 @@ volumes:
   static_volume:
   letsencrypt:
   cache:
+  gsheets:
