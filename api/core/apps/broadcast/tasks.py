@@ -21,7 +21,10 @@ def check_broadcast_query():
                 else:
                     users = broadcast_services.get_users_from_lastactivity(msg.timedelta_inactive)
 
-                helpbot_services.broadcast(users, msg.text)
+                if msg.update_keyboard:
+                    helpbot_services.broadcast(users, msg.text, kb_start=True)
+                else:
+                    helpbot_services.broadcast(users, msg.text)
                 msg.status = True
                 msg.save()
                 continue
@@ -31,7 +34,10 @@ def check_broadcast_query():
                 users = account_models.TelegramAccount.objects.filter(source__in=sources)
             else:
                 users = broadcast_services.get_users_from_lastactivity(msg.timedelta_inactive, sources=sources)
-            helpbot_services.broadcast(users, msg.text)
 
+            if msg.update_keyboard:
+                helpbot_services.broadcast(users, msg.text, kb_start=True)
+            else:
+                helpbot_services.broadcast(users, msg.text)
             msg.status = True
             msg.save()

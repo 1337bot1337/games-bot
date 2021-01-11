@@ -24,6 +24,7 @@ class BroadcastQuery(common_models.BaseModel):
             ("queue_for_sending", _("Поставить в очередь на рассылку")),
             ("await", _("Перевести в ожидание"))))
 
+    update_keyboard = models.BooleanField(_("Обновить клавиатуру"), default=False)
     timedelta_inactive = models.DurationField(_("Неактивность больше чем"), choices=(
         (timezone.timedelta(seconds=0), _("Не использовать параметр")),
         (timezone.timedelta(days=1), _("Один день")),
