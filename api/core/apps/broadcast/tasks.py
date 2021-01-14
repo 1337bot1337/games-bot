@@ -21,10 +21,8 @@ def check_broadcast_query():
                 else:
                     users = broadcast_services.get_users_from_lastactivity(msg.timedelta_inactive)
 
-                if msg.update_keyboard:
-                    helpbot_services.broadcast(users, msg.text, kb_start=True)
-                else:
-                    helpbot_services.broadcast(users, msg.text)
+                helpbot_services.broadcast(users, msg.text, msg.keyboard)
+
                 msg.status = True
                 msg.save()
                 continue
@@ -35,9 +33,6 @@ def check_broadcast_query():
             else:
                 users = broadcast_services.get_users_from_lastactivity(msg.timedelta_inactive, sources=sources)
 
-            if msg.update_keyboard:
-                helpbot_services.broadcast(users, msg.text, kb_start=True)
-            else:
-                helpbot_services.broadcast(users, msg.text)
+            helpbot_services.broadcast(users, msg.text, msg.keyboard)
             msg.status = True
             msg.save()

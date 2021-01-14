@@ -1,7 +1,8 @@
-from pyrogram import ReplyKeyboardMarkup
+from pyrogram import ReplyKeyboardMarkup, InlineKeyboardButton, InlineKeyboardMarkup
 
 from .api.pyroAPI import HelpBot
 from core.apps.abtest import services as abtest_services
+from core.apps.game.utils import game_dict, games_1
 
 
 def send_msg(tg_id: int or str, text: str, session_name: str = None):
@@ -9,15 +10,20 @@ def send_msg(tg_id: int or str, text: str, session_name: str = None):
     client.send_msg(tg_id, text)
 
 
-def broadcast(users: iter, message: str, kb_start=False):
+def broadcast(users: iter, message: str, keyboard: str):
     client = HelpBot(session_name="session_broadcast")
     client.start()
 
     for user in users:
         try:
-            if kb_start:
+            if keyboard == "start":
                 client.send_message(user.tg_id, message, reply_markup=_menu(user.tg_id))
-            else:
+            elif keyboard == "games":
+                client.send_message(user.tg_id, message, reply_markup=_game_list(games_1, 0))
+            elif keyboard == "invite":
+                kb = InlineKeyboardMarkup([[InlineKeyboardButton("🤝 Пригласить друга", switch_inline_query="start")]])
+                client.send_message(user.tg_id, message, reply_markup=kb)
+            elif keyboard == "none":
                 client.send_message(user.tg_id, message)
         except:
             continue
@@ -35,6 +41,47 @@ def _menu(tg_id: int):
         resize_keyboard=True,
     )
     return kb
+
+
+def _game_list(games, offset):
+    kb_list = []
+    if offset == 0:
+        kb_list = [
+            [InlineKeyboardButton(f'🔍 Поиск', callback_data="game-search"),
+             InlineKeyboardButton(f'⏩', callback_data="game-move-10")]
+        ]
+    elif offset == 10:
+        kb_list = [
+            [InlineKeyboardButton(f'⏪', callback_data="game-move-0"),
+             InlineKeyboardButton(f'🔍 Поиск', callback_data="game-search"),
+             InlineKeyboardButton(f'⏩', callback_data="game-move-20")]
+        ]
+    elif offset == 20:
+        kb_list = [
+            [InlineKeyboardButton(f'⏪', callback_data="game-move-10"),
+             InlineKeyboardButton(f'🔍 Поиск', callback_data="game-search"),
+             InlineKeyboardButton(f'⏩', callback_data="game-move-30")]
+        ]
+    elif offset == 30:
+        kb_list = [
+            [InlineKeyboardButton(f'⏪', callback_data="game-move-20"),
+             InlineKeyboardButton(f'🔍 Поиск', callback_data="game-search"),
+             InlineKeyboardButton(f'⏩', callback_data="game-move-40")]
+        ]
+    elif offset == 40:
+        kb_list = [
+            [InlineKeyboardButton(f'⏪', callback_data="game-move-30"),
+             InlineKeyboardButton(f'🔍 Поиск', callback_data="game-search")]
+        ]
+
+    for game_id in games:
+        game_title = games[game_id]
+        emoji = game_dict[game_title]["emoji"]
+
+        kb_list.append(
+            [InlineKeyboardButton(f'{emoji} {game_title}', callback_data=f'game-{game_id}')])
+
+    return InlineKeyboardMarkup(kb_list)
 
 
 def get_tg_user(tg_id: int or str):

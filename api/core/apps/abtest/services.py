@@ -17,15 +17,13 @@ def get_user_source(tg_id):
 
 def get_source_setup(source: str):
     source_setup = cache.get("sources")
-    return source_setup[source]
+    setup = source_setup.get(source, source_setup["none"])
+    return setup
 
 
 def get_bot_profile(source: str):
-    try:
-        scr_setup = get_source_setup(source)
-    except:
-        scr_setup = get_source_setup("none")
 
+    scr_setup = get_source_setup(source)
     bot_profile = cache.get("botprofiles")
     return bot_profile[scr_setup["profile_id"]]
 
@@ -103,8 +101,8 @@ texts = [
      'text_en': '',
      'version': 'a'},
     {'name': 'affiliate-menu',
-     'text': 'Количество приглашенных пользователей: {ref_count}.\n\nЕсли твой друг сделает депозит >{min_referral_deposit} р, ты получишь {bonus} bonus leo,\n\nДелись этой ссылкой с друзьями, чтобы получать бонусы:\n{link}}',
-     'text_ru': 'Количество приглашенных пользователей: {ref_count}.\n\nЕсли твой друг сделает депозит >{min_referral_deposit} р, ты получишь {bonus} bonus leo,\n\nДелись этой ссылкой с друзьями, чтобы получать бонусы:\n{link}}',
+     'text': 'Количество приглашенных пользователей: {ref_count}.\n\nЕсли твой друг сделает депозит >{min_referral_deposit} р, ты получишь {bonus} bonus leo,\n\nДелись этой ссылкой с друзьями, чтобы получать бонусы:\n{link}',
+     'text_ru': 'Количество приглашенных пользователей: {ref_count}.\n\nЕсли твой друг сделает депозит >{min_referral_deposit} р, ты получишь {bonus} bonus leo,\n\nДелись этой ссылкой с друзьями, чтобы получать бонусы:\n{link}',
      'text_en': '',
      'version': 'b'},
 
