@@ -17,7 +17,7 @@ def check_invoice():
     client = CHCAPIClient()
     for invoice in invoices:
         account = TelegramAccount.objects.get(tg_id=invoice.account.tg_id)
-        if timezone.now() - invoice.created < timezone.timedelta(seconds=45):
+        if timezone.now() - invoice.created < timezone.timedelta(seconds=60):
             chc_invoice, check_error = client.check_invoice(invoice.invoice_id)
             if check_error:
                 print("check_invoice_error", invoice.invoice_id)
