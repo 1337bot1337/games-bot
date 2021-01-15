@@ -149,23 +149,40 @@ def create_game_session(tg_id, game_id, type_invoice):
     active_invoice = game_models.InvoiceData.objects.get_or_none(account=account, status='open', type_invoice=type_invoice)
 
     if active_invoice:
-        try:
-            closed_invoice = client.close_invoice(active_invoice.invoice_id)
+        closed_invoice, error = client.close_invoice(active_invoice.invoice_id)
+        if closed_invoice:
             if type_invoice == 'real':
                 update_balance_after_game(account, active_invoice, Decimal(closed_invoice[0])*Decimal(10))
 
             active_invoice.status = 'closed'
             active_invoice.save()
-        except FailInvoiceVendorException:
+        if error == "FailInvoiceVendor":
             active_invoice.status = 'closed'
             active_invoice.save()
-        except ThirdPartyVendorException:
-            helpbot_services.send_msg(tg_id, abtest_services.get_text(tg_id, "error_start_game"), session_name="err_start_game2")
+        if error == "ThirdPartyVendor":
+            helpbot_services.send_msg(tg_id, abtest_services.get_text(tg_id, "error_start_game"),
+                                      session_name="err_start_game2")
             return None, {'err_txt': 'The previous session is not finished', 'err_code': 2}
+        # try:
+        #     closed_invoice = client.close_invoice(active_invoice.invoice_id)
+        #     if type_invoice == 'real':
+        #         update_balance_after_game(account, active_invoice, Decimal(closed_invoice[0])*Decimal(10))
+        #
+        #     active_invoice.status = 'closed'
+        #     active_invoice.save()
+        # except FailInvoiceVendorException:
+        #     active_invoice.status = 'closed'
+        #     active_invoice.save()
+        # except ThirdPartyVendorException:
+        #     helpbot_services.send_msg(tg_id, abtest_services.get_text(tg_id, "error_start_game"), session_name="err_start_game2")
+        #     return None, {'err_txt': 'The previous session is not finished', 'err_code': 2}
 
     if type_invoice == "demo":
 
         invoice_id, transaction_id = client.create_invoice(settings.DEFAULT_DEMO_AMOUNT/100)
+        if not invoice_id:
+            error = transaction_id
+            return None, {"err_txt": error, "err_code": 3}
         game_models.InvoiceData.objects.create(
             invoice_id=invoice_id,
             game_id=game_id,
@@ -177,6 +194,9 @@ def create_game_session(tg_id, game_id, type_invoice):
 
     if account.real_balance > Decimal(0) or account.virtual_balance > Decimal(0):
         invoice_id, transaction_id = client.create_invoice(Decimal(sum((account.real_balance, account.virtual_balance))/Decimal(10)))
+        if not invoice_id:
+            error = transaction_id
+            return None, {"err_txt": error, "err_code": 3}
 
         game_models.InvoiceData.objects.create(
             invoice_id=invoice_id,

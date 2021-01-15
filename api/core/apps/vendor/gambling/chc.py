@@ -91,23 +91,24 @@ class CHCAPIClient(CHCBlackPayloadMixin, SignBuilderMixin):
         response = requests.get(url, params=params)
         if response.status_code != status.HTTP_200_OK or not response.json()["success"]:
             if response.json()["code"] == 60:
-                raise FailInvoiceVendorException()
-            raise ThirdPartyVendorException()
-        return response.json()
+                return None, "FailInvoiceVendor"
+                #raise FailInvoiceVendorException()
+            return None, "ThirdPartyVendor"
+            #raise ThirdPartyVendorException()
+        return response.json(), None
 
-    @append_transaction
-    def get_last_jackpot(self, start: str, end: str, page: int, psize: int, *, transaction_id: str = None):
-        """ Test method. """
-        sign_payload = {
-            **self.get_base_payload(transaction_id),
-            **self.get_last_jackpot_payload(start, end, page, psize),
-        }
-        sign = self.build_sign(self.last_jackpot_uri, sign_payload)
-        response_data = self.create_request(
-            self.get_url(self.last_jackpot_uri), {**sign_payload, "sign": sign}
-        )
-        return response_data, transaction_id
-
+    # @append_transaction
+    # def get_last_jackpot(self, start: str, end: str, page: int, psize: int, *, transaction_id: str = None):
+    #     """ Test method. """
+    #     sign_payload = {
+    #         **self.get_base_payload(transaction_id),
+    #         **self.get_last_jackpot_payload(start, end, page, psize),
+    #     }
+    #     sign = self.build_sign(self.last_jackpot_uri, sign_payload)
+    #     response_data = self.create_request(
+    #         self.get_url(self.last_jackpot_uri), {**sign_payload, "sign": sign}
+    #     )
+    #     return response_data, transaction_id
 
     @append_transaction
     def create_invoice(self, amount: Decimal, *, transaction_id: str = None):
@@ -116,9 +117,11 @@ class CHCAPIClient(CHCBlackPayloadMixin, SignBuilderMixin):
             **self.get_new_invoice_payload(amount),
         }
         sign = self.build_sign(self.create_invoice_uri, sign_payload)
-        response_data = self.create_request(
+        response_data, error = self.create_request(
             self.get_url(self.create_invoice_uri), {**sign_payload, "sign": sign}
         )
+        if error:
+            return None, error
         return response_data["invoice"], transaction_id
 
     @append_transaction
@@ -128,10 +131,12 @@ class CHCAPIClient(CHCBlackPayloadMixin, SignBuilderMixin):
             **self.get_check_invoice_payload(invoice_id),
         }
         sign = self.build_sign(self.check_invoice_uri, sign_payload)
-        response_data = self.create_request(
+        response_data, error = self.create_request(
             self.get_url(self.check_invoice_uri), {**sign_payload, "sign": sign}
         )
-        return response_data["sum"], transaction_id
+        if error:
+            return None, error
+        return response_data["sum"], None
 
     @append_transaction
     def close_invoice(self, invoice_id: str, *, transaction_id: str = None):
@@ -140,10 +145,12 @@ class CHCAPIClient(CHCBlackPayloadMixin, SignBuilderMixin):
             **self.get_close_invoice_payload(invoice_id),
         }
         sign = self.build_sign(self.close_invoice_uri, sign_payload)
-        response_data = self.create_request(
+        response_data, error = self.create_request(
             self.get_url(self.close_invoice_uri), {**sign_payload, "sign": sign}
         )
-        return response_data["sum"], transaction_id
+        if error:
+            return None, error
+        return response_data["sum"], None
 
     @append_transaction
     def add_invoice(self, invoice_id: str, amount: Decimal, *, transaction_id: str = None):
@@ -152,9 +159,11 @@ class CHCAPIClient(CHCBlackPayloadMixin, SignBuilderMixin):
             **self.get_add_invoice_payload(invoice_id, amount),
         }
         sign = self.build_sign(self.add_invoice_uri, sign_payload)
-        response_data = self.create_request(
+        response_data, error = self.create_request(
             self.get_url(self.add_invoice_uri), {**sign_payload, "sign": sign}
         )
+        if error:
+            return None, error
         return response_data["sum"], transaction_id
 
     @append_transaction
@@ -164,11 +173,12 @@ class CHCAPIClient(CHCBlackPayloadMixin, SignBuilderMixin):
             **self.get_check_invoice_payload(invoice_id),
         }
         sign = self.build_sign(self.invoice_history_url, sign_payload)
-        response_data = self.create_request(
+        response_data, error = self.create_request(
             self.get_url(self.invoice_history_url), {**sign_payload, "sign": sign}
         )
-
-        return response_data["game-history"]
+        if error:
+            return None, error
+        return response_data["game-history"], None
 
 
 def get_game_url(
