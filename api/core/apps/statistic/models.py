@@ -24,9 +24,11 @@ class StatisticRequest(common_models.BaseModel):
     source_list = models.CharField(_("Указать название каналов через запятую"), max_length=250, blank=True, null=True)
     all_user = models.BooleanField(_("Статистика по всем пользователям"), default=False)
     type_setup = models.CharField(_("Тип выгружаемой статистики"), max_length=50, choices=(
-        ("default", _("Общая статистика")),
+        ("default", _("Общая статистика пользователей")),
+        ("common", _("Общая статистика бота")),
+        ("top_games", _("Топ игр"))
        ), default="default")
-    # ("top_games", _("Топ игр"))
+
     date_1 = models.DateTimeField(_("Дата 1"), blank=True, null=True)
     date_2 = models.DateTimeField(_("Дата 2"), blank=True, null=True)
 

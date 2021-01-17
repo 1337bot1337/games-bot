@@ -4,6 +4,8 @@ from core.api import GameAPI
 from config.settings.bot import BOT_USERNAME
 from config import cache
 
+from core.services import get_user
+
 
 @Client.on_message(~Filters.bot & Filters.create(lambda _, m: m.text == get_text(m.from_user.id, "kb-affiliate")))
 def affiliate_kb(cli, m):
@@ -16,6 +18,8 @@ def affiliate_kb(cli, m):
                                                    link=ref_link)
 
     m.reply(txt, reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("🤝 Пригласить друга", switch_inline_query="start")]]))
+    user = get_user(m)
+    GameAPI.send_statistic(user, 'press_button', data={"button_name": "affiliate", "location": "main_menu"})
 
 
 @Client.on_inline_query()

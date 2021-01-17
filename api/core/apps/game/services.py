@@ -152,7 +152,7 @@ def create_game_session(tg_id, game_id, type_invoice):
         closed_invoice, error = client.close_invoice(active_invoice.invoice_id)
         if closed_invoice:
             if type_invoice == 'real':
-                update_balance_after_game(account, active_invoice, Decimal(closed_invoice[0])*Decimal(10))
+                update_balance_after_game(account, active_invoice, Decimal(closed_invoice)*Decimal(10))
 
             active_invoice.status = 'closed'
             active_invoice.save()
