@@ -101,10 +101,10 @@ def _get_common_game_statistic(statistic: DjangoQuerySet, invoice_data: DjangoQu
 
         stat_dict[GAME_LIST[game]] = {
             "start_count": start_count,
-            "max_sum_win": max_sum_win*10,
-            "max_sum_loss": max_sum_loss*10,
-            "bonus_loss": bonus_loss*10,
-            "rub_loss": rub_loss*10,
+            "max_sum_win": max_sum_win,
+            "max_sum_loss": max_sum_loss,
+            "bonus_loss": bonus_loss,
+            "rub_loss": rub_loss,
             "spin_count": spin_count,
             "sum_spin": sum_spin*10
         }
