@@ -77,7 +77,7 @@ services:
     image: docker_celery
   celery_beat:
     restart: on-failure
-    command: [ "python", '-m', "celery", "-A", "core.config", "beat", "-l", "info", "--scheduler", "django_celery_beat.schedulers:DatabaseScheduler" ]
+    command: [ "python", '-m', "celery", "--pidfile=", "-A", "core.config", "beat", "-l", "info", "--scheduler", "django_celery_beat.schedulers:DatabaseScheduler" ]
     depends_on:
       - redis
       - api

@@ -171,6 +171,7 @@ class CHCAPIClient(CHCBlackPayloadMixin, SignBuilderMixin):
         sign_payload = {
             **self.get_base_payload(transaction_id),
             **self.get_check_invoice_payload(invoice_id),
+            "psize": 1000000
         }
         sign = self.build_sign(self.invoice_history_url, sign_payload)
         response_data, error = self.create_request(

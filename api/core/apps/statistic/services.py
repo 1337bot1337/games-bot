@@ -293,10 +293,10 @@ def update_gsheet(obj: "statistic_models.StatisticRequest"):
 
         if obj.type_setup == "default":
             default_stat_list = gs.open("test").sheet1
-            default_stat_list.clear(start="B3", end=f"L100000")
+            default_stat_list.clear(start="A2", end=f"K100000")
             len_queryset = accounts.count()
-            first_cord = "B3"
-            last_cord = f"L{3+len_queryset}"
+            first_cord = "A2"
+            last_cord = f"K{1+len_queryset}"
             values = create_values_for_pygsheet(obj, accounts)
 
             default_stat_list.update_values(values=values, crange=f"{first_cord}:{last_cord}")

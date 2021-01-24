@@ -20,7 +20,7 @@ def check_invoice():
         if timezone.now() - invoice.created < timezone.timedelta(seconds=60):
             chc_invoice, check_error = client.check_invoice(invoice.invoice_id)
             if check_error:
-                print("check_invoice_error", invoice.invoice_id)
+                print("1check_invoice_error", invoice.invoice_id, check_error)
                 continue
             actual_amount = Decimal(chc_invoice * 10)
             game_services.update_balance_in_game(account, invoice.last_check_amount, actual_amount)
@@ -44,7 +44,7 @@ def check_invoice():
             if invoice_error:
                 chc_invoice, check_error = client.check_invoice(invoice.invoice_id)
                 if check_error:
-                    print("check_invoice_error", invoice.invoice_id)
+                    print("2check_invoice_error", invoice.invoice_id, check_error)
                     continue
                 actual_amount = Decimal(chc_invoice * 10)
                 game_services.update_balance_in_game(account, invoice.last_check_amount, actual_amount)
