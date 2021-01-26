@@ -23,6 +23,9 @@ def broadcast(users: iter, message: str, keyboard: str):
             elif keyboard == "invite":
                 kb = InlineKeyboardMarkup([[InlineKeyboardButton("🤝 Пригласить друга", switch_inline_query="start")]])
                 client.send_message(user.tg_id, message, reply_markup=kb)
+            elif keyboard == "deposit":
+                kb = InlineKeyboardMarkup([[InlineKeyboardButton("💳 Пополнить баланс", callback_data="balance-buy_token")]])
+                client.send_message(user.tg_id, message, reply_markup=kb)
             elif keyboard == "none":
                 client.send_message(user.tg_id, message)
         except:

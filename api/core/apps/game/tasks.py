@@ -44,6 +44,10 @@ def check_invoice():
             if invoice_error:
                 chc_invoice, check_error = client.check_invoice(invoice.invoice_id)
                 if check_error:
+                    if game_history:
+                        invoice.status = "closed"
+                        invoice.game_history = game_history
+                        invoice.save()
                     print("2check_invoice_error", invoice.invoice_id, check_error)
                     continue
                 actual_amount = Decimal(chc_invoice * 10)

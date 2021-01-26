@@ -31,7 +31,8 @@ class BroadcastQuery(common_models.BaseModel):
             ("none", _("Не обновлять клавиатуру")),
             ("start", _("Основная клавиатура")),
             ("invite", _("Пригласить друга")),
-            ("games", _("Игры"))
+            ("games", _("Игры")),
+            ("deposit", _("Пополнить баланс"))
         ),
         default="none")
     timedelta_inactive = models.DurationField(_("Неактивность больше чем"), choices=(
